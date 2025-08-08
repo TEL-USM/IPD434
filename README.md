@@ -1,7 +1,5 @@
 # Repositorio ramo IPD434 - Seminario de Soft Computing
 
-## Planificación 2024-2
+## Planificación 2025-2
 
-<figure class="video_container">
-<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRPM8GiVEW7ycEECu65CWqKEoSY0Fz1VCL6kTSN_DRoldSRIRcC_Xh_d2PMSgJ4-UTdLzsa9h-lwReO/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
-</figure>
+<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRTMqO2_KD3-29cXsZ4M_ZcdLLs6P7o4xpPHOZ_FNm1eCrQYc8_vT0x87DMUT4PsTYvacJib4qQOgcM/pubhtml?gid=1838049663&amp;single=true&amp;widget=true&amp;headers=false" width="1000" ></iframe>
