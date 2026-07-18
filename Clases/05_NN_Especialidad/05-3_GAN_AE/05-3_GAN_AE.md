@@ -42,7 +42,7 @@ $$
 La representación latente es útil solo si la restricción impuesta evita que la red copie trivialmente la entrada.
 </div>
 
-En español también se utiliza “codificador automático”; aquí se mantiene *autoencoder* por ser el término predominante en las bibliotecas y referencias.
+En español también se utiliza “codificador automático”. Aquí se mantiene *autoencoder* por ser el término predominante en las bibliotecas y referencias.
 
 ---
 
@@ -54,6 +54,20 @@ En español también se utiliza “codificador automático”; aquí se mantiene
 4. **Formular** el juego adversarial de una GAN.
 5. **Implementar** un autoencoder convolucional.
 6. **Evaluar** reconstrucción y generación más allá de ejemplos visuales elegidos.
+
+---
+
+## Ruta de la clase
+
+1. Un autoencoder aprende a reconstruir mediante un código latente restringido.
+2. La forma de esa restricción determina qué información conserva.
+3. Un VAE regulariza el espacio latente para poder muestrearlo.
+4. Una GAN aprende a generar mediante la competencia entre generador y discriminador.
+5. Reconstrucción y generación requieren criterios de evaluación diferentes.
+
+<div class="bridge">
+El hilo común es aprender una representación de la distribución de los datos. Cambian la restricción, el objetivo y la forma de generar muestras.
+</div>
 
 ---
 
@@ -80,10 +94,10 @@ El encoder aprende qué información conservar en $z$ y el decoder aprende cómo
 
 Aplicaciones del material base:
 
-- reducción de dimensión;
-- eliminación de ruido;
-- detección de anomalías;
-- compresión;
+- reducción de dimensión.
+- eliminación de ruido.
+- detección de anomalías.
+- compresión.
 - preentrenamiento o extracción de características.
 
 <div class="warn">
@@ -107,7 +121,7 @@ $$
 
 La corrupción obliga a modelar estructura estable en vez de identidad exacta.
 
-El tipo y la intensidad del ruido deben representar perturbaciones plausibles; un ruido artificial poco realista puede enseñar una invariancia inútil.
+El tipo y la intensidad del ruido deben representar perturbaciones plausibles. Un ruido artificial poco realista puede enseñar una invariancia inútil.
 
 ---
 
@@ -233,7 +247,7 @@ $D(x)$ estima si una muestra parece real y $G(z)$ intenta generar muestras que r
 
 La pérdida del generador suele usar $-\log D(G(z))$ para obtener gradientes más fuertes al inicio.
 
-Si el discriminador aprende demasiado rápido, puede entregar poca señal útil al generador; si es demasiado débil, tampoco guía la mejora de las muestras.
+Si el discriminador aprende demasiado rápido, puede entregar poca señal útil al generador. Si es demasiado débil, tampoco guía la mejora de las muestras.
 
 ---
 
@@ -262,7 +276,7 @@ Calidad y diversidad son dimensiones distintas: generar una imagen convincente n
 
 La evaluación debe usar un conjunto independiente y una línea base.
 
-FID compara estadísticas de características entre datos reales y generados; no reemplaza la inspección de diversidad ni el análisis del dominio.
+FID compara estadísticas de características entre datos reales y generados. No reemplaza la inspección de diversidad ni el análisis del dominio.
 
 ---
 
@@ -270,10 +284,10 @@ FID compara estadísticas de características entre datos reales y generados; no
 
 [`notebooks/05_3_autoencoder_convolucional.ipynb`](notebooks/05_3_autoencoder_convolucional.ipynb):
 
-- carga MNIST y agrega ruido;
-- entrena un autoencoder convolucional;
-- compara entrada ruidosa, reconstrucción y objetivo;
-- calcula error por imagen;
+- carga MNIST y agrega ruido.
+- entrena un autoencoder convolucional.
+- compara entrada ruidosa, reconstrucción y objetivo.
+- calcula error por imagen.
 - propone convertir el error en detector y calibrar un umbral.
 
 ---

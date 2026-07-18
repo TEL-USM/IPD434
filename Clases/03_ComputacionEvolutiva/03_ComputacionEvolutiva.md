@@ -37,8 +37,8 @@ Dr. Patricio Olivares Roncagliolo
 - Esta unidad aborda problemas donde evaluar una solución es posible, pero encontrar la mejor es difícil.
 
 $$
-\text{candidato}\xrightarrow{\text{evaluación}}\text{calidad}
-\quad\text{sin conocer una fórmula inversa para construir el óptimo}
+\text{candidato}\xrightarrow{\text{evaluaci\'on}}\text{calidad}
+\quad\text{sin conocer una f\'ormula inversa para construir el \'optimo}
 $$
 
 ---
@@ -53,6 +53,20 @@ Al finalizar se espera poder:
 4. **Aplicar** selección, recombinación, mutación y supervivencia.
 5. **Implementar** un algoritmo genético con DEAP.
 6. **Evaluar** resultados estocásticos con múltiples ejecuciones.
+
+---
+
+## Ruta de la clase
+
+1. Formulamos qué debe optimizarse y qué restricciones se deben respetar.
+2. Diseñamos una representación que permita producir candidatos válidos.
+3. Traducimos la calidad del problema a una función de aptitud.
+4. Alternamos selección, variación y supervivencia sin perder diversidad.
+5. Evaluamos el método mediante repeticiones y presupuestos comparables.
+
+<div class="bridge">
+Un algoritmo evolutivo no comienza con los operadores. Comienza con una formulación que define qué significa mejorar.
+</div>
 
 ---
 
@@ -110,9 +124,9 @@ La función indicadora vale $1$ cuando dos reinas comparten una diagonal. Por ta
 
 Una codificación útil:
 
-- representa toda solución relevante;
-- evita o repara soluciones inválidas;
-- admite variaciones pequeñas con significado;
+- representa toda solución relevante.
+- evita o repara soluciones inválidas.
+- admite variaciones pequeñas con significado.
 - permite evaluar con costo razonable.
 
 <div class="warn">
@@ -153,7 +167,7 @@ Un cruzamiento de un punto aplicado sin cuidado a permutaciones produce valores 
 - **Exploración:** visitar regiones nuevas del espacio.
 - **Explotación:** refinar regiones prometedoras.
 
-Demasiada explotación causa convergencia prematura; demasiada exploración impide consolidar mejoras.
+Demasiada explotación causa convergencia prematura. Demasiada exploración impide consolidar mejoras.
 
 La diversidad de la población permite explorar, mientras que la selección de candidatos de alta calidad dirige la explotación. Los operadores y sus probabilidades controlan ese equilibrio.
 
@@ -164,9 +178,9 @@ La diversidad de la población permite explorar, mientras que la selección de c
 ![w:780](images/ea-workflow.png)
 
 $$
-P_t\xrightarrow{\text{selección}}P'_t
-\xrightarrow{\text{variación}}O_t
-\xrightarrow{\text{evaluación y supervivencia}}P_{t+1}
+P_t\xrightarrow{\text{selecci\'on}}P'_t
+\xrightarrow{\text{variaci\'on}}O_t
+\xrightarrow{\text{evaluaci\'on y supervivencia}}P_{t+1}
 $$
 
 El algoritmo termina por presupuesto, convergencia, calidad objetivo o ausencia de mejora.
@@ -218,8 +232,8 @@ La selección de padres no elimina individuos por sí sola: determina quién ten
 
 Combina información de dos o más padres. En permutaciones se prefieren operadores que preservan la validez, como:
 
-- partially mapped crossover (PMX);
-- ordered crossover (OX);
+- partially mapped crossover (PMX).
+- ordered crossover (OX).
 - cycle crossover (CX).
 
 La recombinación es útil cuando los bloques heredados conservan valor al combinarse.
@@ -236,11 +250,11 @@ La mutación introduce variación y recupera alelos perdidos.
 
 Ejemplos:
 
-- bit flip para cadenas binarias;
-- ruido gaussiano para vectores reales;
+- bit flip para cadenas binarias.
+- ruido gaussiano para vectores reales.
 - intercambio, inserción o inversión para permutaciones.
 
-Una tasa excesiva aproxima la búsqueda a muestreo aleatorio; una tasa muy baja puede congelar la población.
+Una tasa excesiva aproxima la búsqueda a muestreo aleatorio. Una tasa muy baja puede congelar la población.
 
 Conviene distinguir la probabilidad de mutar un individuo de la probabilidad de modificar cada gen dentro de ese individuo.
 
@@ -250,8 +264,8 @@ Conviene distinguir la probabilidad de mutar un individuo de la probabilidad de 
 
 El reemplazo puede ser:
 
-- **generacional:** la descendencia sustituye a la población;
-- **estacionario:** se reemplazan pocos individuos;
+- **generacional:** la descendencia sustituye a la población.
+- **estacionario:** se reemplazan pocos individuos.
 - **elitista:** se preservan los mejores.
 
 ![w:560](images/survivalrank.png)
@@ -300,14 +314,14 @@ Una solución $x$ domina a $y$ si:
 $$
 f_i(x)\le f_i(y)\ \forall i
 \quad\text{y}\quad
-f_j(x)<f_j(y)\ \text{para algún }j
+f_j(x)<f_j(y)\ \text{para alg\'un }j
 $$
 
 El conjunto de soluciones no dominadas aproxima el frente de Pareto.
 
 ![w:520](images/multi-objective.png)
 
-Elegir una solución del frente requiere preferencias adicionales; el algoritmo identifica compromisos, pero no decide por sí solo cuál objetivo debe priorizarse.
+Elegir una solución del frente requiere preferencias adicionales. El algoritmo identifica compromisos, pero no decide por sí solo cuál objetivo debe priorizarse.
 
 ---
 
@@ -315,26 +329,26 @@ Elegir una solución del frente requiere preferencias adicionales; el algoritmo 
 
 Parámetros típicos:
 
-- tamaño de población $\mu$;
-- probabilidad de cruzamiento $p_c$;
-- probabilidad de mutación $p_m$;
-- presión de selección;
+- tamaño de población $\mu$.
+- probabilidad de cruzamiento $p_c$.
+- probabilidad de mutación $p_m$.
+- presión de selección.
 - presupuesto de generaciones o evaluaciones.
 
 <div class="callout">
-La comparación entre configuraciones debe usar el mismo presupuesto de evaluaciones y varias semillas; una única ejecución no caracteriza un algoritmo estocástico.
+La comparación entre configuraciones debe usar el mismo presupuesto de evaluaciones y varias semillas. Una única ejecución no caracteriza un algoritmo estocástico.
 </div>
 
 ---
 
 ## Ejemplo ejecutable: N reinas
 
-El notebook [`notebooks/03_ga_n_reinas.ipynb`](notebooks/03_ga_n_reinas.ipynb):
+El notebook [`notebook/03_ga_n_reinas.ipynb`](notebook/03_ga_n_reinas.ipynb):
 
-- representa cada tablero como permutación;
-- minimiza conflictos diagonales;
-- usa torneo, OX, mutación por intercambio y elitismo;
-- registra mejor y promedio por generación;
+- representa cada tablero como permutación.
+- minimiza conflictos diagonales.
+- usa torneo, OX, mutación por intercambio y elitismo.
+- registra mejor y promedio por generación.
 - repite el experimento con semillas explícitas.
 
 DEAP separa tipos, operadores y algoritmo, facilitando reemplazar componentes sin ocultar su función.
@@ -351,7 +365,7 @@ DEAP separa tipos, operadores y algoritmo, facilitando reemplazar componentes si
 6. Analizar sensibilidad a parámetros.
 
 $$
-\hat p_{éxito}=\frac{\text{ejecuciones que alcanzan el objetivo}}{r}
+\hat p_{\text{\'exito}}=\frac{\text{ejecuciones que alcanzan el objetivo}}{r}
 $$
 
 ---
@@ -360,7 +374,7 @@ $$
 
 - Una metaheurística administra un presupuesto de evaluaciones.
 - Representación, aptitud y operadores forman un diseño inseparable.
-- Selección explota; variación y diversidad sostienen exploración.
+- Selección explota. Variación y diversidad sostienen exploración.
 - El resultado estocástico exige repeticiones y comparaciones justas.
 - DEAP implementa el ciclo, pero no decide la formulación correcta.
 

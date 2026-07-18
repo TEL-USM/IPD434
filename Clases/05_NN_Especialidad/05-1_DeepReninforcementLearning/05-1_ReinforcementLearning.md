@@ -55,6 +55,17 @@ La pregunta cambia desde “¿qué etiqueta corresponde?” hacia “¿qué acci
 
 ---
 
+## Ruta de la clase
+
+1. Modelamos estados, acciones, transiciones y recompensas mediante un MDP.
+2. Convertimos recompensas futuras en retorno y funciones de valor.
+3. La ecuación de Bellman conecta una decisión actual con decisiones futuras.
+4. *Value iteration* resuelve el problema cuando conocemos el modelo.
+5. Q-learning aprende desde experiencia cuando el modelo no está disponible.
+6. DQN aproxima la tabla Q con una red y requiere mecanismos de estabilización.
+
+---
+
 ## Proceso de decisión de Markov
 
 Un MDP se define por la tupla:
@@ -71,7 +82,7 @@ $$
 
 ![w:570](images/MDP_diagram.jpg)
 
-El estado contiene la información disponible para decidir; la dinámica describe qué puede ocurrir después de cada acción y la recompensa expresa el objetivo inmediato.
+El estado contiene la información disponible para decidir. La dinámica describe qué puede ocurrir después de cada acción y la recompensa expresa el objetivo inmediato.
 
 ---
 
@@ -106,7 +117,7 @@ $$
 
 $\gamma$ controla cuánto pesan recompensas lejanas y garantiza convergencia de la suma en tareas continuas acotadas.
 
-Con $\gamma=0$ el agente considera solo la recompensa inmediata; cuando $\gamma$ se acerca a $1$, las consecuencias futuras adquieren mayor importancia.
+Con $\gamma=0$ el agente considera solo la recompensa inmediata. Cuando $\gamma$ se acerca a $1$, las consecuencias futuras adquieren mayor importancia.
 
 ---
 
@@ -130,7 +141,7 @@ $$
 \pi(s)=\arg\max_a Q(s,a)
 $$
 
-$V^\pi$ resume la calidad de estar en un estado y seguir $\pi$; $Q^\pi$ permite comparar directamente las acciones disponibles en ese estado.
+$V^\pi$ resume la calidad de estar en un estado y seguir $\pi$. $Q^\pi$ permite comparar directamente las acciones disponibles en ese estado.
 
 ---
 
@@ -143,7 +154,7 @@ $$
 
 Bellman expresa un principio recursivo: una decisión óptima combina recompensa inmediata con el valor óptimo del estado siguiente.
 
-La esperanza pondera todos los estados siguientes posibles mediante $P(s'\mid s,a)$; el máximo selecciona la acción con mayor retorno esperado.
+La esperanza pondera todos los estados siguientes posibles mediante $P(s'\mid s,a)$. El máximo selecciona la acción con mayor retorno esperado.
 
 ---
 
@@ -174,14 +185,14 @@ Se parte de una estimación inicial, por ejemplo $V_0(s)=0$, y se aplican barrid
 
 La misma política puede cambiar si:
 
-- las acciones son estocásticas;
-- existe descuento;
-- cambia el costo por paso;
+- las acciones son estocásticas.
+- existe descuento.
+- cambia el costo por paso.
 - cambia la recompensa terminal.
 
 El modelado de recompensa define el comportamiento que realmente se optimiza.
 
-Una penalización por paso favorece rutas cortas; una transición estocástica puede hacer preferible un camino más largo, pero con menor riesgo de caer en un estado terminal negativo.
+Una penalización por paso favorece rutas cortas. Una transición estocástica puede hacer preferible un camino más largo, pero con menor riesgo de caer en un estado terminal negativo.
 
 ---
 
@@ -209,7 +220,7 @@ Política $\varepsilon$-greedy:
 $$
 a_t=
 \begin{cases}
-\text{acción aleatoria},&u<\varepsilon\\
+\text{acci\'on aleatoria},&u<\varepsilon\\
 \arg\max_a Q(s_t,a),&u\ge\varepsilon
 \end{cases}
 $$
@@ -279,10 +290,10 @@ Después de cualquiera de los dos se debe reiniciar el episodio. Sin embargo, al
 
 [`notebooks/05_1_q_learning.ipynb`](notebooks/05_1_q_learning.ipynb) entrena Q-learning tabular en `FrozenLake-v1`:
 
-- semillas explícitas;
-- política $\varepsilon$-greedy;
-- separación de entrenamiento y evaluación;
-- curva de éxito móvil;
+- semillas explícitas.
+- política $\varepsilon$-greedy.
+- separación de entrenamiento y evaluación.
+- curva de éxito móvil.
 - comparación con política aleatoria.
 
 El ejemplo usa la API vigente `reset()`/`step()` de Gymnasium.

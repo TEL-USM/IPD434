@@ -41,8 +41,8 @@ $$
 
 Esta especialidad estudia:
 
-- cómo los operadores cambian la presión de búsqueda;
-- cómo escoger operadores compatibles con la representación;
+- cómo los operadores cambian la presión de búsqueda.
+- cómo escoger operadores compatibles con la representación.
 - cómo ACO y PSO comparten información sin recombinación genética clásica.
 
 ---
@@ -57,6 +57,17 @@ Al finalizar se espera poder:
 4. **Explicar** la dinámica de velocidad y memoria en PSO.
 5. **Implementar** ACO para el problema del vendedor viajero.
 6. **Diseñar** comparaciones con igual presupuesto y múltiples semillas.
+
+---
+
+## Ruta de la clase
+
+1. Profundizamos en presión de selección, variación y reemplazo.
+2. Relacionamos cada operador con la representación que debe preservar.
+3. Abandonamos la reproducción genética clásica para estudiar coordinación colectiva.
+4. ACO comparte información mediante feromonas en problemas constructivos.
+5. PSO combina memoria individual y social en espacios continuos.
+6. Comparamos todos los métodos con el mismo presupuesto experimental.
 
 ---
 
@@ -89,7 +100,7 @@ La ruleta realiza sorteos independientes. Stochastic Universal Sampling (SUS) us
 
 SUS reduce la variabilidad de la selección, pero no corrige una escala de aptitud mal condicionada.
 
-La ruleta puede seleccionar demasiadas o muy pocas copias por azar; SUS distribuye los punteros uniformemente y conserva mejor las proporciones esperadas.
+La ruleta puede seleccionar demasiadas o muy pocas copias por azar. SUS distribuye los punteros uniformemente y conserva mejor las proporciones esperadas.
 
 ---
 
@@ -112,8 +123,8 @@ $$
 
 **Permutación**
 
-- intercambio;
-- inserción;
+- intercambio.
+- inserción.
 - inversión.
 
 ![w:350](images/permutation-mutation.png)
@@ -168,7 +179,7 @@ Conserva el orden relativo de los elementos fuera del segmento copiado.
 No existe un operador universalmente mejor: la codificación y la estructura del problema determinan qué información conviene heredar.
 </div>
 
-PMX favorece correspondencias de posición; OX favorece relaciones de precedencia. En rutas, la elección depende de cuál relación representa mejor la estructura útil.
+PMX favorece correspondencias de posición. OX favorece relaciones de precedencia. En rutas, la elección depende de cuál relación representa mejor la estructura útil.
 
 ---
 
@@ -176,10 +187,10 @@ PMX favorece correspondencias de posición; OX favorece relaciones de precedenci
 
 Estrategias frecuentes:
 
-- $(\mu,\lambda)$: sobreviven solo descendientes;
-- $(\mu+\lambda)$: compiten padres y descendientes;
-- elitismo explícito;
-- edad máxima;
+- $(\mu,\lambda)$: sobreviven solo descendientes.
+- $(\mu+\lambda)$: compiten padres y descendientes.
+- elitismo explícito.
+- edad máxima.
 - ordenamiento con preservación de diversidad.
 
 El reemplazo define cuánto dura la memoria de la población. Preservar siempre a demasiados individuos puede impedir la adaptación.
@@ -197,7 +208,7 @@ Los algoritmos de enjambre modelan agentes simples que comparten información in
 
 No requieren cruzamiento y mutación con la semántica de un algoritmo genético.
 
-En ACO la coordinación es indirecta mediante el entorno; en PSO cada partícula actualiza su movimiento usando memorias individuales y sociales.
+En ACO la coordinación es indirecta mediante el entorno. En PSO cada partícula actualiza su movimiento usando memorias individuales y sociales.
 
 ---
 
@@ -239,7 +250,7 @@ $$
 
 La evaporación evita que decisiones tempranas sean irreversibles.
 
-El depósito refuerza componentes de buenas soluciones; la evaporación reduce gradualmente su influencia y mantiene abierta la exploración de otras rutas.
+El depósito refuerza componentes de buenas soluciones. La evaporación reduce gradualmente su influencia y mantiene abierta la exploración de otras rutas.
 
 ---
 
@@ -278,7 +289,7 @@ $$
 - $c_1$: memoria individual.
 - $c_2$: influencia social.
 
-Los factores $r_1,r_2\sim U(0,1)$ introducen variación. Una inercia alta favorece exploración; una baja facilita la estabilización local.
+Los factores $r_1,r_2\sim U(0,1)$ introducen variación. Una inercia alta favorece exploración. Una baja facilita la estabilización local.
 
 ---
 
@@ -296,12 +307,12 @@ Los factores $r_1,r_2\sim U(0,1)$ introducen variación. Una inercia alta favore
 
 ## Ejemplo ejecutable
 
-El notebook [`notebooks/05_aco_tsp.ipynb`](notebooks/05_aco_tsp.ipynb):
+El notebook [`notebook/05_aco_tsp.ipynb`](notebook/05_aco_tsp.ipynb):
 
-- genera una instancia euclidiana reproducible;
-- construye tours con feromona y distancia;
-- aplica evaporación y depósito elitista;
-- grafica convergencia y mejor tour;
+- genera una instancia euclidiana reproducible.
+- construye tours con feromona y distancia.
+- aplica evaporación y depósito elitista.
+- grafica convergencia y mejor tour.
 - compara varias semillas.
 
 El código usa NumPy y Matplotlib para hacer visible el algoritmo completo.

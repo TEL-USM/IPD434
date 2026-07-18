@@ -43,7 +43,7 @@ f_\theta(x)
 $$
 
 <div class="bridge">
-El modelo aprende regularidades de los datos; no aprende automáticamente el objetivo real ni corrige un diseño experimental deficiente.
+El modelo aprende regularidades de los datos. No aprende automáticamente el objetivo real ni corrige un diseño experimental deficiente.
 </div>
 
 ---
@@ -58,6 +58,17 @@ Al finalizar se espera poder:
 4. **Explicar** perceptrón, descenso de gradiente y retropropagación.
 5. **Diseñar** una red multicapa con regularización.
 6. **Distinguir** cuándo utilizar capas densas, recurrentes o convolucionales.
+
+---
+
+## Ruta de la clase
+
+1. Definimos la tarea, los datos y el costo de equivocarse.
+2. Separamos los datos y elegimos métricas antes de entrenar.
+3. Construimos desde el perceptrón hasta una red multicapa.
+4. Explicamos cómo descenso de gradiente y retropropagación ajustan sus parámetros.
+5. Controlamos el sobreajuste y elegimos una arquitectura acorde con la estructura de los datos.
+6. Cerramos con un protocolo de evaluación reproducible.
 
 ---
 
@@ -138,7 +149,7 @@ Preprocesar con estadísticas calculadas sobre todos los datos, seleccionar mode
 
 El significado de “positivo” debe asociarse a la condición relevante, no necesariamente a la clase más frecuente.
 
-$TP$ y $TN$ son aciertos; $FP$ es una falsa alarma y $FN$ una omisión. La importancia de cada error depende del problema, no de la tabla.
+$TP$ y $TN$ son aciertos. $FP$ es una falsa alarma y $FN$ una omisión. La importancia de cada error depende del problema, no de la tabla.
 
 ---
 
@@ -149,7 +160,7 @@ $$
 $$
 
 $$
-\text{precisión}=\frac{TP}{TP+FP},\qquad
+\text{precisi\'on}=\frac{TP}{TP+FP},\qquad
 \text{exhaustividad}=\frac{TP}{TP+FN}
 $$
 
@@ -158,11 +169,11 @@ $$
 $$
 
 $$
-F_1=2\frac{\text{precisión}\cdot\text{exhaustividad}}
-{\text{precisión}+\text{exhaustividad}}
+F_1=2\frac{\text{precisi\'on}\cdot\text{exhaustividad}}
+{\text{precisi\'on}+\text{exhaustividad}}
 $$
 
-La precisión responde “¿cuántos positivos predichos eran correctos?”; la exhaustividad o *recall* responde “¿cuántos positivos reales fueron detectados?”.
+La precisión responde “¿cuántos positivos predichos eran correctos?”. La exhaustividad o *recall* responde “¿cuántos positivos reales fueron detectados?”.
 
 ---
 
@@ -195,7 +206,7 @@ $$
 R^2=1-\frac{\sum_i(y_i-\hat y_i)^2}{\sum_i(y_i-\bar y)^2}
 $$
 
-MAE es más robusto a errores extremos; MSE los penaliza con mayor fuerza.
+MAE es más robusto a errores extremos. MSE los penaliza con mayor fuerza.
 
 RMSE conserva la unidad de la variable objetivo. $R^2$ compara contra predecir siempre la media y puede ser negativo sobre datos de prueba.
 
@@ -247,7 +258,7 @@ donde $\eta$ es la tasa de aprendizaje.
 - $\eta$ muy pequeña: convergencia lenta.
 - Mini-batches: estimación ruidosa pero eficiente del gradiente.
 
-Una época corresponde a recorrer una vez el conjunto de entrenamiento; una actualización ocurre por cada mini-lote procesado.
+Una época corresponde a recorrer una vez el conjunto de entrenamiento. Una actualización ocurre por cada mini-lote procesado.
 
 ---
 
@@ -262,7 +273,7 @@ $$
 \frac{\partial \mathbf z^{(l)}}{\partial W^{(l)}}
 $$
 
-Retropropagación calcula gradientes; un optimizador como SGD o Adam usa esos gradientes para actualizar parámetros.
+Retropropagación calcula gradientes. Un optimizador como SGD o Adam usa esos gradientes para actualizar parámetros.
 
 El procedimiento reutiliza derivadas intermedias desde la salida hacia la entrada, lo que evita calcular por separado el efecto de cada parámetro.
 
@@ -280,7 +291,7 @@ El procedimiento reutiliza derivadas intermedias desde la salida hacia la entrad
 
 La activación de salida debe corresponder a la codificación de etiquetas y a la función de pérdida.
 
-Por ejemplo, clasificación binaria suele combinar una salida sigmoide con entropía cruzada binaria; clasificación multiclase excluyente usa *softmax*.
+Por ejemplo, clasificación binaria suele combinar una salida sigmoide con entropía cruzada binaria. Clasificación multiclase excluyente usa *softmax*.
 
 ---
 
@@ -347,12 +358,12 @@ $$
 
 Otras estrategias:
 
-- dropout;
-- detención temprana;
-- aumento de datos;
+- dropout.
+- detención temprana.
+- aumento de datos.
 - reducción de capacidad.
 
-$L_1$ favorece pesos exactamente nulos; $L_2$ reduce su magnitud de manera suave. El valor de $\lambda$ se elige usando validación.
+$L_1$ favorece pesos exactamente nulos. $L_2$ reduce su magnitud de manera suave. El valor de $\lambda$ se elige usando validación.
 
 ---
 
@@ -362,12 +373,12 @@ $L_1$ favorece pesos exactamente nulos; $L_2$ reduce su magnitud de manera suave
 
 Durante el entrenamiento, *dropout* anula activaciones con probabilidad $p$ y reduce la coadaptación.
 
-Durante inferencia no se eliminan unidades; la biblioteca ajusta la escala para mantener compatible el valor esperado de las activaciones.
+Durante inferencia no se eliminan unidades. La biblioteca ajusta la escala para mantener compatible el valor esperado de las activaciones.
 
 La detención temprana conserva el punto de mejor validación:
 
 $$
-t^*=\arg\min_t L_{validación}(t)
+t^*=\arg\min_t L_{\text{validaci\'on}}(t)
 $$
 
 La prueba se evalúa una vez, después de fijar $t^*$ y todas las decisiones.
@@ -399,7 +410,7 @@ El estado $\mathbf h_t$ resume la información previa que el modelo considera ú
 | Muchos a muchos, alineado | Etiquetado por instante |
 | Muchos a muchos, no alineado | Traducción secuencia a secuencia |
 
-Las particiones temporales deben respetar causalidad; mezclar aleatoriamente observaciones futuras puede filtrar información.
+Las particiones temporales deben respetar causalidad. Mezclar aleatoriamente observaciones futuras puede filtrar información.
 
 ---
 
@@ -440,7 +451,7 @@ Cada filtro produce un mapa de características. Capas sucesivas combinan patron
 
 La agrupación (*pooling*) reduce la resolución y el costo, pero también descarta información espacial.
 
-El tamaño de ventana y el paso determinan cuánto se reduce la representación; una reducción agresiva puede eliminar detalles relevantes.
+El tamaño de ventana y el paso determinan cuánto se reduce la representación. Una reducción agresiva puede eliminar detalles relevantes.
 
 ---
 
@@ -462,12 +473,12 @@ Una red más profunda solo es una mejor solución si mejora la métrica relevant
 
 ## Ejemplo ejecutable
 
-El notebook [`notebooks/04_clasificacion_fashion_mnist.ipynb`](notebooks/04_clasificacion_fashion_mnist.ipynb):
+El notebook [`notebook/04_clasificacion_fashion_mnist.ipynb`](notebook/04_clasificacion_fashion_mnist.ipynb):
 
-- normaliza imágenes de Fashion-MNIST;
-- separa entrenamiento, validación y prueba;
-- entrena una red densa con dropout;
-- usa detención temprana;
+- normaliza imágenes de Fashion-MNIST.
+- separa entrenamiento, validación y prueba.
+- entrena una red densa con dropout.
+- usa detención temprana.
 - calcula la matriz de confusión y la exactitud por clase.
 
 El ejemplo sigue la API `tf.keras` y deja explícitas las semillas y la partición.
@@ -477,9 +488,9 @@ El ejemplo sigue la API `tf.keras` y deja explícitas las semillas y la partici�
 ## Síntesis
 
 - El diseño comienza por tarea, datos y métrica, no por la arquitectura.
-- Retropropagación calcula gradientes; el optimizador actualiza parámetros.
+- Retropropagación calcula gradientes. El optimizador actualiza parámetros.
 - Regularización y validación controlan generalización.
-- RNN modelan dependencia secuencial; CNN explotan estructura local.
+- RNN modelan dependencia secuencial. CNN explotan estructura local.
 - La evaluación final debe permanecer aislada del ajuste.
 
 <div class="bridge">

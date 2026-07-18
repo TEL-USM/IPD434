@@ -21,26 +21,27 @@ style: |
 
 ![w:125](images/utfsm.png)
 
-# IPD434
-## Introducción a Soft Computing
-### Complejidad, búsqueda y aproximación
+# IPD434 - Seminario de Soft Computing
+## Introducción a Soft Computing: Complejidad, búsqueda y aproximación
 
-Dr. Nicolás Gálvez Ramírez<br>
 Dr. Patricio Olivares Roncagliolo
+Dr. Nicolás Gálvez Ramírez<br>
+Universidad Técnica Federico Santa María
+
 
 ---
 
-## Conexión con el curso
+## Introducción
 
-La presentación del curso planteó tres mecanismos:
+La presentación del curso planteó tres mecanismos para construir soluciones aproximadas en problemas complejos:
 
 $$
-\text{imprecisión}\rightarrow\text{lógica difusa},\qquad
-\text{búsqueda}\rightarrow\text{evolución},\qquad
-\text{datos}\rightarrow\text{redes neuronales}
+\text{imprecisi\'on}\rightarrow\text{l\'ogica difusa},\qquad
+\text{b\'usqueda}\rightarrow\text{evoluci\'on},\qquad
+\text{predicci\'on}\rightarrow\text{redes neuronales}
 $$
 
-Esta unidad explica la motivación común: el costo de obtener una solución exacta o de construir un modelo preciso puede ser prohibitivo.
+Esta unidad muestra cuándo una solución exacta puede ser prohibitiva frente a un modelo aproximado y evaluable.
 
 <div class="bridge">
 Antes de elegir una técnica se debe entender qué hace difícil al problema.
@@ -65,16 +66,16 @@ Al finalizar esta unidad se espera poder:
 
 El término fue introducido por Lotfi A. Zadeh para agrupar técnicas tolerantes a:
 
-- imprecisión;
-- incertidumbre;
-- verdad parcial;
+- imprecisión.
+- incertidumbre.
+- verdad parcial.
 - aproximación.
 
 <div class="callout">
 La meta es obtener soluciones tratables, robustas y de bajo costo cuando una formulación exacta resulta innecesaria o impracticable.
 </div>
 
-Soft Computing complementa a los métodos exactos; no afirma que toda aproximación sea aceptable.
+Soft Computing complementa a los métodos exactos. No afirma que toda aproximación sea aceptable.
 
 La aproximación se justifica cuando reduce el costo o permite tratar la incertidumbre sin perder la calidad necesaria para la decisión.
 
@@ -87,7 +88,7 @@ La aproximación se justifica cuando reduce el costo o permite tratar la incerti
 
 **Estacionar un automóvil**
 
-Se decide con estimaciones graduales: “muy cerca”, “ángulo suficiente”, “girar poco”.
+Se decide con estimaciones graduales: "muy cerca", "ángulo suficiente", "girar poco".
 
 **Reconocer escritura**
 
@@ -113,26 +114,55 @@ La solución emerge desde información parcial, experiencia o interacción.
 
 | Familia | Representación | Mecanismo | Resultado |
 |---|---|---|---|
-| Lógica difusa | Grados de pertenencia y reglas | Inferencia | Decisión gradual |
+| Lógica difusa | Grados de pertenencia y reglas | Aplicar reglas sobre grados de pertenencia | Decisión gradual |
 | Redes neuronales | Parámetros y capas | Optimización desde datos | Función aprendida |
 | Algoritmos evolutivos | Población de candidatos | Selección y variación | Solución aproximada |
 | Sistemas híbridos | Combinación de las anteriores | Aprendizaje e inferencia | Compromiso entre capacidades |
 
 ---
 
-## Representar un problema de búsqueda
+## Formalizar antes de resolver
 
-Una formulación mínima contiene:
+Un problema descrito en lenguaje natural debe traducirse a una definición operativa antes de aplicar una técnica.
 
-- un espacio de estados $S$;
-- un estado inicial $s_0$;
-- un conjunto de estados objetivo $G\subseteq S$;
-- acciones o transformaciones $A(s)$;
-- un costo o función objetivo $f:S\rightarrow\mathbb{R}$.
+- **Estados $S$:** configuraciones posibles.
+- **Estado inicial $s_0$:** punto de partida.
+- **Acciones $A(s)$:** cambios permitidos.
+- **Término:** cuándo detenerse.
+- **Criterio $f$:** cómo evaluar una solución.
 
-La dificultad depende tanto de $|S|$ como del costo de evaluar, generar y comparar candidatos.
+La formalización no es única: cambia el tamaño de $S$, las restricciones visibles y el costo de evaluar una solución.
 
-Un estado describe una configuración posible; una solución es un estado que satisface el objetivo y las restricciones. No todos los estados tienen que ser soluciones válidas.
+---
+
+## Ejemplo: ahorcado
+
+Representar el estado como $s=(p,L,e)$, donde $p$ es el patrón visible, $L$ las letras intentadas y $e$ los errores.
+
+| Elemento | Representación |
+|---|---|
+| Estado | patrón visible $p$, letras intentadas $L$ y errores $e$ |
+| Inicial | palabra oculta, $L=\varnothing$ y $e=0$ |
+| Acciones | elegir una letra no intentada |
+| Término | se descubre la palabra o se alcanza el máximo de errores |
+| Criterio | ganar con menos errores o intentos |
+
+- Si la letra pertenece a la palabra, se revelan todas sus apariciones.
+- Si no pertenece, aumenta $e$.
+
+---
+
+## Ejemplo: ahorcado
+
+$$
+(\_\,A\,\_\,A,\{A\},0)
+\xrightarrow{\text{elegir }C}
+(C\,A\,\_\,A,\{A,C\},0)
+$$
+
+<div class="callout">
+El jugador decide con información incompleta: conoce el patrón visible y los intentos anteriores, pero no la palabra secreta.
+</div>
 
 ---
 
@@ -140,39 +170,54 @@ Un estado describe una configuración posible; una solución es un estado que sa
 
 ![w:560](images/tictactoe.png)
 
-Cada jugada transforma un estado del tablero. Aun en este caso pequeño aparecen:
+---
 
-- estados válidos e inválidos;
-- estados terminales;
-- ramas equivalentes por simetría;
+## Ejemplo: tres en línea
+
+Cada jugada transforma un estado del tablero. Aún en este caso pequeño aparecen:
+
+- estados válidos e inválidos.
+- estados terminales.
+- ramas equivalentes por simetría.
 - decisiones condicionadas por un adversario.
 
 <div class="example-space">
-Actividad: proponga una codificación de estado y una condición de término.
+Actividad: formalice el tres en línea como en el ejemplo anterior: estado del tablero y turno, acciones válidas y condiciones de término.
 </div>
 
 ---
 
 ## Crecimiento del espacio
 
-Si una solución tiene $n$ posiciones y cada una admite $k$ valores, el número bruto de configuraciones es:
+Sea $S$ el conjunto de estados posibles de un problema. Si cada estado se representa mediante $n$ componentes y cada componente puede tomar $k$ valores:
 
 $$
 |S|=k^n
 $$
 
-Para un recorrido por $n$ ciudades:
+**$|S|$:** número bruto de configuraciones.
+
+
+---
+
+### Ejemplo: tres en raya
+
+Cada estado se representa mediante las nueve casillas del tablero:
 
 $$
-|S|=(n-1)!/2
+s=(x_1,x_2,\ldots,x_9),
+\qquad
+x_i\in\{\varnothing,X,O\}
 $$
 
-considerando una ciudad inicial fija y recorridos inversos equivalentes.
+Por lo tanto:
 
-Por ejemplo, con $n=20$ existen aproximadamente $6.1\times10^{16}$ recorridos distintos bajo esas equivalencias. Enumerarlos deja de ser práctico aunque evaluar un recorrido individual sea sencillo.
+$$
+n=9,\qquad k=3,\qquad |S|=3^9=19\,683
+$$
 
 <div class="warn">
-Un computador más rápido no elimina el crecimiento exponencial o factorial; solo desplaza el tamaño de instancia alcanzable.
+Este es un conteo bruto: incluye configuraciones inválidas o que no pueden alcanzarse durante una partida real.
 </div>
 
 ---
@@ -200,9 +245,65 @@ Un computador más rápido no elimina el crecimiento exponencial o factorial; so
 </div>
 </div>
 
-Una técnica incompleta debe reportar calidad, variabilidad y presupuesto computacional.
+**Completa** describe una garantía de cobertura o solución, no necesariamente un algoritmo rápido. 
+**Incompleta** no demuestra optimalidad o inexistencia. Debe reportar calidad, variabilidad y presupuesto computacional.
 
-“Completa” describe una garantía de cobertura o solución, no necesariamente un algoritmo rápido. “Incompleta” indica que el método puede finalizar sin demostrar optimalidad o inexistencia.
+---
+
+## De la búsqueda a la complejidad
+
+La búsqueda completa o incompleta describe cómo un algoritmo explora el espacio de estados.
+
+Pero también interesa estudiar cómo aumentan los recursos necesarios cuando crece el tamaño de la entrada:
+
+$$
+n \uparrow
+\quad\Longrightarrow\quad
+\text{tiempo y memoria necesarios}
+$$
+
+Para comparar algoritmos sin depender de un computador particular, se utiliza un modelo matemático común de computación.
+
+<div class="bridge">
+La máquina de Turing permite formalizar qué problemas pueden resolverse y cuánto trabajo computacional requieren.
+</div>
+
+---
+
+## Máquina de Turing
+
+Una máquina de Turing es un **modelo matemático de computación** que representa la ejecución paso a paso de un algoritmo.
+
+A partir de una entrada, la máquina aplica un conjunto finito de reglas hasta detenerse o continuar indefinidamente.
+
+Cuando el problema se formula como una pregunta de tipo **sí/no**, la máquina puede terminar en dos tipos de resultado:
+
+- **acepta** la entrada si la respuesta es **sí**
+- **rechaza** la entrada si la respuesta es **no**
+
+---
+
+## Máquina de Turing
+
+Por ejemplo, para un tablero de tres en raya:
+
+$$
+\text{¿el jugador }X\text{ tiene una línea ganadora?}
+$$
+
+La máquina **acepta** si el tablero contiene tres $X$ en línea y **rechaza** si no ocurre.
+
+$$
+\text{entrada}
+\longrightarrow
+\text{secuencia de pasos}
+\longrightarrow
+\text{aceptar, rechazar o no detenerse}
+$$
+
+<div class="bridge">
+No representa un computador específico. Proporciona un modelo común para estudiar qué problemas pueden resolverse y cuántos pasos requiere resolverlos.
+</div>
 
 ---
 
@@ -222,85 +323,169 @@ El artículo original de Turing de 1936 está disponible en `../../Material/Turi
 
 ---
 
+## Reglas de transición
+
+Una máquina de Turing avanza entre configuracioes mediante reglas de transición.
+
+$$
+\delta:Q\times\Gamma
+\rightarrow
+\Gamma\times\{L,R\}\times Q
+$$
+
+La función $\delta$ recibe:
+
+- un estado actual $q\in Q$
+- el símbolo leído $a\in\Gamma$
+
+A partir de esa información indica:
+
+- el símbolo que se escribirá en la cinta
+- dirección $D$ seleccionada para el cabezal ($L$ o $R$)
+- el nuevo estado de la máquina
+
+$$
+\delta(q,a)=(b,D,q')
+$$
+---
+
 ## Determinismo y no determinismo
 
-Una máquina determinista tiene a lo sumo una transición aplicable por configuración.
+<div class="columns">
+<div>
 
-Una máquina no determinista admite un conjunto de transiciones:
+### Determinista
+
+Para cada combinación $(q,a)$ existe como máximo una transición posible.
 
 $$
-\delta:Q\times\Gamma\rightarrow
-\mathcal{P}\!\left(\Gamma\times\{L,R\}\times Q\right)
+\delta(q,a)=(b,D,q')
 $$
 
-Una entrada se acepta si al menos una rama alcanza un estado de aceptación.
+La ejecución sigue una única secuencia de configuraciones.
+
+$$
+s_0\rightarrow s_1\rightarrow s_2\rightarrow\cdots
+$$
+
+</div>
+<div>
+
+### No determinista
+
+Para una misma combinación $(q,a)$ pueden existir varias transiciones posibles.
+
+$$
+\delta(q,a)=
+\left\{
+(b_1,D_1,q_1),
+(b_2,D_2,q_2),
+\ldots
+\right\}
+$$
+
+Cada transición da origen a una posible secuencia de ejecución.
+
+</div>
+</div>
 
 <div class="callout">
-El no determinismo es un recurso matemático para definir complejidad; no es una metaheurística ni una máquina física que pruebe todas las ramas gratis.
+El no determinismo describe un modelo teórico en el que una misma configuración puede tener varias continuaciones posibles.
 </div>
 
 ---
 
 ## Clase P
 
-P reúne problemas de decisión resolubles por una máquina determinista en tiempo polinómico:
+La clase **P** reúne problemas de decisión (sí o no) que pueden ser resueltos por una **máquina de Turing determinista** usando una cantidad de pasos que crece de forma **polinómica** con el tamaño de la entrada.
+
+Para una entrada de tamaño $n$, el tiempo requerido está acotado por una expresión del tipo:
 
 $$
-T(n)\in O(n^k),\qquad k\text{ constante}
+n^k
 $$
 
-Interpretación práctica:
+donde $k$ es una constante.
 
-- existe un algoritmo cuyo crecimiento se considera tratable en el modelo teórico;
-- “polinómico” no garantiza que toda instancia sea barata;
-- la representación de la entrada y el tamaño $n$ deben declararse.
-
-P es una clase teórica de problemas de decisión. Que un algoritmo sea polinómico no implica automáticamente que resulte conveniente para todos los tamaños o constantes involucradas.
+<div class="callout">
+P representa problemas de decisión resolubles de manera eficiente en el modelo teórico de computación.
+</div>
 
 ---
 
 ## Clase NP
 
-NP reúne problemas de decisión cuyas instancias afirmativas poseen un certificado verificable en tiempo polinómico.
+La clase **NP** reúne problemas de decisión (sí o no) donde una respuesta afirmativa puede **verificarse** en tiempo polinómico.
 
-Equivalentemente, pueden resolverse en tiempo polinómico por una máquina de Turing no determinista.
+Para una entrada de tamaño $n$, la verificación debe estar acotada por una expresión del tipo:
 
 $$
-P\subseteq NP
+n^k
 $$
 
-<div class="warn">
-NP significa “polinómico no determinista”, no “no polinómico”. Tampoco implica que verificar cualquier respuesta negativa sea fácil.
+donde $k$ es una constante.
+
+<div class="callout">
+NP representa problemas donde una solución propuesta puede comprobarse de manera eficiente en el modelo teórico de computación.
 </div>
 
-La definición basada en certificados suele ser la más operativa: si alguien entrega una solución afirmativa, debe existir una verificación eficiente de que realmente cumple.
+Por ejemplo, puede ser difícil encontrar una ruta de viaje, pero verificar una puede ser mucho más simple.
+
+<div class="warn">
+NP significa "polinómico no determinista", no "no polinómico".
+</div>
 
 ---
 
-## NP-completo y NP-hard
+## NP-completo
 
 Un problema $A$ es **NP-completo** si:
 
-1. $A\in NP$;
+1. $A\in NP$.
 2. todo problema $B\in NP$ se reduce a $A$ en tiempo polinómico.
 
-Un problema es **NP-hard** si todo problema de NP se reduce a él, aunque no sea un problema de decisión ni pertenezca a NP.
+Papers base:
+  * Todo SAT es NP-Completo. Stephen Cook, The complexity of theorem-proving procedures. 1971. https://dl.acm.org/doi/10.1145/800157.805047
+  * 21 Problemas NP-Completos. Richard Karp, Reducibility Among Combinatorial Problems, 1972. https://cgi.di.uoa.gr/~sgk/teaching/grad/handouts/karp.pdf
 
-$$
-\text{NP-completo}=NP\cap\text{NP-hard}
-$$
+---
+
+## NP-Hard
+
+Se les llama problemas **NP-Hard** a aquellos que, si bien **no necesariamente** se encuentran en el conjunto NP, pueden llegar a ser **tan difíciles** como los problemas más complejos de NP.
+
+**Formalmente:** Un problema es **NP-Hard** si un problema **NP-Completo** puede reducir a él.
 
 ---
 
 ## Decisión y optimización en TSP
 
-![w:440](images/tsp.png)
+El **TSP** o **problema del vendedor viajero** (Travelling Salesman Problem) consiste en encontrar una ruta que visite un conjunto de ciudades exactamente una vez y vuelva al punto de inicio.
+
+Cada conexión tiene un costo, por ejemplo distancia, tiempo o dinero.
+
+![w:390](images/tsp.png)
+
+---
+
+## Decisión y optimización en TSP
+
+![w:300](images/tsp.png)
 
 - **Decisión:** ¿existe un tour de costo menor o igual que $K$?
 - **Optimización:** ¿cuál es el tour de costo mínimo?
-- **Verificación:** dado un tour, su costo se calcula en tiempo polinómico.
+- **Verificación:** dado un tour, su costo se calcula sumando sus conexiones.
 
-El problema de decisión es NP-completo; la versión de optimización es NP-hard.
+<div class="callout">
+Buscar el mejor tour puede ser difícil, pero verificar el costo de un tour propuesto es sencillo.
+</div>
+
+---
+
+## Decisión y optimización en TSP
+
+
+El problema de decisión es NP-completo. La versión de optimización es NP-hard.
 
 Esta distinción importa al comunicar resultados: una metaheurística puede mejorar recorridos, pero no demuestra que el mejor recorrido hallado sea óptimo.
 
@@ -308,12 +493,12 @@ Esta distinción importa al comunicar resultados: una metaheurística puede mejo
 
 ## ¿P = NP?
 
-![w:570](images/p_np.svg)
+![w:450](images/p_np.svg)
 
 No se conoce si $P=NP$. Si un problema NP-completo tuviera un algoritmo determinista polinómico, entonces todos los problemas de NP también lo tendrían.
 
 <div class="bridge">
-Soft Computing no resuelve P versus NP. Ofrece estrategias prácticas para buscar, aprender o decidir cuando el método exacto no es viable dentro del presupuesto disponible.
+Soft Computing no resuelve P versus NP. Ofrece estrategias prácticas para buscar cuando el método exacto no es viable.
 </div>
 
 ---
@@ -323,14 +508,14 @@ Soft Computing no resuelve P versus NP. Ofrece estrategias prácticas para busca
 1. Definir calidad de solución y restricciones.
 2. Identificar el tamaño y estructura del espacio.
 3. Explicar por qué el método exacto no es viable o necesario.
-4. Fijar un presupuesto de tiempo o evaluaciones.
+4. Fijar un "presupuesto" de tiempo o evaluaciones.
 5. Comparar con una línea base.
 6. Repetir el experimento si existe aleatoriedad.
 7. Reportar el mejor resultado y su distribución.
 
 $$
-\text{valor de la aproximación}
-=\text{calidad obtenida bajo recursos explícitos}
+\text{valor de la aproximaci\'on}
+=\text{calidad obtenida bajo recursos limitados}
 $$
 
 El presupuesto puede expresarse en tiempo, memoria o número de evaluaciones. Para comparar métodos, debe mantenerse equivalente.
@@ -342,7 +527,7 @@ El presupuesto puede expresarse en tiempo, memoria o número de evaluaciones. Pa
 - Soft Computing tolera imprecisión y aproximación para lograr tratabilidad y robustez.
 - El espacio de búsqueda y la representación condicionan la dificultad.
 - P, NP, NP-completo y NP-hard describen relaciones formales entre problemas.
-- Una heurística produce candidatos; la evidencia determina si son útiles.
+- Una heurística produce candidatos. La evidencia determina si son útiles.
 - La aproximación debe justificarse con métricas y presupuesto.
 
 <div class="bridge">
@@ -354,7 +539,7 @@ La próxima unidad reemplaza la verdad binaria por grados de pertenencia para re
 ## Referencias y material complementario
 
 - Material original de IPD434, notebook `01_IntroduccionSoftComputing.ipynb`.
-- A. M. Turing, “On Computable Numbers, with an Application to the Entscheidungsproblem”, 1936. Disponible en `../../Material/`.
-- S. A. Cook, “The Complexity of Theorem-Proving Procedures”, 1971.
-- R. M. Karp, “Reducibility Among Combinatorial Problems”, 1972.
-- L. A. Zadeh, “Fuzzy Logic, Neural Networks, and Soft Computing”, 1994.
+- A. M. Turing, "On Computable Numbers, with an Application to the Entscheidungsproblem", 1936. Disponible en `../../Material/`.
+- S. A. Cook, "The Complexity of Theorem-Proving Procedures", 1971.
+- R. M. Karp, "Reducibility Among Combinatorial Problems", 1972.
+- L. A. Zadeh, "Fuzzy Logic, Neural Networks, and Soft Computing", 1994.

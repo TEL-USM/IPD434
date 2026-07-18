@@ -21,12 +21,11 @@ style: |
 
 ![w:125](images/utfsm.png)
 
-# IPD434
-## Seminario de Soft Computing
+# IPD434 - Seminario de Soft Computing
 ### Presentación y mapa del curso
 
+Dr. Patricio Olivares Roncagliolo
 Dr. Nicolás Gálvez Ramírez<br>
-Dr. Patricio Olivares Roncagliolo<br>
 Universidad Técnica Federico Santa María
 
 ---
@@ -78,6 +77,22 @@ Al finalizar el curso se espera que cada estudiante pueda:
 
 ---
 
+## Ruta del curso
+
+El curso sigue una misma secuencia de razonamiento:
+
+1. **Delimitar el problema:** objetivo, restricciones y recursos.
+2. **Elegir una representación:** reglas, candidatos o parámetros.
+3. **Aplicar un mecanismo:** inferencia, búsqueda o aprendizaje.
+4. **Evaluar la solución:** métricas, línea base y costo.
+5. **Defender la conclusión:** supuestos, variabilidad y límites.
+
+<div class="bridge">
+Las unidades solo cambian la técnica, no la metodología.
+</div>
+
+---
+
 ## Prerrequisitos y punto de partida
 
 Curso de postgrado del Departamento de Electrónica:
@@ -103,15 +118,15 @@ $$
 \text{problema complejo}
 \longrightarrow
 \begin{cases}
-\text{razonar con imprecisión} & \text{lógica difusa}\\
-\text{buscar en espacios grandes} & \text{computación evolutiva}\\
+\text{razonar con imprecisi\'on} & \text{l\'ogica difusa}\\
+\text{buscar en espacios grandes} & \text{computaci\'on evolutiva}\\
 \text{aprender desde datos} & \text{redes neuronales}
 \end{cases}
 \longrightarrow
-\text{decisión evaluada}
+\text{decisi\'on evaluada}
 $$
 
-Las tres familias comparten una idea: sacrificar la exactitud o una estructura rígida cuando ello permite obtener una solución práctica, verificable y suficientemente buena.
+Las tres familias comparten una idea: sacrificar la exactitud o una estructura rígida cuando ello permite obtener una solución práctica, verificable y **suficientemente buena**.
 
 “Suficientemente buena” debe traducirse en un criterio medible: error máximo, calidad mínima, tiempo de respuesta o costo computacional aceptable.
 
@@ -133,20 +148,20 @@ Cada unidad cambia el mecanismo, pero mantiene el mismo ciclo: representación, 
 
 ---
 
-## Caso conductor
+## Caso ejemplo
 
 Supongamos un sistema que debe ajustar recursos de cómputo según carga, latencia y consumo energético.
 
 | Necesidad | Técnica candidata |
 |---|---|
 | Traducir «carga alta» o «latencia aceptable» | Sistema difuso |
-| Optimizar umbrales y políticas | Algoritmo evolutivo |
+| Decidir cuándo escalar o reducir recursos | Algoritmo evolutivo |
 | Predecir carga futura | Red neuronal |
 | Combinar predicción y decisión interpretable | Sistema híbrido |
 
-La selección final dependerá de datos disponibles, costo de evaluación, interpretabilidad y restricciones operacionales.
+Aquí, un umbral es el valor que activa escalar o reducir recursos; una política es la regla que elige la acción priorizando latencia, energía y costo.
 
-Este caso muestra que una solución completa puede combinar técnicas: predecir la carga, optimizar una política y expresar la decisión final mediante reglas comprensibles.
+La selección final dependerá de datos disponibles, costo de evaluación, interpretabilidad y restricciones operacionales.
 
 ---
 
@@ -190,7 +205,7 @@ El certamen evalúa tanto la ejecución del método como la capacidad de explica
 
 ## Proyecto: resolver y demostrar
 
-El proyecto aborda un problema complejo de telecomunicaciones o ciencias de la computación.
+El proyecto aborda un problema complejo de telecomunicaciones, ciencias de la computación o similares.
 
 Entregables centrales:
 
@@ -198,7 +213,7 @@ Entregables centrales:
 - Técnica seleccionada y justificación.
 - Protocolo experimental reproducible.
 - Resultados comparados con una línea base.
-- Artículo breve y presentación final.
+- Artículo breve (formato IEEE) y presentación final.
 
 <div class="warn">
 Un modelo sofisticado sin una pregunta clara, una línea base o métricas pertinentes no constituye evidencia de una mejor solución.
@@ -208,15 +223,19 @@ Un modelo sofisticado sin una pregunta clara, una línea base o métricas pertin
 
 ## Lectura y presentación de artículo
 
-La lectura conecta la técnica con investigación publicada en:
+La lectura y presentación de un paper sobre (no más de 5 años de antigüedad):
 
-- lógica difusa;
-- redes neuronales;
-- computación evolutiva;
-- algoritmos bioinspirados;
+- lógica difusa.
+- redes neuronales.
+- computación evolutiva.
+- algoritmos bioinspirados.
 - sistemas híbridos.
 
-Guion sugerido:
+---
+
+## Lectura y presentación de artículo
+
+Guión sugerido:
 
 1. Problema y brecha.
 2. Hipótesis o propuesta.
@@ -226,31 +245,13 @@ Guion sugerido:
 
 ---
 
-## Criterios mínimos de una solución experimental
-
-- **Pregunta:** qué se intenta explicar, predecir u optimizar.
-- **Representación:** variables, codificación y restricciones.
-- **Datos o función objetivo:** procedencia y supuestos.
-- **Comparación:** línea base y condiciones equivalentes.
-- **Métricas:** relacionadas con el objetivo real.
-- **Reproducibilidad:** semillas, particiones, versiones y parámetros.
-- **Análisis:** incertidumbre, costo y limitaciones.
-
-<div class="callout">
-El resultado no es solamente una cifra: debe existir una cadena argumental que permita confiar en ella.
-</div>
-
----
-
 ## Herramientas de trabajo
 
 - Presentaciones en Markdown compatible con Marp.
 - Fórmulas en LaTeX mediante MathJax.
-- Notebooks Jupyter para ejemplos ejecutables.
-- Python y las bibliotecas específicas de cada unidad.
-- Control de versiones para separar código, datos y resultados.
+- Notebooks Jupyter para ejemplos aplicados y experimentos breves de clase.
 
-Los notebooks complementan la clase con experimentos pequeños. El desarrollo conceptual y las conclusiones permanecen en la presentación o el informe.
+Los notebooks se usarán en la parte más aplicada del curso, como apoyo para explorar métodos y resultados pequeños. Para el desarrollo de proyectos, cada equipo podrá utilizar las herramientas que estime convenientes.
 
 Para reproducir un resultado se deben registrar, como mínimo, las versiones de las bibliotecas, las semillas aleatorias y los datos utilizados.
 

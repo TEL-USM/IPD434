@@ -58,7 +58,7 @@ $$
 </div>
 
 <div class="bridge">
-La lógica difusa modela gradualidad; no convierte incertidumbre aleatoria en probabilidad.
+La lógica difusa modela gradualidad. No convierte incertidumbre aleatoria en probabilidad.
 </div>
 
 ---
@@ -73,6 +73,20 @@ Al finalizar se espera poder:
 4. **Explicar** las etapas de un sistema de inferencia.
 5. **Calcular** una salida mediante agregación y desfusificación.
 6. **Implementar y validar** un controlador Mamdani con Scikit-Fuzzy.
+
+---
+
+## Ruta de la clase
+
+1. Representamos conceptos graduales con funciones de pertenencia.
+2. Combinamos esos grados mediante operaciones y relaciones.
+3. Expresamos conocimiento con variables lingüísticas y reglas.
+4. Activamos y agregamos reglas para construir una salida difusa.
+5. Desfusificamos la salida y validamos el comportamiento en todo el dominio.
+
+<div class="bridge">
+Cada etapa transforma la representación anterior. Omitir una etapa impide explicar de dónde proviene la decisión numérica final.
+</div>
 
 ---
 
@@ -104,7 +118,7 @@ Para un conjunto difuso $A$:
 
 Los cortes $\alpha$ permiten estudiar un conjunto difuso mediante familias de conjuntos clásicos.
 
-Por ejemplo, el corte $A_{0.8}$ reúne los elementos que cumplen el concepto con grado al menos $0.8$; al aumentar $\alpha$, el conjunto resultante no puede crecer.
+Por ejemplo, el corte $A_{0.8}$ reúne los elementos que cumplen el concepto con grado al menos $0.8$. Al aumentar $\alpha$, el conjunto resultante no puede crecer.
 
 ---
 
@@ -134,9 +148,9 @@ $$
 \mu(x;c,\sigma)=\exp\!\left[-\frac{(x-c)^2}{2\sigma^2}\right]
 $$
 
-La forma debe representar conocimiento o datos y luego validarse; no se elige solo por conveniencia gráfica.
+La forma debe representar conocimiento o datos y luego validarse. No se elige solo por conveniencia gráfica.
 
-Los parámetros $a,b,c,d$ controlan los puntos de inicio, pertenencia plena y término; $c$ y $\sigma$ controlan el centro y la dispersión de una gaussiana.
+Los parámetros $a,b,c,d$ controlan los puntos de inicio, pertenencia plena y término. Los parámetros $c$ y $\sigma$ controlan el centro y la dispersión de una gaussiana.
 
 </div>
 </div>
@@ -175,7 +189,7 @@ El material base incluye operaciones que modifican el énfasis de un conjunto:
 
 En términos lingüísticos, modificadores como “muy” o “más o menos” pueden modelarse mediante estas transformaciones.
 
-La concentración reduce los grados intermedios y vuelve el concepto más exigente; la dilatación los aumenta y produce una interpretación más amplia.
+La concentración reduce los grados intermedios y vuelve el concepto más exigente. La dilatación los aumenta y produce una interpretación más amplia.
 
 ---
 
@@ -191,8 +205,8 @@ donde $X$ es el nombre, $T(X)$ sus términos, $U$ el universo, $G$ una gramátic
 
 Ejemplo:
 
-- variable: temperatura;
-- universo: $U=[10,40]\ ^\circ\mathrm{C}$;
+- variable: temperatura.
+- universo: $U=[10,40]\ ^\circ\mathrm{C}$.
 - términos: baja, confortable, alta.
 
 ---
@@ -212,7 +226,7 @@ $$
 \min\left(\mu_R(x,y),\mu_S(y,z)\right)
 $$
 
-El mínimo mide compatibilidad a través de $y$; el máximo conserva el camino más compatible.
+El mínimo mide compatibilidad a través de $y$. El máximo conserva el camino más compatible.
 
 En una representación matricial, para cada par $(x,z)$ se comparan todos los valores intermedios $y$. El resultado conserva la mejor conexión disponible entre ambos extremos.
 
@@ -359,14 +373,14 @@ El método forma parte del modelo y debe declararse al comparar resultados.
 
 Entradas posibles:
 
-- error de temperatura $e=T_{real}-T_{objetivo}$;
-- cambio del error $\Delta e$;
+- error de temperatura $e=T_{real}-T_{objetivo}$.
+- cambio del error $\Delta e$.
 - humedad o punto de rocío.
 
 Salida: nivel de potencia o velocidad del ventilador.
 
 <div class="example-space">
-Si $e$ es positivo grande y $\Delta e$ es positivo, la acción debe enfriar con intensidad; si $e$ es cercano a cero, debe evitar oscilaciones.
+Si $e$ es positivo grande y $\Delta e$ es positivo, la acción debe enfriar con intensidad. Si $e$ es cercano a cero, debe evitar oscilaciones.
 </div>
 
 ---
@@ -375,7 +389,7 @@ Si $e$ es positivo grande y $\Delta e$ es positivo, la acción debe enfriar con 
 
 Los artículos complementarios en `../../Material/` presentan control difuso de:
 
-- una lavadora: carga, suciedad y sensibilidad de la ropa;
+- una lavadora: carga, suciedad y sensibilidad de la ropa.
 - aire acondicionado: temperatura, humedad, punto de rocío y voltaje.
 
 Preguntas de lectura:
@@ -389,10 +403,10 @@ Preguntas de lectura:
 
 ## Ejemplo ejecutable
 
-El notebook [`notebooks/02_control_difuso.ipynb`](notebooks/02_control_difuso.ipynb) construye un controlador Mamdani con:
+El notebook [`notebook/02_control_difuso.ipynb`](notebook/02_control_difuso.ipynb) construye un controlador Mamdani con:
 
-- `numpy` para universos discretos;
-- `scikit-fuzzy` para antecedentes, consecuentes y reglas;
+- `numpy` para universos discretos.
+- `scikit-fuzzy` para antecedentes, consecuentes y reglas.
 - `matplotlib` para inspeccionar la superficie de control.
 
 Flujo de validación:

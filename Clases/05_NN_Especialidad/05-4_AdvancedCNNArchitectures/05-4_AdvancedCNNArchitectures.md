@@ -53,6 +53,17 @@ Esta unidad compara tres respuestas:
 
 ---
 
+## Ruta de la clase
+
+1. Identificamos por qué aumentar profundidad puede dificultar la optimización.
+2. ResNet crea rutas directas para información y gradientes.
+3. Inception procesa varias escalas en paralelo.
+4. EfficientNet coordina profundidad, ancho y resolución bajo un presupuesto.
+5. Normalización, aumento de datos y regularización mejoran el entrenamiento.
+6. Transferencia y métricas de costo permiten comparar modelos en una tarea real.
+
+---
+
 ## Profundidad y campo receptivo
 
 Apilar convoluciones aumenta el campo receptivo efectivo y permite composiciones jerárquicas:
@@ -80,14 +91,14 @@ $$
 
 El producto de Jacobianos puede tender a cero o crecer sin control.
 
-Si las derivadas se desvanecen, las primeras capas reciben una señal de aprendizaje mínima; si explotan, las actualizaciones pueden volverse numéricamente inestables.
+Si las derivadas se desvanecen, las primeras capas reciben una señal de aprendizaje mínima. Si explotan, las actualizaciones pueden volverse numéricamente inestables.
 
 Mitigaciones:
 
-- inicialización adecuada;
-- activaciones apropiadas;
-- normalización;
-- conexiones residuales;
+- inicialización adecuada.
+- activaciones apropiadas.
+- normalización.
+- conexiones residuales.
 - recorte del gradiente en contextos que lo requieran.
 
 ---
@@ -123,7 +134,7 @@ $$
 Una convolución $1\times1$ puede ajustar canales y resolución mediante un paso (*stride*) mayor que uno.
 
 <div class="warn">
-La suma residual exige dimensiones compatibles; una implementación que las fuerza sin justificar el paso o la proyección cambia la arquitectura.
+La suma residual exige dimensiones compatibles. Una implementación que las fuerza sin justificar el paso o la proyección cambia la arquitectura.
 </div>
 
 ---
@@ -145,9 +156,9 @@ No elimina automáticamente el sobreajuste ni el costo: la profundidad, los dato
 
 Procesa la misma entrada con ramas paralelas:
 
-- convolución $1\times1$;
-- convolución $3\times3$;
-- convolución $5\times5$ o su factorización;
+- convolución $1\times1$.
+- convolución $3\times3$.
+- convolución $5\times5$ o su factorización.
 - agrupación (*pooling*) y proyección.
 
 Las salidas se concatenan por canales.
@@ -197,10 +208,10 @@ $\phi$ fija el nivel global de escalamiento. La restricción aproxima una duplic
 
 EfficientNet usa bloques móviles invertidos:
 
-1. expansión $1\times1$;
-2. convolución por canal (*depthwise*);
-3. atención de canales (*squeeze-and-excitation*);
-4. proyección $1\times1$;
+1. expansión $1\times1$.
+2. convolución por canal (*depthwise*).
+3. atención de canales (*squeeze-and-excitation*).
+4. proyección $1\times1$.
 5. atajo cuando las dimensiones coinciden.
 
 Una convolución separable por profundidad reduce las operaciones frente a una convolución densa convencional: primero filtra cada canal y luego combina los canales con una proyección $1\times1$.
@@ -226,9 +237,9 @@ La normalización por lotes puede estabilizar el entrenamiento, pero su comporta
 
 Las transformaciones que preservan la etiqueta amplían la distribución de entrenamiento:
 
-- reflexiones cuando la orientación no define la clase;
-- traslación, recorte o rotación limitada;
-- cambios fotométricos;
+- reflexiones cuando la orientación no define la clase.
+- traslación, recorte o rotación limitada.
+- cambios fotométricos.
 - enmascaramiento regional, como *Cutout* o *Random Erasing*.
 
 <div class="callout">
@@ -252,7 +263,7 @@ $$
 
 Mixup favorece transiciones más suaves entre clases, pero cambia la distribución de entrenamiento y debe validarse en la tarea destino.
 
-Cuando $\lambda$ está cerca de $1$, predomina la primera muestra; cerca de $0.5$, ambas contribuyen de forma semejante.
+Cuando $\lambda$ está cerca de $1$, predomina la primera muestra. Cerca de $0.5$, ambas contribuyen de forma semejante.
 
 ---
 
@@ -280,7 +291,7 @@ Flujo recomendado:
 4. Descongelar parcialmente con tasa de aprendizaje menor.
 5. Reevaluar validación y costo.
 
-ResNet requiere su `preprocess_input`; EfficientNet incluye reescalamiento en el modelo actual de Keras.
+ResNet requiere su `preprocess_input`. EfficientNet incluye reescalamiento en el modelo actual de Keras.
 
 ---
 
@@ -303,12 +314,12 @@ La arquitectura con mayor exactitud no siempre es la mejor para despliegue.
 
 [`notebooks/05_4_bloque_residual.ipynb`](notebooks/05_4_bloque_residual.ipynb):
 
-- implementa un bloque residual con API funcional de Keras;
-- entrena una CNN pequeña sobre un subconjunto de CIFAR-10;
-- compara curva de validación y parámetros;
+- implementa un bloque residual con API funcional de Keras.
+- entrena una CNN pequeña sobre un subconjunto de CIFAR-10.
+- compara curva de validación y parámetros.
 - deja fijo el presupuesto de épocas y datos.
 
-El ejemplo es didáctico; no pretende reproducir ResNet50.
+El ejemplo es didáctico. No pretende reproducir ResNet50.
 
 ---
 

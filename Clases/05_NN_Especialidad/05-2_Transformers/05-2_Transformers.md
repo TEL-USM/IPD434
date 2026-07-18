@@ -54,6 +54,17 @@ El cambio central no es solo la arquitectura: el preentrenamiento permite reutil
 
 ---
 
+## Ruta de la clase
+
+1. Convertimos texto en tokens, vectores y posiciones.
+2. La atención decide qué posiciones aportan información a cada representación.
+3. Varias cabezas y una red prealimentada forman el bloque transformer.
+4. La máscara de atención determina si el modelo codifica, genera o transforma secuencias.
+5. El preentrenamiento permite transferir representaciones a otra tarea.
+6. La evaluación comprueba dominio, trazabilidad, costo y sesgos.
+
+---
+
 ## De texto a vectores
 
 Un tokenizer transforma texto en identificadores:
@@ -89,7 +100,7 @@ $$
 
 Cada posición combina valores de otras posiciones según similitud entre queries y keys.
 
-El producto $QK^\top$ produce un puntaje para cada par de posiciones; *softmax* normaliza cada fila y genera pesos que suman $1$.
+El producto $QK^\top$ produce un puntaje para cada par de posiciones. *Softmax* normaliza cada fila y genera pesos que suman $1$.
 
 ---
 
@@ -116,9 +127,9 @@ Por ejemplo, una cabeza puede favorecer dependencias cercanas y otra relacionar 
 
 Un bloque combina:
 
-1. atención multi-cabeza;
-2. conexión residual y normalización;
-3. red prealimentada (*feed-forward*) por posición;
+1. atención multi-cabeza.
+2. conexión residual y normalización.
+3. red prealimentada (*feed-forward*) por posición.
 4. nueva conexión residual y normalización.
 
 $$
@@ -127,7 +138,7 @@ $$
 
 La atención completa tiene costo cuadrático $O(n^2)$ respecto de la longitud de secuencia.
 
-La red prealimentada aplica la misma transformación a cada posición; la atención es el componente que intercambia información entre posiciones.
+La red prealimentada aplica la misma transformación a cada posición. La atención es el componente que intercambia información entre posiciones.
 
 ---
 
@@ -141,7 +152,7 @@ La red prealimentada aplica la misma transformación a cada posición; la atenci
 
 La arquitectura debe corresponder al patrón de entrada y salida, no solo al tamaño del modelo.
 
-La atención causal impide que una posición utilice tokens futuros durante generación; un encoder bidireccional sí puede usar contexto a ambos lados.
+La atención causal impide que una posición utilice tokens futuros durante generación. Un encoder bidireccional sí puede usar contexto a ambos lados.
 
 ---
 
@@ -150,15 +161,15 @@ La atención causal impide que una posición utilice tokens futuros durante gene
 El preentrenamiento aprende parámetros $\theta_0$ desde un corpus grande. Una tarea destino ajusta:
 
 $$
-\theta^*=\arg\min_\theta L_{destino}(\theta;mathcal D_{destino})
+\theta^*=\arg\min_\theta L_{destino}(\theta;\mathcal D_{destino})
 \quad\text{inicializando en }\theta_0
 $$
 
 Opciones:
 
-- inferencia directa;
-- embeddings congelados;
-- ajuste fino parcial;
+- inferencia directa.
+- embeddings congelados.
+- ajuste fino parcial.
 - ajuste fino completo.
 
 Cuantos más parámetros se ajustan, mayor es la capacidad de adaptación, pero también aumentan el costo y el riesgo de sobreajuste o pérdida de conocimiento previo.
@@ -172,7 +183,7 @@ Cuantos más parámetros se ajustan, mayor es la capacidad de adaptación, pero 
 El principio también se aplica en visión: un modelo preentrenado aporta representaciones generales y se adapta una cabeza o parte de la red.
 
 <div class="callout">
-Transferir funciona cuando existe suficiente relación entre dominio fuente y destino; esa relación debe comprobarse con validación propia.
+Transferir funciona cuando existe suficiente relación entre dominio fuente y destino. Esa relación debe comprobarse con validación propia.
 </div>
 
 ---
@@ -199,11 +210,11 @@ El resultado incluye una etiqueta y un puntaje del modelo. Ese puntaje no debe i
 
 Siempre registrar:
 
-- identificador del modelo;
-- revisión o identificador de cambio cuando se requiere reproducibilidad estricta;
-- versión de `transformers` y backend;
-- tarea, tokenizer y parámetros;
-- hardware y precisión numérica;
+- identificador del modelo.
+- revisión o identificador de cambio cuando se requiere reproducibilidad estricta.
+- versión de `transformers` y backend.
+- tarea, tokenizer y parámetros.
+- hardware y precisión numérica.
 - fecha y licencia del artefacto.
 
 <div class="warn">
@@ -238,8 +249,8 @@ La partición debe evitar que textos casi duplicados, autores o entidades aparez
 - Las instrucciones de entrada y el truncamiento alteran la distribución efectiva.
 
 $$
-\text{desempeño fuera de dominio}\ne
-\text{desempeño en una partición aleatoria}
+\text{desempe\~no fuera de dominio}\ne
+\text{desempe\~no en una partici\'on aleatoria}
 $$
 
 Por ello conviene analizar errores por idioma, longitud, clase y subdominio, además de reportar una métrica agregada.
@@ -250,10 +261,10 @@ Por ello conviene analizar errores por idioma, longitud, clase y subdominio, ade
 
 [`notebooks/05_2_pipeline_transformers.ipynb`](notebooks/05_2_pipeline_transformers.ipynb):
 
-- carga un modelo de clasificación explícito;
-- procesa ejemplos en lote;
-- inspecciona tokenización y truncamiento;
-- contrasta frases ambiguas y cambio de dominio;
+- carga un modelo de clasificación explícito.
+- procesa ejemplos en lote.
+- inspecciona tokenización y truncamiento.
+- contrasta frases ambiguas y cambio de dominio.
 - guarda resultados tabulares, no el modelo descargado.
 
 El modelo se descarga desde Hugging Face al ejecutar por primera vez.
