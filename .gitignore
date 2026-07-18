@@ -166,3 +166,19 @@ cython_debug/
 # Jupyter store
 .jupyter_ystore.db
 .db
+
+# Material docente interno
+*_GuiaDocente.md
+
+# Configuración y trazas de asistentes IA
+.codex/
+.agents/
+.claude/
+.cursor/
+.continue/
+.gemini/
+.windsurf/
+.aider*
+AGENTS.md
+CLAUDE.md
+GEMINI.md
