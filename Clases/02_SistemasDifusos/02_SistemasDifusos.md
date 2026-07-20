@@ -16,25 +16,26 @@ style: |
   .warn { background: #fff4df; border-left: 6px solid #b7791f; border-radius: 6px; padding: 0.65em 0.9em; }
   .example-space { background: #eef8f1; border-left: 6px solid #2f855a; border-radius: 6px; padding: 0.65em 0.9em; }
   .small { font-size: 0.82em; }
+  section.compact { font-size: 23px; }
+  section.compact img { max-height: 330px; }
 ---
 <!-- _class: lead -->
 
 ![w:125](images/utfsm.png)
 
-# IPD434
-## Sistemas difusos
-### De conceptos lingüísticos a decisiones numéricas
+# IPD434 - Seminario de Soft Computing
+## Sistemas difusos: De conceptos lingüísticos a decisiones numéricas
 
-Dr. Nicolás Gálvez Ramírez<br>
-Dr. Patricio Olivares Roncagliolo
+Dr. Patricio Olivares Roncagliolo<br>
+Dr. Nicolás Gálvez Ramírez
 
 ---
 
-## Conexión con la unidad anterior
+## Introducción a Soft Computing
 
 Soft Computing admite soluciones aproximadas cuando una frontera exacta no representa bien el problema.
 
-¿A qué temperatura una habitación deja de ser “templada” y pasa a ser “caliente”?
+¿A qué temperatura una habitación deja de ser "tibia" y pasa a ser "calurosa"?
 
 <div class="columns">
 <div>
@@ -58,7 +59,7 @@ $$
 </div>
 
 <div class="bridge">
-La lógica difusa modela gradualidad. No convierte incertidumbre aleatoria en probabilidad.
+La lógica difusa modela gradualidad.
 </div>
 
 ---
@@ -68,25 +69,11 @@ La lógica difusa modela gradualidad. No convierte incertidumbre aleatoria en pr
 Al finalizar se espera poder:
 
 1. **Definir** conjuntos difusos y funciones de pertenencia.
-2. **Aplicar** operaciones, relaciones y composición max–min.
+2. **Aplicar** operaciones, relaciones y composición max-min.
 3. **Construir** variables lingüísticas y reglas difusas.
 4. **Explicar** las etapas de un sistema de inferencia.
 5. **Calcular** una salida mediante agregación y desfusificación.
 6. **Implementar y validar** un controlador Mamdani con Scikit-Fuzzy.
-
----
-
-## Ruta de la clase
-
-1. Representamos conceptos graduales con funciones de pertenencia.
-2. Combinamos esos grados mediante operaciones y relaciones.
-3. Expresamos conocimiento con variables lingüísticas y reglas.
-4. Activamos y agregamos reglas para construir una salida difusa.
-5. Desfusificamos la salida y validamos el comportamiento en todo el dominio.
-
-<div class="bridge">
-Cada etapa transforma la representación anterior. Omitir una etapa impide explicar de dónde proviene la decisión numérica final.
-</div>
 
 ---
 
@@ -100,9 +87,9 @@ $$
 
 donde $\mu_A(x)$ expresa el grado en que $x$ satisface el concepto representado por $A$.
 
-Ejemplo: para el concepto “temperatura alta”, $\mu_{alta}(28)=0.7$ significa pertenencia parcial, no una probabilidad de $70\%$.
+Ejemplo: para el concepto "temperatura alta", $\mu_{alta}(28)=0.7$ significa pertenencia parcial, no una probabilidad de $70\%$.
 
-La función de pertenencia se define para un concepto y un contexto concretos: $28\ ^\circ\mathrm{C}$ puede ser “alto” para una habitación, pero no para un horno industrial.
+La función de pertenencia se define para un concepto y un contexto concretos: $28\ ^\circ\mathrm{C}$ puede ser "alto" para una habitación, pero no para un horno industrial.
 
 ---
 
@@ -122,37 +109,293 @@ Por ejemplo, el corte $A_{0.8}$ reúne los elementos que cumplen el concepto con
 
 ---
 
-## Funciones de pertenencia frecuentes
+## Funciones de membresía
+
+Una función de membresía puede ser cualquier función del tipo:
+
+$$
+\mu_F: U \rightarrow [0,1]
+$$
+
+Definirla convierte un grupo lingüístico en un objeto evaluable. Cambiar su forma cambia qué valores pertenecen al grupo y con qué intensidad.
+
+<div class="callout">
+La función fija la semántica del grupo difuso y condiciona todas las reglas que lo usan.
+</div>
+
+---
+<!-- _class: compact -->
+
+## Función triangular
 
 <div class="columns">
 <div>
 
-**Triangular**
+$$
+    \mu(x) = \begin{cases}
+      0, & \text{if } x < a \\
+      \frac{x-a}{m-a}, & \text{if } a \leq x < m \\
+      \frac{b-x}{b-m}, & \text{if } m \leq x < b \\
+      0, & \text{if } x \geq b \\
+    \end{cases}
+$$
+
+Útil cuando el concepto tiene un valor central claro y pierde pertenencia hacia ambos lados.
+
+</div>
+<div>
+
+![w:410](images/funcion_triangular.png)
+
+</div>
+</div>
+
+---
+<!-- _class: compact -->
+
+## Función trapezoidal
+
+<div class="columns">
+<div>
 
 $$
-\mu(x;a,b,c)=\max\!\left(\min\!\left(\frac{x-a}{b-a},\frac{c-x}{c-b}\right),0\right)
+    \mu(x) = \begin{cases}
+      0, & \text{if } x < a \\
+      \frac{x-a}{m-a}, & \text{if } a \leq x < m \\
+      1, & \text{if } m \leq x < n \\
+      \frac{b-x}{b-n}, & \text{if } n \leq x < b \\
+      0, & \text{if } x \geq b \\
+    \end{cases}
 $$
 
-**Trapezoidal**
+Representa conceptos con una zona de pertenencia plena.
+
+</div>
+<div>
+
+![w:410](images/funcion_trapezoidal.png)
+
+</div>
+</div>
+
+---
+<!-- _class: compact -->
+
+## Función gaussiana
+
+<div class="columns">
+<div>
 
 $$
-\mu(x)=\max\!\left(\min\!\left(\frac{x-a}{b-a},1,\frac{d-x}{d-c}\right),0\right)
+\mu(x) = e^{-k(x-m)^2} \text{ where } k > 0
+$$
+
+El parámetro $m$ ubica el centro del grupo. El parámetro $k$ controla qué tan rápido cae la pertenencia al alejarse del centro.
+
+</div>
+<div>
+
+![w:410](images/funcion_gaussiana.png)
+
+</div>
+</div>
+
+---
+<!-- _class: compact -->
+
+## Función-S
+
+<div class="columns">
+<div>
+
+$$
+    \mu(x) = \begin{cases}
+      0, & \text{if } x < a \\
+      2 \Bigl( \frac{x-a}{b-a} \Bigr)^2, & \text{if } a \leq x < m \\
+      1 - 2 \Bigl( \frac{x-b}{b-a} \Bigr)^2, & \text{if } m \leq x < b \\
+      1, & \text{if } x \geq b \\
+    \end{cases}
+$$
+
+Modela una transición suave desde no pertenencia hacia pertenencia plena.
+
+</div>
+<div>
+
+![w:410](images/funcion_s.png)
+
+</div>
+</div>
+
+---
+
+## Transformaciones sobre grupos difusos
+
+Una transformación modifica una función ya definida. Permite expresar variantes lingüísticas de un grupo sin crear una forma desde cero.
+
+Ejemplos:
+
+- `alto` puede transformarse en `muy alto`.
+- `caro` puede transformarse en `más o menos caro`.
+- un conjunto subnormal puede normalizarse antes de compararlo.
+
+<div class="bridge">
+La transformación cambia la interpretación operacional del grupo y también la activación de las reglas.
+</div>
+
+---
+<!-- _class: compact -->
+
+## Normalización
+
+<div class="columns">
+<div>
+
+Permite convertir un conjunto difuso subnormal a un conjunto normal.
+
+**Uso:** cuando la baja altura proviene de escala o calibración y se necesita comparar grupos con pertenencia plena.
+
+**Ejemplo:** una etiqueta `caliente` alcanza máximo $0.8$ por construcción y se reescala antes de usarla en reglas.
+
+$$
+\text{NORM}(F,x) = \frac{\mu_{F}(x)}{\text{height}(F)}
 $$
 
 </div>
 <div>
 
-**Gaussiana**
-
-$$
-\mu(x;c,\sigma)=\exp\!\left[-\frac{(x-c)^2}{2\sigma^2}\right]
-$$
-
-La forma debe representar conocimiento o datos y luego validarse. No se elige solo por conveniencia gráfica.
-
-Los parámetros $a,b,c,d$ controlan los puntos de inicio, pertenencia plena y término. Los parámetros $c$ y $\sigma$ controlan el centro y la dispersión de una gaussiana.
+![w:410](images/normalizacion.png)
 
 </div>
+</div>
+
+---
+<!-- _class: compact -->
+
+## Dilatación
+
+<div class="columns">
+<div>
+
+Operación que permite dilatar o aplanar la función de membresía.
+
+**Uso:** cuando se quiere una versión más amplia y permisiva de un grupo.
+
+**Ejemplo:** `caro` puede transformarse en `más o menos caro`.
+
+$$
+\text{DIL}(F,x)=\bigl(\mu_{F}(x)\bigr)^{\frac{1}{2}}
+$$
+
+</div>
+<div>
+
+![w:410](images/dilatacion.png)
+
+</div>
+</div>
+
+---
+<!-- _class: compact -->
+
+## Concentración
+
+<div class="columns">
+<div>
+
+Operación que produce el efecto contrario a la dilatación.
+
+**Uso:** cuando se quiere una versión más estricta o exigente de un grupo.
+
+**Ejemplo:** `alto` puede transformarse en `muy alto`.
+
+$$
+\text{CON}(F,x)=\bigl(\mu_{F}(x)\bigr)^2
+$$
+
+</div>
+<div>
+
+![w:410](images/concentracion.png)
+
+</div>
+</div>
+
+---
+<!-- _class: compact -->
+
+## Intensificación de contraste
+
+<div class="columns">
+<div>
+
+Reduce los valores de membresía menores de $0.5$ y potencia valores mayores que $0.5$.
+
+**Uso:** cuando se quiere separar mejor los casos débiles y fuertes.
+
+**Ejemplo:** `riesgo alto` puede transformarse en `riesgo extremadamente alto`.
+
+$$
+    \text{INF}(F,x) = \begin{cases}
+      2\bigl(\mu_{F}(x)\bigr)^2, & \text{if } 0 \leq \mu_{F}(x) \leq 0.5 \\
+      1-2\bigl(1-\mu_{F}(x)\bigr)^2, & \text{otherwise }
+    \end{cases}
+$$
+
+</div>
+<div>
+
+![w:410](images/intensificacion_contraste.png)
+
+</div>
+</div>
+
+---
+<!-- _class: compact -->
+
+## Difusión
+
+<div class="columns">
+<div>
+
+Produce el efecto contrario a la intensificación de contraste.
+
+**Uso:** cuando se quiere suavizar una distinción demasiado marcada.
+
+**Ejemplo:** `alto` puede transformarse en `aproximadamente alto`.
+
+$$
+    \text{FUZZ}(F,x) = \begin{cases}
+      \bigl(\frac{\mu_{F}(x)}{2}\bigr)^{\frac{1}{2}}, & \text{if } 0 \leq \mu_{F}(x) \leq 0.5 \\
+      1-\bigl(\frac{1-\mu_{F}(x)}{2}\bigr)^{\frac{1}{2}}, & \text{otherwise }
+    \end{cases}
+$$
+
+</div>
+<div>
+
+![w:410](images/difusion.png)
+
+</div>
+</div>
+
+---
+
+## De grupos a reglas
+
+Hasta aquí se definieron grupos difusos y transformaciones:
+
+- `alto`, `bajo`, `cerca`, `rápido`.
+- `muy alto`, `más o menos caro`, `no bajo`.
+
+Pero una regla normalmente combina varios grupos:
+
+> Si temperatura es alta **y** humedad es baja, entonces ventilación es media.
+
+Para evaluar esa frase se necesita definir qué significan numéricamente **y**, **o** y **no** sobre grados de pertenencia.
+
+<div class="callout">
+Las operaciones básicas conectan las funciones de membresía con la activación de reglas difusas.
 </div>
 
 ---
@@ -161,35 +404,41 @@ Los parámetros $a,b,c,d$ controlan los puntos de inicio, pertenencia plena y t�
 
 Con los operadores estándar de Zadeh:
 
-$$
-\mu_{A\cup B}(x)=\max(\mu_A(x),\mu_B(x))
-$$
+| Lenguaje | Operación | Fórmula | Lectura |
+|---|---|---|---|
+| $A$ o $B$ | Unión | $\mu_{A\cup B}(x)=\max(\mu_A(x),\mu_B(x))$ | conserva el mayor grado |
+| $A$ y $B$ | Intersección | $\mu_{A\cap B}(x)=\min(\mu_A(x),\mu_B(x))$ | limita por el antecedente más débil |
+| no $A$ | Complemento | $\mu_{\bar A}(x)=1-\mu_A(x)$ | invierte el grado de pertenencia |
 
-$$
-\mu_{A\cap B}(x)=\min(\mu_A(x),\mu_B(x))
-$$
-
-$$
-\mu_{\bar A}(x)=1-\mu_A(x)
-$$
-
-Existen otras t-normas y t-conormas. Cambiar el operador cambia la semántica de “y” u “o” y, por tanto, la salida del sistema.
-
-Con mínimo y máximo, la intersección queda limitada por el antecedente menos satisfecho y la unión conserva el grado mayor.
+Cambiar el operador cambia la semántica de los conectores lingüísticos y, por tanto, la salida del sistema.
 
 ---
 
-## Transformaciones de pertenencia
+## Ejemplo: activación de una regla
 
-El material base incluye operaciones que modifican el énfasis de un conjunto:
+Supongamos una regla:
 
-- Concentración: $\mu_{CON(A)}(x)=\mu_A(x)^2$.
-- Dilatación: $\mu_{DIL(A)}(x)=\sqrt{\mu_A(x)}$.
-- Complemento: $\mu_{\bar A}(x)=1-\mu_A(x)$.
+> Si temperatura es alta **y** humedad es baja, entonces ventilación es media.
 
-En términos lingüísticos, modificadores como “muy” o “más o menos” pueden modelarse mediante estas transformaciones.
+Para una medición concreta:
 
-La concentración reduce los grados intermedios y vuelve el concepto más exigente. La dilatación los aumenta y produce una interpretación más amplia.
+$$
+\mu_{\text{alta}}(T)=0.7,\qquad \mu_{\text{baja}}(H)=0.4
+$$
+
+Con intersección estándar:
+
+$$
+\alpha=\min(0.7,0.4)=0.4
+$$
+
+La regla se activa con fuerza $0.4$ porque el antecedente conjunto queda limitado por la condición menos satisfecha.
+
+Si el antecedente fuera **alta o baja**, el operador estándar sería:
+
+$$
+\max(0.7,0.4)=0.7
+$$
 
 ---
 
@@ -203,59 +452,197 @@ $$
 
 donde $X$ es el nombre, $T(X)$ sus términos, $U$ el universo, $G$ una gramática y $M$ la semántica que asigna funciones de pertenencia.
 
-Ejemplo:
+<div class="bridge">
+Esta tupla ordena el paso desde lenguaje natural hacia cálculo: primero se nombra la variable, luego se define qué valores puede tomar, qué palabras se usarán y cómo se evalúa cada palabra.
+</div>
 
-- variable: temperatura.
-- universo: $U=[10,40]\ ^\circ\mathrm{C}$.
-- términos: baja, confortable, alta.
+---
+<!-- _class: compact -->
+
+## Ejemplo de variable lingüística
+
+Para temperatura ambiente:
+
+$$
+V_{\text{temp}}=(X,T(X),U,G,M)
+$$
+
+| Componente | En el ejemplo | Qué fija |
+|---|---|---|
+| $X$ | `temperatura` | magnitud que se observa |
+| $U$ | $[10,40]\ ^\circ\mathrm{C}$ | dominio numérico válido |
+| $T(X)$ | `baja`, `confortable`, `alta` | vocabulario base |
+| $G$ | reglas como `muy` + término, `no` + término | términos compuestos admisibles |
+| $M$ | $M(\text{alta})=\mu_{\text{alta}}(t)$ | función de pertenencia de cada término |
+
+Así, $M$ permite evaluar una medición:
+
+$$
+\mu_{\text{alta}}(28)=0.7,\qquad
+\mu_{\text{confortable}}(28)=0.4
+$$
+
+Sin $M$, las palabras solo nombran categorías. Con $M$, las palabras activan reglas con grados numéricos.
+
+---
+
+## De variables a dependencias
+
+Una variable lingüística describe una magnitud aislada.
+
+Un sistema de control necesita expresar dependencias entre magnitudes:
+
+> Si temperatura es alta, entonces ventilación debe ser alta.
+
+Esa frase no define solo dos conjuntos difusos, define qué pares entrada-salida son compatibles.
+
+<div class="callout">
+Las relaciones difusas formalizan el vínculo entre variables lingüísticas y preparan el razonamiento con reglas.
+</div>
 
 ---
 
 ## Relaciones difusas
 
-Una relación difusa $R$ sobre $X\times Y$ asigna:
+Una relación difusa $R$ sobre $X\times Y$ asigna un grado de compatibilidad a cada par:
 
 $$
 \mu_R:X\times Y\rightarrow[0,1]
 $$
 
-Para relaciones $R(X,Y)$ y $S(Y,Z)$, la composición max–min es:
+Ejemplo discreto entre términos:
+
+| $R(\text{temperatura},\text{ventilaci\'on})$ | baja | media | alta |
+|---|---:|---:|---:|
+| baja | 1.0 | 0.3 | 0.0 |
+| confortable | 0.4 | 1.0 | 0.4 |
+| alta | 0.0 | 0.5 | 1.0 |
+
+La entrada `temperatura alta` no obliga a una sola salida. Expresa mayor compatibilidad con `ventilación alta` y compatibilidad parcial con `media`.
+
+---
+## Composición max-min: observación
+
+Sensor: $28\,^{\circ}\mathrm{C}$. Fuzzificación:
+
+| Término de temperatura $x$ | baja | confortable | alta |
+|---|---:|---:|---:|
+| $\mu_{A'}(x)$ | 0.0 | 0.4 | 0.8 |
+
+Una observación puede activar varias etiquetas: `alta` domina, pero `confortable` aún aporta.
+
+---
+<!-- _class: compact -->
+
+## Composición max-min: una salida
+
+Para `ventilación alta`, cada camino combina evidencia y relación:
+
+| $x$ | $\mu_{A'}(x)$ | $\mu_R(x,\text{alta})$ | mínimo |
+|---|---:|---:|---:|
+| baja | 0.0 | 0.0 | 0.0 |
+| confortable | 0.4 | 0.4 | 0.4 |
+| alta | 0.8 | 1.0 | 0.8 |
+
+$\min$ deja a cada camino con el respaldo de su condición más débil.
+
+$\max(0.0,0.4,0.8)=0.8$ $\Rightarrow$ `ventilación alta`: **0.8**
+
+---
+<!-- _class: compact -->
+
+## Composición max-min: otras salidas
+
+Repetimos el cálculo para cada salida. Cada celda es $\min(\text{evidencia},\text{relaci\'on})$.
+
+| Salida $y$ | desde baja | desde confortable | desde alta | máximo |
+|---|---:|---:|---:|---:|
+| baja | 0.0 | 0.4 | 0.0 | **0.4** |
+| media | 0.0 | 0.4 | 0.5 | **0.5** |
+
+El máximo de cada fila entrega el grado final. Para `alta` fue **0.8**.
+
+---
+<!-- _class: compact -->
+
+## Composición max-min: resultado
+
+Salida difusa:
+
+| Ventilación $y$ | baja | media | alta |
+|---|---:|---:|---:|
+| Conclusión $\mu_{B'}(y)$ | 0.4 | 0.5 | 0.8 |
+
+$$
+\mu_{B'}(y)=\max_{x\in X}
+\min\left(\mu_{A'}(x),\mu_R(x,y)\right)
+$$
+
+La salida conserva los tres grados, aún no selecciona una ventilación única.
+Mínimo: respaldo de un camino. Máximo: mejor camino.
+
+---
+<!-- _class: compact -->
+
+## Encadenar relaciones: temperatura, ventilación y consumo
+
+Componemos $R(\text{temperatura},\text{ventilaci\'on})$ y $S(\text{ventilaci\'on},\text{consumo})$ para inferir temperatura-consumo sin definir esa relación directamente.
+
+Para `temperatura alta` y `consumo alto`, cada fila es un camino por ventilación:
+
+| Ventilación $y$ | $R(\text{alta},y)$ | $S(y,\text{alto})$ | Respaldo |
+|---|---:|---:|---:|
+| baja | 0.0 | 0.0 | 0.0 |
+| media | 0.5 | 0.4 | 0.4 |
+| alta | 1.0 | 1.0 | 1.0 |
+
+El mejor camino da $\max(0.0,0.4,1.0)=1.0$.
 
 $$
 \mu_{R\circ S}(x,z)=\max_{y\in Y}
 \min\left(\mu_R(x,y),\mu_S(y,z)\right)
 $$
 
-El mínimo mide compatibilidad a través de $y$. El máximo conserva el camino más compatible.
+$y$ representa la ventilación que conecta ambas relaciones.
+El mínimo evalúa cada camino y el máximo conserva el más fuerte.
 
-En una representación matricial, para cada par $(x,z)$ se comparan todos los valores intermedios $y$. El resultado conserva la mejor conexión disponible entre ambos extremos.
+---
+
+## Funciones con entradas difusas
+
+Las relaciones difusas expresan reglas entre variables. Otras etapas del sistema se describen mediante una función numérica:
+
+$$
+y=f(x)
+$$
+
+Ejemplos de funciones
+
+- convertir temperatura: $F=1.8C+32$.
+- calcular error: $e=r-y$.
+- combinar variables físicas antes de entrar a una regla.
+
+Si $C$ es una temperatura difusa, cada valor de $C$ se transforma en un valor de $F$. La salida también debe ser difusa: necesitamos asignar un grado de pertenencia a cada $F$.
 
 ---
 
 ## Principio de extensión
 
-El principio de extensión permite aplicar una función clásica $y=f(x)$ a una entrada difusa $A$:
+El principio de extensión lleva los grados de una entrada difusa $A$ a la salida de una función $y=f(x)$:
 
 $$
 \mu_B(y)=\sup_{x:f(x)=y}\mu_A(x)
 $$
 
-Para varias entradas y t-norma mínimo:
+Cada valor de salida conserva el mayor grado de los valores de entrada que pueden producirlo.
 
-$$
-\mu_B(y)=\sup_{f(x_1,\dots,x_n)=y}
-\min_i\mu_{A_i}(x_i)
-$$
-
-Así se extiende una transformación definida sobre valores precisos a conceptos difusos.
-
-Si varios valores de entrada producen el mismo $y$, el supremo conserva el mayor grado compatible con esa salida.
+Es útil en conversiones y cálculos numéricos. Para esta clase queda como referencia. El sistema Mamdani que construiremos se basa en reglas, agregación y desfusificación.
 
 ---
 
 ## Razonamiento difuso
 
-El modus ponens generalizado combina un hecho parcial con una regla:
+En un sistema Mamdani, el conocimiento se expresa con reglas. El modus ponens generalizado combina un hecho parcial con una regla:
 
 - Regla: si $x$ es $A$, entonces $y$ es $B$.
 - Hecho: $x$ es $A'$.
@@ -283,7 +670,7 @@ $$
 
 El consecuente se recorta o escala según $\alpha_i$, dependiendo del método de implicación.
 
-Así, una regla puede contribuir parcialmente. Varias reglas pueden activarse al mismo tiempo y aportar regiones distintas al conjunto de salida.
+Cada regla aporta un conjunto difuso de salida. Varias reglas pueden activarse al mismo tiempo y aportar regiones distintas.
 
 ---
 
@@ -300,7 +687,7 @@ Una regla aislada representa conocimiento local. La base completa debe cubrir la
 | alta | alta | alta |
 
 <div class="warn">
-Reglas contradictorias son admisibles, pero su interacción debe ser deliberada y evaluada sobre todo el dominio.
+Reglas contradictorias son admisibles, pero su interacción debe evaluarse sobre todo el dominio.
 </div>
 
 ---
@@ -354,50 +741,23 @@ $$
 
 El centroide usa toda la forma de salida. Si el denominador es cero, ninguna regla produjo una salida y el sistema debe definir explícitamente cómo responder.
 
----
-
-## Otros métodos de desfusificación
-
-| Método | Idea | Efecto práctico |
-|---|---|---|
-| Centroide | Centro de masa | Usa toda la forma agregada |
-| Bisector | Divide el área en dos | Sensible a distribución del área |
-| Mean of maxima | Promedio de máximos | Ignora zonas no máximas |
-| Centre of sums | Centro ponderado de áreas | Puede contar solapamientos varias veces |
-
-El método forma parte del modelo y debe declararse al comparar resultados.
+En esta clase usaremos centroide. Existen otros métodos, pero no son parte del desarrollo del sistema Mamdani.
 
 ---
 
-## Ejemplo conductor: aire acondicionado
+## Ejemplo conductor con aire acondicionado
 
-Entradas posibles:
+Entradas posibles
 
 - error de temperatura $e=T_{real}-T_{objetivo}$.
 - cambio del error $\Delta e$.
 - humedad o punto de rocío.
 
-Salida: nivel de potencia o velocidad del ventilador.
+- salida: nivel de potencia o velocidad del ventilador.
 
 <div class="example-space">
 Si $e$ es positivo grande y $\Delta e$ es positivo, la acción debe enfriar con intensidad. Si $e$ es cercano a cero, debe evitar oscilaciones.
 </div>
-
----
-
-## Del artículo al modelo
-
-Los artículos complementarios en `../../Material/` presentan control difuso de:
-
-- una lavadora: carga, suciedad y sensibilidad de la ropa.
-- aire acondicionado: temperatura, humedad, punto de rocío y voltaje.
-
-Preguntas de lectura:
-
-1. ¿Qué variables son medibles y cuáles son lingüísticas?
-2. ¿Cómo se obtuvieron las membresías y reglas?
-3. ¿Contra qué controlador o línea base se compara?
-4. ¿Qué evidencia respalda ahorro, estabilidad o confort?
 
 ---
 
@@ -433,16 +793,28 @@ La interpretabilidad no es automática: un sistema difuso es explicable solo si 
 
 ---
 
+## Lectura complementaria
+
+Los artículos en `../../Material/` muestran sistemas difusos para lavadora y aire acondicionado.
+
+Al revisarlos, identifique:
+
+1. Variables medibles y términos lingüísticos.
+2. Origen de las membresías y reglas.
+3. Evidencia usada para evaluar el controlador.
+
+---
+
 ## Síntesis
 
-- Los grados de pertenencia representan conceptos graduales.
-- Las operaciones y relaciones permiten combinar evidencia difusa.
-- Las reglas conectan conocimiento lingüístico con una salida.
-- Un sistema Mamdani fusifica, infiere, agrega y desfusifica.
-- La superficie completa debe validarse, no solo ejemplos aislados.
+- Variables lingüísticas y membresías representan conceptos graduales.
+- Las reglas y su base conectan conocimiento lingüístico con una salida.
+- Un sistema Mamdani fusifica, evalúa reglas, agrega y desfusifica.
+- El centroide convierte la salida agregada en una acción numérica.
+- La cobertura y la superficie completa deben validarse.
 
 <div class="bridge">
-La próxima unidad cambia reglas lingüísticas por poblaciones de candidatos: desde inferencia difusa hacia búsqueda evolutiva.
+La próxima unidad cambia reglas lingüísticas por poblaciones de candidatos. Pasamos de inferencia difusa a búsqueda evolutiva.
 </div>
 
 ---
