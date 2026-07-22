@@ -172,6 +172,7 @@ cython_debug/
 
 # Configuración y trazas de asistentes IA
 .codex/
+.vscode/
 .agents/
 .claude/
 .cursor/
