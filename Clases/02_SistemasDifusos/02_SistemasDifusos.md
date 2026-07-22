@@ -87,7 +87,7 @@ $$
 
 donde $\mu_A(x)$ expresa el grado en que $x$ satisface el concepto representado por $A$.
 
-Ejemplo: para el concepto "temperatura alta", $\mu_{alta}(28)=0.7$ significa pertenencia parcial, no una probabilidad de $70\%$.
+Ejemplo: para el concepto "temperatura alta", $\mu_{alta}(28)=0.8$ significa pertenencia parcial, no una probabilidad de $80\%$.
 
 La función de pertenencia se define para un concepto y un contexto concretos: $28\ ^\circ\mathrm{C}$ puede ser "alto" para una habitación, pero no para un horno industrial.
 
@@ -133,10 +133,10 @@ La función fija la semántica del grupo difuso y condiciona todas las reglas qu
 
 $$
     \mu(x) = \begin{cases}
-      0, & \text{if } x < a \\
-      \frac{x-a}{m-a}, & \text{if } a \leq x < m \\
-      \frac{b-x}{b-m}, & \text{if } m \leq x < b \\
-      0, & \text{if } x \geq b \\
+      0, & \text{si } x < a \\
+      \frac{x-a}{m-a}, & \text{si } a \leq x < m \\
+      \frac{b-x}{b-m}, & \text{si } m \leq x < b \\
+      0, & \text{si } x \geq b \\
     \end{cases}
 $$
 
@@ -160,11 +160,11 @@ $$
 
 $$
     \mu(x) = \begin{cases}
-      0, & \text{if } x < a \\
-      \frac{x-a}{m-a}, & \text{if } a \leq x < m \\
-      1, & \text{if } m \leq x < n \\
-      \frac{b-x}{b-n}, & \text{if } n \leq x < b \\
-      0, & \text{if } x \geq b \\
+      0, & \text{si } x < a \\
+      \frac{x-a}{m-a}, & \text{si } a \leq x < m \\
+      1, & \text{si } m \leq x < n \\
+      \frac{b-x}{b-n}, & \text{si } n \leq x < b \\
+      0, & \text{si } x \geq b \\
     \end{cases}
 $$
 
@@ -187,7 +187,7 @@ Representa conceptos con una zona de pertenencia plena.
 <div>
 
 $$
-\mu(x) = e^{-k(x-m)^2} \text{ where } k > 0
+\mu(x) = e^{-k(x-m)^2},\qquad k > 0
 $$
 
 El parámetro $m$ ubica el centro del grupo. El parámetro $k$ controla qué tan rápido cae la pertenencia al alejarse del centro.
@@ -210,14 +210,14 @@ El parámetro $m$ ubica el centro del grupo. El parámetro $k$ controla qué tan
 
 $$
     \mu(x) = \begin{cases}
-      0, & \text{if } x < a \\
-      2 \Bigl( \frac{x-a}{b-a} \Bigr)^2, & \text{if } a \leq x < m \\
-      1 - 2 \Bigl( \frac{x-b}{b-a} \Bigr)^2, & \text{if } m \leq x < b \\
-      1, & \text{if } x \geq b \\
+      0, & \text{si } x < a \\
+      2 \Bigl( \frac{x-a}{b-a} \Bigr)^2, & \text{si } a \leq x < m \\
+      1 - 2 \Bigl( \frac{x-b}{b-a} \Bigr)^2, & \text{si } m \leq x < b \\
+      1, & \text{si } x \geq b \\
     \end{cases}
 $$
 
-Modela una transición suave desde no pertenencia hacia pertenencia plena.
+Con $m=(a+b)/2$, modela una transición suave desde no pertenencia hacia pertenencia plena.
 
 </div>
 <div>
@@ -258,7 +258,7 @@ Permite convertir un conjunto difuso subnormal a un conjunto normal.
 **Ejemplo:** una etiqueta `caliente` alcanza máximo $0.8$ por construcción y se reescala antes de usarla en reglas.
 
 $$
-\text{NORM}(F,x) = \frac{\mu_{F}(x)}{\text{height}(F)}
+\text{NORM}(F,x) = \frac{\mu_{F}(x)}{h(F)}
 $$
 
 </div>
@@ -337,8 +337,8 @@ Reduce los valores de membresía menores de $0.5$ y potencia valores mayores que
 
 $$
     \text{INF}(F,x) = \begin{cases}
-      2\bigl(\mu_{F}(x)\bigr)^2, & \text{if } 0 \leq \mu_{F}(x) \leq 0.5 \\
-      1-2\bigl(1-\mu_{F}(x)\bigr)^2, & \text{otherwise }
+      2\bigl(\mu_{F}(x)\bigr)^2, & \text{si } 0 \leq \mu_{F}(x) \leq 0.5 \\
+      1-2\bigl(1-\mu_{F}(x)\bigr)^2, & \text{en otro caso}
     \end{cases}
 $$
 
@@ -366,8 +366,8 @@ Produce el efecto contrario a la intensificación de contraste.
 
 $$
     \text{FUZZ}(F,x) = \begin{cases}
-      \bigl(\frac{\mu_{F}(x)}{2}\bigr)^{\frac{1}{2}}, & \text{if } 0 \leq \mu_{F}(x) \leq 0.5 \\
-      1-\bigl(\frac{1-\mu_{F}(x)}{2}\bigr)^{\frac{1}{2}}, & \text{otherwise }
+      \bigl(\frac{\mu_{F}(x)}{2}\bigr)^{\frac{1}{2}}, & \text{si } 0 \leq \mu_{F}(x) \leq 0.5 \\
+      1-\bigl(\frac{1-\mu_{F}(x)}{2}\bigr)^{\frac{1}{2}}, & \text{en otro caso}
     \end{cases}
 $$
 
@@ -386,7 +386,7 @@ $$
 Hasta aquí se definieron grupos difusos y transformaciones:
 
 - `alto`, `bajo`, `cerca`, `rápido`.
-- `muy alto`, `más o menos caro`, `no bajo`.
+- `muy alto`, `más o menos caro`.
 
 Pero una regla normalmente combina varios grupos:
 
@@ -478,7 +478,7 @@ $$
 Así, $M$ permite evaluar una medición:
 
 $$
-\mu_{\text{alta}}(28)=0.7,\qquad
+\mu_{\text{alta}}(28)=0.8,\qquad
 \mu_{\text{confortable}}(28)=0.4
 $$
 
@@ -616,11 +616,9 @@ $$
 y=f(x)
 $$
 
-Ejemplos de funciones
+Ejemplo:
 
-- convertir temperatura: $F=1.8C+32$.
-- calcular error: $e=r-y$.
-- combinar variables físicas antes de entrar a una regla.
+- Convertir temperatura: $F=1.8C+32$.
 
 Si $C$ es una temperatura difusa, cada valor de $C$ se transforma en un valor de $F$. La salida también debe ser difusa: necesitamos asignar un grado de pertenencia a cada $F$.
 
@@ -642,7 +640,9 @@ Es útil en conversiones y cálculos numéricos. Para esta clase queda como refe
 
 ## Razonamiento difuso
 
-En un sistema Mamdani, el conocimiento se expresa con reglas. El modus ponens generalizado combina un hecho parcial con una regla:
+En este curso construiremos un sistema de inferencia tipo **Mamdani**. Cada regla tiene un consecuente difuso: al activarse, aporta una recomendación gradual que luego se combina con las demás y se desfusifica.
+
+El [modus ponens](https://en.wikipedia.org/wiki/Modus_ponens) generalizado combina un hecho parcial con una regla:
 
 - Regla: si $x$ es $A$, entonces $y$ es $B$.
 - Hecho: $x$ es $A'$.
@@ -662,29 +662,27 @@ Una regla Mamdani adopta la forma:
 
 > Si temperatura es alta **y** humedad es alta, entonces ventilación es intensa.
 
-Para entradas $x_0,y_0$, la fuerza de activación con t-norma mínimo es:
+Para entradas $x_0,y_0$, la fuerza de activación usa el operador `y` mínimo:
 
 $$
 \alpha_i=\min\left(\mu_{A_i}(x_0),\mu_{B_i}(y_0)\right)
 $$
 
-El consecuente se recorta o escala según $\alpha_i$, dependiendo del método de implicación.
+En esta presentación se usa implicación mínimo. El consecuente se recorta a la altura $\alpha_i$.
 
 Cada regla aporta un conjunto difuso de salida. Varias reglas pueden activarse al mismo tiempo y aportar regiones distintas.
 
 ---
 
-## Base de reglas
+## Base de reglas difusas
 
 Una regla aislada representa conocimiento local. La base completa debe cubrir la región operacional.
 
-| Temperatura | Humedad | Ventilación |
-|---|---|---|
-| baja | cualquiera | baja |
-| confortable | baja | baja |
-| confortable | alta | media |
-| alta | baja | media |
-| alta | alta | alta |
+- Si la temperatura es baja, entonces la ventilación es baja.
+- Si la temperatura es confortable y la humedad es baja, entonces la ventilación es baja.
+- Si la temperatura es confortable y la humedad es alta, entonces la ventilación es media.
+- Si la temperatura es alta y la humedad es baja, entonces la ventilación es media.
+- Si la temperatura es alta y la humedad es alta, entonces la ventilación es alta.
 
 <div class="warn">
 Reglas contradictorias son admisibles, pero su interacción debe evaluarse sobre todo el dominio.
@@ -692,7 +690,19 @@ Reglas contradictorias son admisibles, pero su interacción debe evaluarse sobre
 
 ---
 
+<!-- _class: compact -->
+
 ## Sistema de inferencia difuso
+
+Es un sistema que transforma entradas numéricas en una salida numérica usando **variables lingüísticas y reglas difusas**.
+
+![w:700](images/fuzzylogic_system.png)
+
+La entrada numérica se transforma en un conjunto difuso. Las reglas producen una salida difusa y la desfusificación la convierte en una acción numérica.
+
+---
+
+## Flujo del sistema Mamdani
 
 ![w:760](images/fuzzy_steps.png)
 
@@ -702,79 +712,129 @@ Reglas contradictorias son admisibles, pero su interacción debe evaluarse sobre
 4. Agregación de consecuentes.
 5. Desfusificación de la salida.
 
-La **fusificación** transforma mediciones precisas en grados de pertenencia. La **desfusificación** realiza la operación práctica inversa: obtiene una acción numérica desde el conjunto de salida agregado.
+La **fusificación** transforma mediciones precisas en grados de pertenencia. La **desfusificación** obtiene una acción numérica desde el conjunto de salida agregado.
 
 ---
+<!-- _class: compact -->
 
-## Agregación
+## 1. Fusificación: activar términos de entrada
 
-![w:720](images/aggregation_rules.png)
+Tomemos una lectura de temperatura de $28\,^\circ\mathrm{C}$ y una humedad de $70\%$, con $\mu_{\text{alta}}=0.6$ y $\mu_{\text{baja}}=0$.
 
-Si $\mu'_i(z)$ es el consecuente activado por la regla $i$, la agregación estándar usa:
+| Entrada medida | Términos activados |
+|---|---|
+| Temperatura $=28\,^\circ\mathrm{C}$ | $\mu_{\text{alta}}=0.8$, $\mu_{\text{confortable}}=0.4$ |
+| Humedad $=70\%$ | $\mu_{\text{alta}}=0.6$ |
 
-$$
-\mu_{salida}(z)=\max_i \mu'_i(z)
-$$
-
-La salida agregada conserva la contribución de todas las reglas activas antes de convertirla en un valor numérico.
-
-Usar el máximo evita sumar dos veces el solapamiento, pero hace que en cada punto solo prevalezca la regla con mayor contribución.
+Una entrada no elige una sola etiqueta. Todos sus grados pasan a la base de reglas.
 
 ---
+<!-- _class: compact -->
 
-## Desfusificación por centroide
+## 2 y 3. Activación e implicación
 
-![w:620](images/centroid.png)
-
-Para un universo continuo:
+Con las reglas de la base y el operador `y` mínimo:
 
 $$
-z^*=\frac{\int_Z z\,\mu_{salida}(z)\,dz}
-{\int_Z \mu_{salida}(z)\,dz}
+\begin{aligned}
+R_1&:\ \text{temperatura alta y humedad alta} \rightarrow \text{ventilación alta} \\
+R_2&:\ \text{temperatura confortable y humedad alta} \rightarrow \text{ventilación media}
+\end{aligned}
 $$
 
-En un universo discretizado:
+$$
+\alpha_1=\min(0.8,0.6)=0.6,\qquad
+\alpha_2=\min(0.4,0.6)=0.4
+$$
+
+La implicación recorta `ventilación alta` a $0.6$ y `ventilación media` a $0.4$.
+
+---
+<!-- _class: compact -->
+
+## 4. Agregación
+
+<div class="columns">
+<div>
+
+Del ejemplo anterior se combinan dos consecuentes recortados:
+
+$$
+\mu_{\text{salida}}(z)=
+\max\left(
+\min(0.6,\mu_{\text{alta}}(z)),
+\min(0.4,\mu_{\text{media}}(z))
+\right)
+$$
+
+En cada valor de $z$, el máximo conserva la contribución más fuerte.
+
+</div>
+<div>
+
+![w:275](images/aggregation_rules.png)
+
+</div>
+</div>
+
+La salida agregada reúne las recomendaciones de todas las reglas antes de elegir una acción.
+
+---
+<!-- _class: compact -->
+
+## 5. Desfusificación por centroide
+
+<div class="columns">
+<div>
+
+El centroide convierte el conjunto de salida en un valor del universo de ventilación. En el notebook, ese universo se discretiza:
 
 $$
 z^*=\frac{\sum_j z_j\mu_{salida}(z_j)}{\sum_j\mu_{salida}(z_j)}
 $$
 
-El centroide usa toda la forma de salida. Si el denominador es cero, ninguna regla produjo una salida y el sistema debe definir explícitamente cómo responder.
+Si $z$ representa velocidad entre $0$ y $100\%$, por ejemplo, un centroide $z^*=65$ ordena operar el ventilador al $65\%$.
 
-En esta clase usaremos centroide. Existen otros métodos, pero no son parte del desarrollo del sistema Mamdani.
+</div>
+<div>
+
+![w:275](images/centroid.png)
+
+</div>
+</div>
+
+Si el denominador es cero, ninguna regla produjo una salida y el sistema debe definir explícitamente cómo responder.
 
 ---
 
-## Ejemplo conductor con aire acondicionado
+## Ejemplo: propina en un restaurante
 
-Entradas posibles
+Una persona califica la comida y la atención entre $1$ y $7$. El sistema recomienda una propina entre $0$ y $15\%$.
 
-- error de temperatura $e=T_{real}-T_{objetivo}$.
-- cambio del error $\Delta e$.
-- humedad o punto de rocío.
-
-- salida: nivel de potencia o velocidad del ventilador.
+- `calidad`: pésima, malita, piola, de pana, basadísima.
+- `atención`: amarga, pesada, noesni, tela, joya.
+- `propina`: nada, poca, normal, extra.
 
 <div class="example-space">
-Si $e$ es positivo grande y $\Delta e$ es positivo, la acción debe enfriar con intensidad. Si $e$ es cercano a cero, debe evitar oscilaciones.
+Si la calidad es pésima y la atención es amarga, la propina es nada. Si la calidad es basadísima y la atención es joya, la propina es extra.
 </div>
 
 ---
 
-## Ejemplo ejecutable
+## Ejemplo ejecutable: propina
 
-El notebook [`notebook/02_control_difuso.ipynb`](notebook/02_control_difuso.ipynb) construye un controlador Mamdani con:
+El notebook [`notebook/02_SciKit_Fuzzy.ipynb`](notebook/02_SciKit_Fuzzy.ipynb) implementa este sistema Mamdani con `calidad`, `atención` y `propina`:
 
-- `numpy` para universos discretos.
-- `scikit-fuzzy` para antecedentes, consecuentes y reglas.
-- `matplotlib` para inspeccionar la superficie de control.
+- `numpy` para los universos discretos.
+- `scikit-fuzzy` para membresías, reglas e inferencia.
+- Un caso con calificaciones numéricas que activa reglas y entrega una propina desfusificada.
 
-Flujo de validación:
+Al ejecutarlo, identifique:
 
-1. Probar puntos nominales y extremos.
-2. Barrer el dominio de entradas.
-3. Buscar discontinuidades o regiones sin cobertura.
-4. Interpretar la superficie antes de usar el controlador.
+1. Los grados de pertenencia de cada calificación.
+2. Las reglas que se activan.
+3. El conjunto de salida agregado.
+4. La propina numérica obtenida por centroide.
 
 ---
 
@@ -821,8 +881,9 @@ La próxima unidad cambia reglas lingüísticas por poblaciones de candidatos. P
 
 ## Referencias y material complementario
 
-- Material original de IPD434: `02_SistemasDifusos.ipynb` y `02_SciKit_Fuzzy.ipynb`.
+- Material original de IPD434: `02_SistemasDifusos.ipynb`. El notebook ejecutable de esta clase es `notebook/02_SciKit_Fuzzy.ipynb`.
 - L. A. Zadeh, “Fuzzy Sets”, *Information and Control*, 1965.
 - T. J. Ross, *Fuzzy Logic with Engineering Applications*, 3.ª ed., Wiley, 2010.
+- [Modus ponens](https://en.wikipedia.org/wiki/Modus_ponens), Wikipedia.
 - N. Wulandari y A. G. Abdullah, “Design and Simulation of Washing Machine using Fuzzy Logic Controller”, 2018. Disponible en `../../Material/`.
 - S. M. Sobhy y W. M. Khedr, “Developing of Fuzzy Logic Controller for Air Condition System”, 2015. Disponible en `../../Material/`.
