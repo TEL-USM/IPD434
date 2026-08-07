@@ -25,7 +25,6 @@ style: |
 ## Introducción a Soft Computing: Complejidad, búsqueda y aproximación
 
 Dr. Patricio Olivares Roncagliolo
-Dr. Nicolás Gálvez Ramírez<br>
 Universidad Técnica Federico Santa María
 
 
@@ -64,20 +63,25 @@ Al finalizar esta unidad se espera poder:
 
 ## Soft Computing
 
-El término fue introducido por Lotfi A. Zadeh para agrupar técnicas tolerantes a:
+El término fue introducido por [Lotfi A. Zadeh](#referencia-zadeh) para agrupar técnicas tolerantes a:
 
 - imprecisión.
 - incertidumbre.
 - verdad parcial.
 - aproximación.
 
-<div class="callout">
-La meta es obtener soluciones tratables, robustas y de bajo costo cuando una formulación exacta resulta innecesaria o impracticable.
-</div>
+---
+
+## Soft Computing
 
 Soft Computing complementa a los métodos exactos. No afirma que toda aproximación sea aceptable.
 
 La aproximación se justifica cuando reduce el costo o permite tratar la incertidumbre sin perder la calidad necesaria para la decisión.
+
+<div class="callout">
+La meta es obtener soluciones tratables, robustas y de bajo costo cuando una formulación exacta resulta innecesaria o impracticable.
+</div>
+
 
 ---
 
@@ -99,14 +103,16 @@ Se clasifica aunque cada carácter difiera de una plantilla ideal.
 
 **Buscar alimento**
 
-Una colonia explora y refuerza rutas sin un controlador central.
+Una colonia de hormigas explora y refuerza rutas sin un controlador central.
+</div>
+</div>
 
 **Idea común**
 
+<div class="callout">
 La solución emerge desde información parcial, experiencia o interacción.
+</div>
 
-</div>
-</div>
 
 ---
 
@@ -121,7 +127,7 @@ La solución emerge desde información parcial, experiencia o interacción.
 
 ---
 
-## Formalizar antes de resolver
+## Formalizar el problema
 
 Un problema descrito en lenguaje natural debe traducirse a una definición operativa antes de aplicar una técnica.
 
@@ -168,12 +174,6 @@ El jugador decide con información incompleta: conoce el patrón visible y los i
 
 ## Ejemplo: tres en línea
 
-![w:560](images/tictactoe.png)
-
----
-
-## Ejemplo: tres en línea
-
 Cada jugada transforma un estado del tablero. Aún en este caso pequeño aparecen:
 
 - estados válidos e inválidos.
@@ -200,7 +200,7 @@ $$
 
 ---
 
-### Ejemplo: tres en raya
+### Ejemplo: tres en línea
 
 Cada estado se representa mediante las nueve casillas del tablero:
 
@@ -222,7 +222,13 @@ Este es un conteo bruto: incluye configuraciones inválidas o que no pueden alca
 
 ---
 
-## Búsqueda completa e incompleta
+## Ejemplo: tres en línea
+
+![w:560](images/tictactoe.png)
+
+---
+
+## Búsqueda completa e incompleta de soluciones
 
 <div class="columns">
 <div>
@@ -285,7 +291,7 @@ Cuando el problema se formula como una pregunta de tipo **sí/no**, la máquina 
 
 ## Máquina de Turing
 
-Por ejemplo, para un tablero de tres en raya:
+Por ejemplo, para un tablero de tres en línea:
 
 $$
 \text{¿el jugador }X\text{ tiene una línea ganadora?}
@@ -429,6 +435,12 @@ donde $k$ es una constante.
 NP representa problemas donde una solución propuesta puede comprobarse de manera eficiente en el modelo teórico de computación.
 </div>
 
+
+
+---
+
+## Clase NP
+
 Por ejemplo, puede ser difícil encontrar una ruta de viaje, pero verificar una puede ser mucho más simple.
 
 <div class="warn">
@@ -472,12 +484,12 @@ Cada conexión tiene un costo, por ejemplo distancia, tiempo o dinero.
 
 ![w:300](images/tsp.png)
 
-- **Decisión:** ¿existe un tour de costo menor o igual que $K$?
-- **Optimización:** ¿cuál es el tour de costo mínimo?
-- **Verificación:** dado un tour, su costo se calcula sumando sus conexiones.
+- **Decisión:** ¿existe una ruta de costo menor o igual que $K$?
+- **Optimización:** ¿cuál es la ruta de costo mínimo?
+- **Verificación:** dada una ruta, su costo se calcula sumando sus conexiones.
 
 <div class="callout">
-Buscar el mejor tour puede ser difícil, pero verificar el costo de un tour propuesto es sencillo.
+Buscar la mejor ruta puede ser difícil, pero verificar el costo de una ruta propuesta es sencillo.
 </div>
 
 ---
@@ -538,8 +550,7 @@ La próxima unidad reemplaza la verdad binaria por grados de pertenencia para re
 
 ## Referencias y material complementario
 
-- Material original de IPD434, notebook `01_IntroduccionSoftComputing.ipynb`.
 - A. M. Turing, "On Computable Numbers, with an Application to the Entscheidungsproblem", 1936. Disponible en `../../Material/`.
 - S. A. Cook, "The Complexity of Theorem-Proving Procedures", 1971.
 - R. M. Karp, "Reducibility Among Combinatorial Problems", 1972.
-- L. A. Zadeh, "Fuzzy Logic, Neural Networks, and Soft Computing", 1994.
+- <a id="referencia-zadeh"></a>L. A. Zadeh, "Fuzzy Logic, Neural Networks, and Soft Computing", 1994.

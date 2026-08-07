@@ -25,16 +25,15 @@ style: |
 ### Presentación y mapa del curso
 
 Dr. Patricio Olivares Roncagliolo
-Dr. Nicolás Gálvez Ramírez<br>
 Universidad Técnica Federico Santa María
 
 ---
 
 ## La pregunta central
 
-¿Cómo obtener una solución útil cuando el problema es demasiado grande, incierto o difícil de modelar con exactitud?
+*¿Cómo obtener una solución útil cuando el problema es demasiado grande, incierto o difícil de modelar con exactitud?*
 
-La pregunta no enfrenta métodos exactos y aproximados como alternativas excluyentes. Primero se debe establecer qué nivel de precisión exige la decisión y qué recursos están disponibles.
+La pregunta no enfrenta métodos exactos y aproximados como alternativas excluyentes.
 
 <div class="columns">
 <div>
@@ -87,10 +86,6 @@ El curso sigue una misma secuencia de razonamiento:
 4. **Evaluar la solución:** métricas, línea base y costo.
 5. **Defender la conclusión:** supuestos, variabilidad y límites.
 
-<div class="bridge">
-Las unidades solo cambian la técnica, no la metodología.
-</div>
-
 ---
 
 ## Prerrequisitos y punto de partida
@@ -128,7 +123,7 @@ $$
 
 Las tres familias comparten una idea: sacrificar la exactitud o una estructura rígida cuando ello permite obtener una solución práctica, verificable y **suficientemente buena**.
 
-“Suficientemente buena” debe traducirse en un criterio medible: error máximo, calidad mínima, tiempo de respuesta o costo computacional aceptable.
+"Suficientemente buena" debe traducirse en un criterio medible: error máximo, calidad mínima, tiempo de respuesta o costo computacional aceptable.
 
 ---
 
@@ -158,8 +153,6 @@ Supongamos un sistema que debe ajustar recursos de cómputo según carga, latenc
 | Decidir cuándo escalar o reducir recursos | Algoritmo evolutivo |
 | Predecir carga futura | Red neuronal |
 | Combinar predicción y decisión interpretable | Sistema híbrido |
-
-Aquí, un umbral es el valor que activa escalar o reducir recursos; una política es la regla que elige la acción priorizando latencia, energía y costo.
 
 La selección final dependerá de datos disponibles, costo de evaluación, interpretabilidad y restricciones operacionales.
 
@@ -223,7 +216,7 @@ Un modelo sofisticado sin una pregunta clara, una línea base o métricas pertin
 
 ## Lectura y presentación de artículo
 
-La lectura y presentación de un paper sobre (no más de 5 años de antigüedad):
+La lectura y presentación de un paper de no más de 5 años de antigüedad sobre:
 
 - lógica difusa.
 - redes neuronales.
@@ -245,34 +238,8 @@ Guión sugerido:
 
 ---
 
-## Herramientas de trabajo
-
-- Presentaciones en Markdown compatible con Marp.
-- Fórmulas en LaTeX mediante MathJax.
-- Notebooks Jupyter para ejemplos aplicados y experimentos breves de clase.
-
-Los notebooks se usarán en la parte más aplicada del curso, como apoyo para explorar métodos y resultados pequeños. Para el desarrollo de proyectos, cada equipo podrá utilizar las herramientas que estime convenientes.
-
-Para reproducir un resultado se deben registrar, como mínimo, las versiones de las bibliotecas, las semillas aleatorias y los datos utilizados.
-
----
-
-## Qué debe quedar claro hoy
-
-- Soft Computing reúne técnicas diferentes para problemas difíciles, inciertos o mal definidos.
-- El curso exige justificar la elección del método y evaluar su resultado.
-- La secuencia avanza desde el problema y su complejidad hacia tres familias de solución.
-- El proyecto integra formulación, implementación, experimento y comunicación.
-
-<div class="bridge">
-La siguiente unidad estudia el espacio de búsqueda y la complejidad computacional que motivan el uso de aproximaciones.
-</div>
-
----
-
 ## Referencias y material base
 
-- Material original de IPD434, notebook `00_Introduccion.ipynb`.
 - L. A. Zadeh, “Fuzzy Logic, Neural Networks, and Soft Computing”, *Communications of the ACM*, 1994.
 - D. E. Goldberg, *Genetic Algorithms in Search, Optimization, and Machine Learning*, Addison-Wesley, 1989.
 - I. Goodfellow, Y. Bengio y A. Courville, *Deep Learning*, MIT Press, 2016.
