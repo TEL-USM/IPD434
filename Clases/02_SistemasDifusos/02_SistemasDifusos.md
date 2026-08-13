@@ -27,7 +27,6 @@ style: |
 ## Sistemas difusos: De conceptos lingüísticos a decisiones numéricas
 
 Dr. Patricio Olivares Roncagliolo<br>
-Dr. Nicolás Gálvez Ramírez
 
 ---
 
