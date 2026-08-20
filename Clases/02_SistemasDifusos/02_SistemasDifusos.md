@@ -789,8 +789,10 @@ La salida agregada reúne las recomendaciones de todas las reglas antes de elegi
 El centroide convierte el conjunto de salida en un valor del universo de ventilación. En el notebook, ese universo se discretiza:
 
 $$
-z^*=\frac{\sum_j z_j\mu_{salida}(z_j)}{\sum_j\mu_{salida}(z_j)}
+z^*\approx\frac{\sum_j z_j\mu_{salida}(z_j)}{\sum_j\mu_{salida}(z_j)}
 $$
+
+La suma es una discretización del cálculo del centroide continuo.
 
 Si $z$ representa velocidad entre $0$ y $100\%$, por ejemplo, un centroide $z^*=65$ ordena operar el ventilador al $65\%$.
 
