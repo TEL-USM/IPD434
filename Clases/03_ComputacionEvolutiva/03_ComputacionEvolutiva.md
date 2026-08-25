@@ -3,391 +3,887 @@ marp: true
 math: mathjax
 paginate: true
 style: |
-  section { font-size: 27px; line-height: 1.35; }
+  section { font-size: 26px; line-height: 1.32; }
   section.lead { text-align: center; }
-  section.lead h1 { font-size: 2.1em; }
+  section.lead h1 { font-size: 2.05em; }
   h2, h3 { color: #12394f; }
   code { font-size: 0.84em; }
-  table { font-size: 0.77em; }
-  img { max-height: 430px; }
-  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
-  .callout { background: #eef6fb; border-left: 6px solid #2f6f9f; border-radius: 6px; padding: 0.7em 0.9em; }
-  .bridge { background: #f7f8fa; border-left: 6px solid #6b7280; border-radius: 6px; padding: 0.65em 0.9em; }
-  .warn { background: #fff4df; border-left: 6px solid #b7791f; border-radius: 6px; padding: 0.65em 0.9em; }
-  .example-space { background: #eef8f1; border-left: 6px solid #2f855a; border-radius: 6px; padding: 0.65em 0.9em; }
+  table { font-size: 0.74em; }
+  img { max-height: 410px; }
+  section p:has(> img) { text-align: center; }
+  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start; }
+  .callout { background: #eef6fb; border-left: 6px solid #2f6f9f; border-radius: 6px; padding: 0.65em 0.85em; }
+  .bridge { background: #f7f8fa; border-left: 6px solid #6b7280; border-radius: 6px; padding: 0.6em 0.85em; }
+  .warn { background: #fff4df; border-left: 6px solid #b7791f; border-radius: 6px; padding: 0.6em 0.85em; }
+  .example-space { background: #eef8f1; border-left: 6px solid #2f855a; border-radius: 6px; padding: 0.6em 0.85em; }
   .small { font-size: 0.82em; }
 ---
+
 <!-- _class: lead -->
 
 ![w:125](images/utfsm.png)
 
-# IPD434
+# IPD434 · Seminario de Soft Computing
 ## Computación evolutiva
-### Representación, variación, selección y evidencia
+### De la formulación de un problema a la evolución de soluciones
 
-Dr. Nicolás Gálvez Ramírez<br>
-Dr. Patricio Olivares Roncagliolo
-
----
-
-## Conexión con las unidades anteriores
-
-- La Unidad 1 mostró por qué algunos espacios no pueden recorrerse exhaustivamente.
-- La Unidad 2 usó conocimiento experto para inferir una decisión.
-- Esta unidad aborda problemas donde evaluar una solución es posible, pero encontrar la mejor es difícil.
-
-$$
-\text{candidato}\xrightarrow{\text{evaluaci\'on}}\text{calidad}
-\quad\text{sin conocer una f\'ormula inversa para construir el \'optimo}
-$$
+Dr. Patricio Olivares Roncagliolo<br>
+Material basado y ampliado a partir del material desarrollado por el **Prof. Nicolás Gálvez Ramírez**.
 
 ---
 
-## Objetivos de la unidad
+## Propósito de esta unidad
 
-Al finalizar se espera poder:
+En IPD434 estudiamos métodos de *soft computing* cuando una solución exacta es costosa, desconocida o innecesaria.
 
-1. **Formular** un problema de optimización o satisfacción de restricciones.
-2. **Diseñar** una representación y una función de aptitud coherentes.
-3. **Explicar** exploración, explotación y diversidad.
-4. **Aplicar** selección, recombinación, mutación y supervivencia.
-5. **Implementar** un algoritmo genético con DEAP.
-6. **Evaluar** resultados estocásticos con múltiples ejecuciones.
+En esta unidad la pregunta es:
+
+> ¿Cómo buscar buenas soluciones cuando podemos evaluarlas, pero no sabemos construir directamente la mejor?
+
+La computación evolutiva responde manteniendo y transformando una **población** de soluciones candidatas.
 
 ---
 
-## Ruta de la clase
+## Conexión con la asignatura
 
-1. Formulamos qué debe optimizarse y qué restricciones se deben respetar.
-2. Diseñamos una representación que permita producir candidatos válidos.
-3. Traducimos la calidad del problema a una función de aptitud.
-4. Alternamos selección, variación y supervivencia sin perder diversidad.
-5. Evaluamos el método mediante repeticiones y presupuestos comparables.
+<div class="columns">
+<div>
+
+**Unidad 1 · Soft Computing**
+
+Reconocimos problemas con incertidumbre, grandes espacios de decisión y soluciones aproximadas.
+
+**Unidad 2 · Sistemas difusos**
+
+Incorporamos conocimiento experto para convertir entradas en decisiones interpretables.
+
+</div>
+<div>
+
+**Esta unidad · Computación evolutiva**
+
+Buscamos configuraciones de decisiones que optimicen una medida de calidad.
+
+**Unidad posterior · Redes neuronales**
+
+Aprenderemos parámetros desde datos, usualmente mediante optimización basada en gradiente.
+
+</div>
+</div>
 
 <div class="bridge">
-Un algoritmo evolutivo no comienza con los operadores. Comienza con una formulación que define qué significa mejorar.
+Aquí no aprendemos una regla ni una función de predicción: diseñamos una búsqueda para hallar buenas configuraciones.
 </div>
 
 ---
 
-## Optimización como caja negra
+## Resultados de aprendizaje
 
-![w:680](images/blackbox.png)
+Al finalizar, se espera poder:
 
-Buscamos:
-
-$$
-x^*=\arg\min_{x\in\Omega}f(x)
-$$
-
-cuando $f$ puede ser no diferenciable, ruidosa, costosa o conocida solo mediante simulación.
-
-La metaheurística decide qué candidatos evaluar bajo un presupuesto finito.
-
-La expresión “caja negra” no significa que el problema carezca de estructura: indica que el algoritmo obtiene información principalmente al consultar $f(x)$, sin disponer de una solución analítica directa.
+1. Formular un problema como optimización, satisfacción de restricciones o ambos.
+2. Elegir una representación coherente con el dominio y las restricciones.
+3. Explicar el equilibrio entre exploración, explotación y diversidad.
+4. Diseñar selección, recombinación, mutación y supervivencia.
+5. Implementar y analizar un algoritmo evolutivo para un problema combinatorio.
+6. Evaluar un método estocástico con presupuestos y repeticiones comparables.
 
 ---
 
-## Tres formulaciones
+## Ruta conceptual
 
-| Tipo | Pregunta | Resultado |
+### Problema → espacio de búsqueda → metaheurística → población → evidencia
+
+Cada etapa restringe la siguiente: una mala formulación o representación no se arregla agregando más generaciones al algoritmo.
+
+---
+
+## Resolver problemas como una caja negra
+
+![w:610](images/blackbox.png)
+
+Un sistema puede verse como una relación entre **entrada**, **modelo** y **salida**. Según cuál de estos elementos conocemos y cuál deseamos encontrar, cambia el tipo de problema.
+
+---
+
+## Problemas de optimización
+
+Conocemos el modelo y la forma de evaluar su salida. La incógnita es la **entrada** que produce el mejor resultado.
+
+![w:430](images/optimizacion.png)
+
+En IPD434 podemos pensar en la planificación académica:
+
+- **Modelo:** asignación de cursos a profesores, salas y bloques.
+- **Entrada buscada:** una configuración particular de esas asignaciones.
+- **Salida evaluada:** cantidad de topes, incumplimientos o costos.
+- **Objetivo:** encontrar la configuración con el menor costo posible.
+
+---
+
+## Problemas de modelado y simulación
+
+| Problema | Información conocida | Incógnita | Ejemplo |
+|---|---|---|---|
+| **Modelado** | Entradas y salidas observadas | Un modelo que explique los datos y generalice | Clasificador de imágenes |
+| **Simulación** | Una entrada y un modelo | La salida producida por el modelo | Pronóstico meteorológico |
+
+![w:390](images/modelado.png) ![w:390](images/simulacion.png)
+
+La distinción importa porque la computación evolutiva puede buscar directamente una solución o puede ajustar los parámetros de un modelo.
+
+---
+
+## Por qué la optimización aparece en toda la asignatura
+
+Muchos problemas de modelado también se pueden reescribir como optimización:
+
+$$
+\theta^*=\arg\min_{\theta}\ \mathcal{L}(\text{datos},\,\text{modelo}_{\theta})
+$$
+
+- En una red neuronal, $\theta$ son pesos y $\mathcal{L}$ puede ser el error de predicción.
+- En un sistema difuso, $\theta$ puede representar parámetros de membresía o reglas.
+- En esta unidad, $\theta$ será una solución candidata, como un horario, una ruta o una configuración.
+
+<div class="callout">
+La computación evolutiva es especialmente útil cuando la función se puede evaluar, pero no es fácil derivarla, es discontinua, ruidosa o proviene de una simulación.
+</div>
+
+---
+
+## Optimización combinatoria
+
+> Busca el mejor objeto dentro de un conjunto finito de objetos.
+
+El conjunto puede ser finito y aun así ser imposible de recorrer exhaustivamente. Por ejemplo, ordenar $n$ actividades tiene $n!$ posibilidades.
+
+$$
+x^*=\arg\min_{x\in\Omega} f(x)
+$$
+
+- $\Omega$: soluciones admisibles o espacio de búsqueda.
+- $x$: una configuración candidata.
+- $f(x)$: función objetivo o medida de calidad.
+
+La metaheurística administra un presupuesto limitado de evaluaciones de $f$.
+
+---
+
+## Un problema de búsqueda tiene tres tareas
+
+| Tarea | Pregunta que se responde | Ejemplo: horario académico |
 |---|---|---|
-| FOP | Optimizar $f(x)$ sin restricciones explícitas | Mejor valor encontrado |
-| CSP | Satisfacer $g_i(x)$ | Solución factible |
-| CSOP | Optimizar $f(x)$ sujeto a $g_i(x)$ | Mejor solución factible |
+| **Encontrar** | ¿Qué candidatos puedo construir? | Asignaciones de cursos, salas y bloques |
+| **Evaluar** | ¿Qué tan buena es una candidatura? | Topes, capacidad, preferencias, uso de salas |
+| **Aceptar** | ¿Es factible y debe conservarse? | Respeta restricciones y compite con otros |
 
-Una penalización transforma restricciones en presión de búsqueda, pero su escala puede ocultar el objetivo principal.
-
-FOP, CSP y CSOP corresponden, respectivamente, a optimización libre, satisfacción de restricciones y optimización con restricciones. Antes de elegir el algoritmo se debe decidir cuál de estas preguntas se desea responder.
+<div class="bridge">
+Antes de hablar de algoritmos, debemos hacer explícitos el espacio, la evaluación y las restricciones. Eso hace que el diseño sea discutible y reproducible.
+</div>
 
 ---
 
-## N reinas: representación
+## Las siglas distinguen objetivo y restricciones
 
-![w:430](images/nqueens.png)
+![w:350](images/cop.png)
 
-Una permutación $x=(x_1,\dots,x_n)$ puede indicar la fila de la reina en cada columna.
+| Sigla | Nombre completo | Qué se busca |
+|---|---|---|
+| **FOP** | Problema de Optimización Libre, *Free Optimisation Problem* | Optimizar una función sin restricciones explícitas |
+| **CSP** | Problema de Satisfacción de Restricciones, *Constraint Satisfaction Problem* | Encontrar una solución que cumpla todas las restricciones |
+| **CSOP / COP** | Problema de Optimización y Satisfacción de Restricciones, *Constraint Satisfaction and Optimisation Problem*. También se llama Problema de Optimización Restringido, *Constrained Optimisation Problem* | Optimizar entre las soluciones que cumplen las restricciones |
 
-- No hay conflictos por columna.
-- La permutación evita conflictos por fila.
-- Se deben minimizar conflictos diagonales.
+---
+
+## Ejemplo conductor: N reinas
+
+> Ubicar $n$ reinas en un tablero $n\times n$ sin que dos se ataquen.
+
+![w:310](images/nqueens.png)
+
+Dos reinas entran en conflicto si comparten fila, columna o diagonal. El ejemplo es pequeño, visual y permite separar con cuidado **objetivo**, **restricciones** y **representación** antes de implementar.
+
+---
+
+## N reinas como FOP, CSP y CSOP
+
+| Formulación | Qué se define | Cuándo se resuelve |
+|---|---|---|
+| **FOP** | Una evaluación, como el número de conflictos | Al encontrar la configuración con el mejor valor |
+| **CSP** | Predicados de factibilidad | Al encontrar una configuración que cumple todos los predicados |
+| **CSOP** | Restricciones y una evaluación | Al obtener la mejor configuración entre las que son factibles |
+
+Por ejemplo, una formulación CSOP puede exigir una reina por fila y columna, y minimizar los conflictos diagonales:
+
+$$
+\min D(s)\quad\text{sujeto a una reina por fila y columna}
+$$
+
+Esta formulación también aparece en aplicaciones reales, donde algunas condiciones son obligatorias y otras expresan preferencias.
+
+---
+
+## La representación ya es parte de la solución
+
+Representar el tablero completo permite demasiadas configuraciones inútiles. Si imponemos una reina por columna, podemos usar un vector:
+
+$$
+x=(x_1,\ldots,x_n),\qquad x_i=\text{fila de la reina en la columna }i
+$$
+
+Una primera versión exige que no se repitan filas. Una versión aún mejor restringe directamente el espacio a **permutaciones** de $\{1,\ldots,n\}$.
+
+<div class="example-space">
+Para seis reinas, el vector x = [5, 3, 1, 6, 4, 2] es una permutación. Esto garantiza una reina por fila y columna. Solo falta evaluar las diagonales.
+</div>
+
+---
+
+## Reducir el espacio sin perder soluciones relevantes
+
+Con una permutación, el conflicto diagonal queda dado por:
 
 $$
 C(x)=\sum_{i<j}\mathbf{1}\{|x_i-x_j|=|i-j|\}
 $$
 
-La función indicadora vale $1$ cuando dos reinas comparten una diagonal. Por tanto, $C(x)=0$ identifica una solución válida.
-
----
-
-## Representación y operadores deben coincidir
-
-Una codificación útil:
-
-- representa toda solución relevante.
-- evita o repara soluciones inválidas.
-- admite variaciones pequeñas con significado.
-- permite evaluar con costo razonable.
+- La representación elimina conflictos de fila y columna **por construcción**.
+- $C(x)$ cuenta pares de reinas que comparten diagonal.
+- $C(x)=0$ indica una solución al CSP de N reinas.
 
 <div class="warn">
-Un cruzamiento de un punto aplicado sin cuidado a permutaciones produce valores repetidos y soluciones inválidas.
+La representación no es un detalle de programación: determina el tamaño del espacio, el costo de evaluar y qué operadores producen soluciones válidas.
 </div>
 
 ---
 
-## Búsqueda local y poblacional
+## Paradigmas de búsqueda
 
 <div class="columns">
 <div>
 
-**Búsqueda local**
+### Aproximación sistemática
 
-- Mantiene uno o pocos candidatos.
-- Explora un vecindario $N(x)$.
-- Puede converger rápido a un óptimo local.
+- Recorre el espacio siguiendo una estrategia exhaustiva.
+- Puede garantizar óptimo o demostrar que no existe solución.
+- Su costo suele crecer de forma prohibitiva.
 
 </div>
 <div>
 
-**Búsqueda poblacional**
+### Búsqueda local
 
-- Mantiene candidatos diversos.
-- Comparte información mediante recombinación.
-- Requiere controlar costo y diversidad.
+- Examina una parte del espacio desde uno o pocos candidatos.
+- Puede ser rápida y útil.
+- No garantiza óptimo, factibilidad ni inexistencia de solución.
 
 </div>
 </div>
+
+En IPD434 nos interesan métodos aproximados: hacen explícito el intercambio entre calidad, costo y tiempo de cómputo.
+
+---
+
+## Construir o perturbar
+
+| Enfoque | Idea | Ejemplo de horario |
+|---|---|---|
+| **Constructivo** | Crear una solución desde un estado vacío | Asignar cursos uno a uno |
+| **Perturbativo** | Modificar una solución existente | Cambiar una sala o bloque |
+
+La mayoría de las metaheurísticas usa ambos enfoques: necesita construir soluciones iniciales y luego producir variaciones para buscar mejoras.
+
+---
+
+## Heurísticas: reglas que aprovechan estructura
+
+Una heurística es una regla práctica que orienta una decisión con información del problema.
+
+Ejemplo de estrategia voraz: al construir un horario, asignar primero el curso con menor cantidad de bloques compatibles.
+
+| Ventaja | Límite |
+|---|---|
+| Puede obtener una solución razonable muy rápido. | Una decisión localmente buena puede bloquear una solución global mejor. |
+
+<div class="bridge">
+Una heurística puede generar una buena población inicial. También puede complementar el trabajo de una metaheurística.
+</div>
+
+---
+
+## Actividad breve: diseñar una heurística para 2048
+
+![w:430](images/2048.png)
+
+Antes de proponer una regla, debemos precisar el objetivo. Puede ser obtener la ficha de mayor valor, mantener casillas libres o prolongar la partida.
+
+Una heurística posible es conservar las fichas de mayor valor en una esquina y evitar movimientos que cierren el tablero.
+
+La regla usa conocimiento del juego y permite decidir con rapidez. Sin embargo, una buena decisión inmediata no garantiza el mejor resultado al final de la partida.
+
+---
+
+## Metaheurísticas: estrategias de búsqueda reutilizables
+
+> Proceso automatizado para encontrar una buena solución en un espacio grande, construyéndola o mejorándola, sin garantía de óptimo global.
+
+No codifican reglas específicas de un único dominio. En cambio, establecen cómo generar, evaluar, aceptar y diversificar candidatos.
+
+| Heurística | Metaheurística |
+|---|---|
+| Decide con conocimiento particular del problema. | Define una estrategia de búsqueda aplicable a distintas formulaciones. |
+| Ej.: priorizar asignaturas con mayor demanda. | Ej.: búsqueda local, recocido simulado o evolución. |
+
+---
+
+## Lenguaje mínimo de búsqueda local
+
+- **Candidato:** solución que puede evaluarse.
+- **Movimiento o perturbación:** cambio aplicado a un candidato.
+- **Vecindario $N(x)$:** conjunto de candidatos alcanzables con un movimiento.
+- **Criterio de selección:** decide qué vecino pasa a ser el siguiente candidato.
+- **Reinicio:** introduce una nueva región cuando se detecta estancamiento.
+- **Criterio de término:** limita evaluaciones, iteraciones, tiempo o ausencia de mejora.
+
+Este vocabulario reaparecerá en los algoritmos evolutivos. La diferencia es que allí se trabaja con una **población** y no con un único candidato.
 
 ---
 
 ## Exploración y explotación
 
-![w:660](images/convergence-ea.png)
+![w:610](images/convergence-ea.png)
 
-- **Exploración:** visitar regiones nuevas del espacio.
-- **Explotación:** refinar regiones prometedoras.
+- **Explotar (intensificar):** refinar regiones que ya parecen prometedoras.
+- **Explorar (diversificar):** visitar regiones nuevas del espacio de búsqueda.
 
-Demasiada explotación causa convergencia prematura. Demasiada exploración impide consolidar mejoras.
-
-La diversidad de la población permite explorar, mientras que la selección de candidatos de alta calidad dirige la explotación. Los operadores y sus probabilidades controlan ese equilibrio.
+Explotar demasiado lleva a convergencia prematura en un óptimo local. Explorar demasiado impide consolidar mejoras. El equilibrio depende del problema, la representación y el presupuesto.
 
 ---
 
-## Marco general de un algoritmo evolutivo
+## Metaheurísticas clásicas
 
-![w:780](images/ea-workflow.png)
+| Método | Mecanismo para evitar o manejar óptimos locales |
+|---|---|
+| Ascenso de colina | Acepta mejoras en el vecindario. Puede detenerse en un óptimo local. |
+| Búsqueda local iterada | Perturba la solución y vuelve a ejecutar una búsqueda local. |
+| Búsqueda tabú | Usa memoria para evitar movimientos o soluciones visitadas recientemente. |
+| Recocido simulado | Acepta a veces una solución peor para escapar de un óptimo local. |
+| GRASP | Construye una solución voraz con decisiones aleatorias y luego la mejora localmente. |
 
-$$
-P_t\xrightarrow{\text{selecci\'on}}P'_t
-\xrightarrow{\text{variaci\'on}}O_t
-\xrightarrow{\text{evaluaci\'on y supervivencia}}P_{t+1}
-$$
-
-El algoritmo termina por presupuesto, convergencia, calidad objetivo o ausencia de mejora.
-
-Cada flecha representa una decisión de diseño. Cambiar selección, variación o reemplazo puede producir un comportamiento distinto aunque se conserve el mismo nombre general del algoritmo.
+<div class="callout">
+No buscamos memorizar algoritmos aislados: buscamos reconocer cómo cada uno administra exploración, explotación y presupuesto.
+</div>
 
 ---
 
-## Aptitud
+## Optimización con varios objetivos
 
-La aptitud traduce el objetivo del problema a presión de selección.
+En planificación académica, minimizar topes puede entrar en conflicto con minimizar salas o maximizar preferencias. Una suma ponderada los combina:
 
-Para minimizar conflictos:
+$$
+f(x)=w_1 f_1(x)+w_2 f_2(x)+\cdots+w_m f_m(x)
+$$
+
+Los pesos incorporan una preferencia que debe justificarse. La optimización con varios objetivos mantiene el conflicto explícito y busca un conjunto de soluciones de compromiso.
+
+---
+
+## Dominancia y frente de Pareto
+
+Para minimización, $x$ domina a $y$ si:
+
+$$
+f_i(x)\le f_i(y)\ \forall i
+\qquad\land\qquad
+\exists j:\ f_j(x)<f_j(y)
+$$
+
+![w:430](images/multi-objective.png)
+
+Las soluciones no dominadas forman una aproximación al frente de Pareto. El algoritmo puede ofrecer alternativas. La elección final depende de las preferencias del contexto de aplicación.
+
+---
+
+## Parámetros: definirlos antes o durante la búsqueda
+
+![w:500](images/parameterconfig.png)
+
+- **Ajuste previo:** los valores se fijan antes de ejecutar, mediante pruebas o conocimiento previo.
+- **Control durante la ejecución:** los valores cambian mientras el algoritmo trabaja.
+  - *Determinista:* sigue una regla programada.
+  - *Adaptativo:* responde al desempeño observado.
+  - *Autoadaptativo:* los parámetros evolucionan junto con las soluciones.
+
+Esta distinción será importante al discutir mutación, tamaño de población y presión de selección.
+
+---
+
+## La transición clave: ¿por qué una población?
+
+Una búsqueda local ve principalmente el vecindario de un candidato. Una población permite mantener varias hipótesis de solución al mismo tiempo.
+
+| Enfoque | Evolución de la búsqueda |
+|---|---|
+| Búsqueda local | Un candidato → una trayectoria |
+| Búsqueda poblacional | Una población → varias trayectorias |
+
+<div class="bridge">
+La computación evolutiva usa diversidad poblacional como memoria de regiones distintas y la selección como mecanismo para concentrar recursos en las más prometedoras.
+</div>
+
+---
+
+## Idea central
+
+> Las técnicas evolutivas son metaheurísticas inspiradas en la evolución natural. Transforman una población de soluciones mediante selección, variación y supervivencia.
+
+La evolución natural aporta la idea general. Sin embargo, la evaluación sigue siendo una decisión de ingeniería. La **aptitud** define qué significa que una solución esté bien adaptada al problema.
+
+| Biología | Optimización |
+|---|---|
+| Individuo | Solución candidata |
+| Ambiente | Función de evaluación y restricciones |
+| Reproducción | Generación de descendencia |
+| Adaptación | Mejor desempeño según el objetivo |
+
+---
+
+## Ciclo general de un algoritmo evolutivo
+
+![w:560](images/ea-workflow.png)
+
+$$
+P_t\longrightarrow P'_t\longrightarrow O_t\longrightarrow P_{t+1}
+$$
+
+Selección de padres → variación → evaluación y supervivencia
+
+Cada flecha representa una decisión. Cambiar la representación, los operadores o el reemplazo cambia el comportamiento del algoritmo.
+
+---
+
+## Pseudocódigo: el orden importa
+
+```text
+P ← inicializar población
+evaluar P
+mientras no se cumpla el criterio de término:
+    padres ← seleccionar(P)
+    hijos ← variar(padres)          # recombinación y/o mutación
+    evaluar hijos
+    P ← seleccionar_supervivientes(P, hijos)
+retornar mejor solución observada
+```
+
+La calidad que vemos al final depende de **toda** esta cadena. Por eso, “usar un algoritmo genético” no es una especificación suficiente para reproducir un resultado.
+
+---
+
+## Genotipo, fenotipo y representación
+
+<div class="columns">
+<div>
+
+### Fenotipo
+
+La solución interpretada en el dominio: tablero, horario, ruta o asignación de recursos.
+
+### Genotipo
+
+La codificación manipulada por el algoritmo: bits, vector real, permutación o árbol.
+
+</div>
+<div>
+
+![w:400](images/phenotype.png)
+
+**Codificar** lleva del fenotipo al genotipo. **Decodificar** permite interpretar un genotipo en el problema real.
+
+</div>
+</div>
+
+---
+
+## Componentes de un individuo
+
+Para el vector de seis reinas $X=[5,3,1,6,4,2]$:
+
+- **Individuo o cromosoma:** el vector completo $X$.
+- **Gen:** una posición, por ejemplo $X[0]$, asociada a la primera columna.
+- **Alelo:** su valor particular, aquí $5$, que indica la fila de esa reina.
+
+<div class="callout">
+Estos nombres ayudan a describir los operadores. Cada cambio debe tener una interpretación útil y debe preservar o reparar las restricciones necesarias.
+</div>
+
+---
+
+## Una representación útil conecta con sus operadores
+
+Una codificación debería:
+
+- cubrir todas las soluciones relevantes.
+- evitar, reparar o penalizar candidatos inválidos.
+- admitir variaciones pequeñas con significado.
+- permitir una evaluación eficiente.
+- evitar redundancia innecesaria.
+
+<div class="warn">
+Un cruzamiento de un punto sobre dos permutaciones puede repetir filas y eliminar otras. Para N reinas se requieren operadores de permutación o una estrategia explícita de reparación.
+</div>
+
+---
+
+## Aptitud: medir la calidad de cada individuo
+
+La función de **aptitud** o *fitness* permite comparar individuos. Para N reinas podemos minimizar directamente los conflictos diagonales:
 
 $$
 f(x)=C(x)
 $$
 
-o, si el operador exige maximizar:
+Si una implementación requiere maximizar, una transformación posible es:
 
 $$
 F(x)=\frac{1}{1+C(x)}
 $$
 
-La transformación debe preservar el orden relevante y evitar escalas que hagan casi indistinguibles a los candidatos.
-
-En DEAP, el signo del peso de la aptitud indica minimización o maximización. Esto evita transformar artificialmente el objetivo solo para adecuarlo a la biblioteca.
+La transformación debe preservar el orden relevante y no exagerar diferencias numéricas. En DEAP, el signo de los pesos permite declarar minimización o maximización sin cambiar artificialmente el objetivo.
 
 ---
 
-## Selección de padres
+## Población y diversidad
 
-| Método | Presión | Riesgo principal |
-|---|---|---|
-| Aleatoria | Nula | No explota calidad |
-| Ruleta | Depende de escala | Dominio prematuro |
-| Ordenamiento | Controlada | Pierde magnitud relativa |
-| Torneo | Ajustable con tamaño $k$ | Baja diversidad con $k$ grande |
+Una población es un conjunto de candidatos en el que puede haber elementos repetidos. Su tamaño suele fijarse, pero una población grande no garantiza diversidad por sí sola.
 
-En un torneo de tamaño $k$, aumentar $k$ eleva la probabilidad de seleccionar individuos de alta aptitud.
+| Dónde medir diversidad | Pregunta |
+|---|---|
+| Genotipo | ¿Los cromosomas son distintos? |
+| Fenotipo | ¿Representan soluciones distintas? |
+| Aptitud | ¿Obtienen calidades distintas? |
 
-La selección de padres no elimina individuos por sí sola: determina quién tendrá oportunidades de producir descendencia.
-
----
-
-## Recombinación
-
-![w:620](images/recombination.png)
-
-Combina información de dos o más padres. En permutaciones se prefieren operadores que preservan la validez, como:
-
-- partially mapped crossover (PMX).
-- ordered crossover (OX).
-- cycle crossover (CX).
-
-La recombinación es útil cuando los bloques heredados conservan valor al combinarse.
-
-En N reinas, OX conserva una subsecuencia de un padre y completa las posiciones restantes respetando el orden relativo del otro, sin repetir filas.
+Varios cromosomas diferentes pueden representar el mismo fenotipo. Por eso, la medida de diversidad debe corresponder al problema.
 
 ---
 
-## Mutación
+## Diversidad: lo que conviene monitorear
 
-![w:620](images/mutation.png)
-
-La mutación introduce variación y recupera alelos perdidos.
-
-Ejemplos:
-
-- bit flip para cadenas binarias.
-- ruido gaussiano para vectores reales.
-- intercambio, inserción o inversión para permutaciones.
-
-Una tasa excesiva aproxima la búsqueda a muestreo aleatorio. Una tasa muy baja puede congelar la población.
-
-Conviene distinguir la probabilidad de mutar un individuo de la probabilidad de modificar cada gen dentro de ese individuo.
-
----
-
-## Supervivencia y elitismo
-
-El reemplazo puede ser:
-
-- **generacional:** la descendencia sustituye a la población.
-- **estacionario:** se reemplazan pocos individuos.
-- **elitista:** se preservan los mejores.
-
-![w:560](images/survivalrank.png)
-
-El elitismo protege el mejor valor hallado, pero en exceso reduce la diversidad.
-
-La selección de supervivientes responde una pregunta diferente de la selección de padres: decide qué individuos estarán disponibles en la generación siguiente.
-
----
-
-## Diversidad
-
-La diversidad puede medirse sobre genotipo, fenotipo u objetivo.
-
-Para una población binaria, una medida por locus es la entropía:
+Para una población binaria, la entropía en la posición $j$ puede expresarse como:
 
 $$
 H_j=-p_j\log p_j-(1-p_j)\log(1-p_j)
 $$
 
-Monitorear solo la mejor aptitud no permite distinguir una convergencia saludable de un colapso prematuro de la población.
+También se pueden usar distancia de Hamming, distancia euclidiana, individuos únicos o diversidad de objetivos.
 
-Por ello conviene registrar simultáneamente el mejor valor, el promedio, la dispersión y alguna medida de distancia entre individuos.
-
----
-
-## Familias evolutivas
-
-| Familia | Énfasis histórico |
-|---|---|
-| Algoritmos genéticos (GA) | Cromosomas, selección y recombinación |
-| Estrategias evolutivas (ES) | Vectores reales y auto-adaptación |
-| Programación evolutiva (EP) | Mutación y competencia |
-| Programación genética (GP) | Evolución de árboles o programas |
-
-La frontera actual es flexible: conviene describir representación, operadores y reemplazo en vez de inferirlos solo por el nombre.
-
----
-
-## Multiobjetivo
-
-Cuando existen objetivos en conflicto, no siempre hay un único mejor candidato.
-
-Una solución $x$ domina a $y$ si:
-
-$$
-f_i(x)\le f_i(y)\ \forall i
-\quad\text{y}\quad
-f_j(x)<f_j(y)\ \text{para alg\'un }j
-$$
-
-El conjunto de soluciones no dominadas aproxima el frente de Pareto.
-
-![w:520](images/multi-objective.png)
-
-Elegir una solución del frente requiere preferencias adicionales. El algoritmo identifica compromisos, pero no decide por sí solo cuál objetivo debe priorizarse.
-
----
-
-## Configuración de parámetros
-
-Parámetros típicos:
-
-- tamaño de población $\mu$.
-- probabilidad de cruzamiento $p_c$.
-- probabilidad de mutación $p_m$.
-- presión de selección.
-- presupuesto de generaciones o evaluaciones.
-
-<div class="callout">
-La comparación entre configuraciones debe usar el mismo presupuesto de evaluaciones y varias semillas. Una única ejecución no caracteriza un algoritmo estocástico.
+<div class="bridge">
+Registrar solo la mejor aptitud no permite saber si la población convergió de forma adecuada o perdió diversidad demasiado pronto.
 </div>
 
 ---
 
-## Ejemplo ejecutable: N reinas
+## Operadores: tres decisiones diferentes
 
-El notebook [`notebook/03_ga_n_reinas.ipynb`](notebook/03_ga_n_reinas.ipynb):
+| Tipo | Pregunta | Ejemplos |
+|---|---|---|
+| Selección de padres | ¿Quién puede producir descendencia? | ruleta, ordenamiento, torneo |
+| Variación | ¿Cómo se producen nuevos candidatos? | recombinación, mutación |
+| Supervivencia | ¿Quién queda disponible en la próxima generación? | elitismo, ordenamiento, edad |
 
-- representa cada tablero como permutación.
-- minimiza conflictos diagonales.
-- usa torneo, OX, mutación por intercambio y elitismo.
-- registra mejor y promedio por generación.
-- repite el experimento con semillas explícitas.
-
-DEAP separa tipos, operadores y algoritmo, facilitando reemplazar componentes sin ocultar su función.
+Separar estas etapas evita una confusión frecuente: ser elegido como padre no implica sobrevivir, y sobrevivir no implica tener más hijos.
 
 ---
 
-## Protocolo experimental
+## Selección de padres
 
-1. Definir instancia y presupuesto.
-2. Establecer una línea base aleatoria o heurística simple.
-3. Ejecutar $r$ semillas independientes.
-4. Reportar éxito, costo y distribución de calidad.
-5. Graficar convergencia respecto de evaluaciones.
-6. Analizar sensibilidad a parámetros.
+| Método | Idea | Riesgo o control |
+|---|---|---|
+| Aleatoria | No usa la aptitud | Sirve como referencia, pero no aprovecha la calidad |
+| Ruleta | Probabilidad proporcional a la aptitud | Es sensible a la escala y a valores extremos |
+| Ordenamiento | Probabilidad según la posición ordenada | Controla la presión, pero pierde la magnitud absoluta |
+| Torneo | Muestrea $k$ y escoge el mejor | $k$ regula la presión |
 
-$$
-\hat p_{\text{\'exito}}=\frac{\text{ejecuciones que alcanzan el objetivo}}{r}
-$$
+![w:200](images/roulettewheel.png)
+
+Un torneo más grande aumenta la presión de selección y puede reducir la diversidad.
+
+---
+
+## Recombinación: combinar información útil
+
+La recombinación toma dos o más padres para formar descendencia. Es útil solo si los fragmentos heredados conservan significado en la representación.
+
+![w:460](images/recombination.png)
+
+- Cadenas binarias: uno o varios puntos de corte.
+- Vectores reales: combinaciones aritméticas o intermedias.
+- Permutaciones: PMX, OX o CX, que evitan duplicados.
+
+En N reinas, OX conserva un segmento de un padre y completa el resto según el orden del otro. El resultado sigue siendo una permutación válida.
+
+---
+
+## Mutación: recuperar y abrir alternativas
+
+La mutación es una perturbación estocástica aplicada a un individuo.
+
+![w:470](images/mutation.png)
+
+| Representación | Mutaciones habituales |
+|---|---|
+| Bits | inversión de un bit |
+| Vectores reales | ruido gaussiano |
+| Permutaciones | intercambio, inserción, inversión |
+
+Una tasa muy alta se aproxima al muestreo aleatorio. Una tasa muy baja puede congelar la población. También se debe distinguir entre la probabilidad de mutar un individuo y la probabilidad de modificar cada gen.
+
+---
+
+## Recombinación y mutación cumplen roles complementarios
+
+### Padres → recombinación → mutación → variantes evaluables
+
+- La recombinación reutiliza y combina información ya presente en la población.
+- La mutación introduce alternativas que la recombinación por sí sola podría no alcanzar.
+- Ninguna garantiza una mejora. La aptitud se conoce después de evaluar.
+
+<div class="callout">
+En el lenguaje de las metaheurísticas, ambos son mecanismos de perturbación. La selección y el reemplazo determinan cuánto se aprovechan las soluciones que funcionaron bien.
+</div>
+
+---
+
+## Selección de supervivientes
+
+![w:420](images/survivalrank.png)
+
+- **Reemplazo generacional:** la descendencia sustituye toda la población.
+- **Reemplazo estacionario:** se cambian pocos individuos por iteración.
+- **Ordenamiento por aptitud:** padres e hijos compiten y permanecen los mejores.
+- **Edad:** se limita cuántas generaciones puede permanecer un individuo.
+- **Elitismo:** se preserva explícitamente uno o más mejores individuos.
+
+---
+
+## Elitismo: ventajas y riesgos
+
+Con elitismo, el mejor valor observado no empeora entre generaciones, porque al menos un buen individuo se conserva.
+
+Sin embargo, demasiado elitismo produce copias y reduce diversidad:
+
+**Conservar el mejor valor ↔ mantener diversidad para adaptarse**
+
+La pregunta adecuada no es “¿usar elitismo?”, sino cuántos individuos preservar y qué mecanismo mantendrá suficiente exploración.
+
+---
+
+## Cómo empezar y cómo terminar
+
+<div class="columns">
+<div>
+
+### Inicialización
+
+![w:330](images/initialpop.png)
+
+- aleatoria, para cubrir distintas regiones.
+- heurística, para incluir buenas soluciones conocidas.
+- híbrida, para equilibrar ambas.
+
+</div>
+<div>
+
+### Término
+
+- presupuesto de evaluaciones.
+- número de generaciones.
+- tiempo máximo.
+- calidad objetivo.
+- estancamiento o pérdida de diversidad.
+
+Para comparar configuraciones conviene usar el mismo presupuesto de **evaluaciones de aptitud**.
+
+</div>
+</div>
+
+---
+
+## Cuatro familias históricas
+
+![w:600](images/ea.png)
+
+Las fronteras modernas son flexibles. Aun así, las familias ayudan a reconocer combinaciones frecuentes de representación y operadores.
+
+---
+
+## Comparación de familias evolutivas
+
+| Familia | Representación típica | Variación característica | Énfasis |
+|---|---|---|---|
+| Programación evolutiva (EP) | Vectores reales | Mutación gaussiana | Predicción y competencia, con poca recombinación en su forma histórica |
+| Estrategias evolutivas (ES) | Vectores reales y parámetros | Recombinación y mutación | Autoadaptación y esquemas $(\mu,\lambda)$ / $(\mu+\lambda)$ |
+| Algoritmos genéticos (GA) | Cadenas, luego representaciones generales | Cruzamiento y mutación | Generaciones, selección y recombinación |
+| Programación genética (GP) | Árboles o programas | Intercambio y cambio de subárboles | Evolución de expresiones o programas |
+
+<div class="bridge">
+En un informe técnico se deben indicar la representación y los operadores concretos. El nombre de la familia no entrega información suficiente para reproducir el método.
+</div>
+
+---
+
+## Estrategias de evolución: dos esquemas de supervivencia
+
+Con $\mu$ padres y $\lambda$ descendientes:
+
+| Esquema | Supervivientes |
+|---|---|
+| $(\mu,\lambda)$ | Solo compiten los $\lambda$ hijos. Los padres desaparecen. |
+| $(\mu+\lambda)$ | Padres e hijos compiten juntos. Este esquema permite elitismo. |
+
+Esta distinción conecta directamente con la selección de supervivientes vista antes: el diseño del reemplazo modifica tanto presión de selección como diversidad.
+
+---
+
+## Derivaciones y métodos inspirados en la naturaleza
+
+<div class="columns">
+<div>
+
+### Coevolución
+
+Una o varias poblaciones se evalúan en interacción. Puede modelar cooperación (simbiosis) o competencia (parasitismo).
+
+La calidad de una solución puede depender de con quién se compara, no solo de una función fija.
+
+</div>
+<div>
+
+### Otras metaheurísticas poblacionales
+
+- **Ant Colony Optimization:** la información colectiva se expresa mediante feromonas.
+- **Particle Swarm Optimization:** los candidatos se mueven guiados por experiencia propia y del grupo.
+
+Comparten la idea poblacional, pero sus mecanismos no son los de un algoritmo genético.
+
+</div>
+</div>
+
+---
+
+## Actividad: algoritmo evolutivo para N reinas
+
+Diseñe un EA que encuentre una permutación con $C(x)=0$.
+
+| Decisión | Propuesta inicial razonable |
+|---|---|
+| Individuo | Permutación de $\{1,\ldots,n\}$ |
+| Aptitud | Número de conflictos diagonales $C(x)$, a minimizar |
+| Padres | Torneo |
+| Recombinación | OX u otro operador de permutaciones |
+| Mutación | Intercambio de dos posiciones |
+| Supervivencia | Generacional con elitismo moderado |
+| Término | Éxito, presupuesto de evaluaciones o estancamiento |
+
+No son elecciones universales: son una hipótesis de diseño que debemos poner a prueba.
+
+---
+
+## Implementación: la biblioteca no reemplaza el diseño
+
+El material práctico complementario, [`03_DEAP.ipynb`](03_DEAP.ipynb) y [`notebook/03_ga_n_reinas.ipynb`](notebook/03_ga_n_reinas.ipynb), permite implementar el ciclo usando DEAP.
+
+DEAP separa:
+
+- definición de individuos y aptitud.
+- registro de operadores.
+- ejecución del ciclo evolutivo.
+- estadísticas y registro experimental.
+
+<div class="warn">
+La biblioteca puede ejecutar los operadores, pero no decide una representación válida, qué objetivos importan ni si una comparación experimental es justa.
+</div>
+
+---
+
+## Protocolo experimental mínimo
+
+1. Fijar instancia, restricciones y presupuesto de evaluaciones.
+2. Definir una línea base: muestreo aleatorio o heurística simple.
+3. Ejecutar varias semillas independientes.
+4. Registrar la mejor aptitud, el promedio, la dispersión y la diversidad por generación.
+5. Reportar éxito, costo computacional y distribución de resultados.
+6. Comparar curvas respecto de evaluaciones, no solo respecto de generaciones.
+
+La tasa de éxito es la proporción de ejecuciones que alcanzan $C(x)=0$.
+
+---
+
+## Qué significa una comparación justa
+
+| Práctica insuficiente | Práctica recomendable |
+|---|---|
+| Informar la mejor corrida. | Informar mediana, dispersión y tasa de éxito. |
+| Comparar generaciones con poblaciones de tamaños distintos. | Igualar evaluaciones de aptitud o declarar claramente el presupuesto. |
+| Cambiar todos los parámetros a la vez. | Realizar análisis de sensibilidad controlado. |
+| Usar una semilla implícita. | Registrar semillas, instancia y configuración. |
+
+<div class="callout">
+Un algoritmo evolutivo es estocástico. Una ejecución aislada solo muestra un resultado posible. Varias ejecuciones permiten estudiar el comportamiento habitual y su variabilidad.
+</div>
+
+---
+
+## Preguntas para discutir en clase
+
+1. ¿Qué se pierde y qué se gana al restringir N reinas a permutaciones?
+2. ¿Qué pasaría si usamos cruzamiento de un punto sin reparación?
+3. ¿Cómo se comparan población 50 por 100 generaciones y población 100 por 50 generaciones?
+4. ¿Qué señal mostraría que el elitismo está causando convergencia prematura?
+5. En un horario, ¿qué restricciones son duras y qué preferencias deberían ser objetivos?
+
+Estas preguntas conectan la implementación con decisiones de modelado, que es el aprendizaje central de la unidad.
 
 ---
 
 ## Síntesis
 
-- Una metaheurística administra un presupuesto de evaluaciones.
-- Representación, aptitud y operadores forman un diseño inseparable.
-- Selección explota. Variación y diversidad sostienen exploración.
-- El resultado estocástico exige repeticiones y comparaciones justas.
-- DEAP implementa el ciclo, pero no decide la formulación correcta.
+$$
+\text{formular}
+\rightarrow
+\text{representar}
+\rightarrow
+\text{evaluar}
+\rightarrow
+\text{variar y seleccionar}
+\rightarrow
+\text{medir con evidencia}
+$$
+
+- Un algoritmo evolutivo administra un presupuesto de evaluaciones sobre una población.
+- Representación, aptitud, operadores y supervivencia forman un diseño inseparable.
+- La selección impulsa la explotación. La variación y la diversidad sostienen la exploración.
+- Los resultados deben evaluarse con repeticiones, líneas base y presupuestos comparables.
 
 <div class="bridge">
-La próxima unidad cambia poblaciones de soluciones por parámetros aprendidos desde datos: redes neuronales y descenso de gradiente.
+La próxima unidad abordará otra manera de optimizar: ajustar parámetros de modelos a partir de datos mediante aprendizaje y gradiente.
 </div>
 
 ---
 
-## Referencias
+## Referencias y atribución del material
 
-- Material original de IPD434: `03_ComputacionEvolutiva.ipynb` y `03_DEAP.ipynb`.
-- A. E. Eiben y J. E. Smith, *Introduction to Evolutionary Computing*, 2.ª ed., Springer, 2015.
-- D. E. Goldberg, *Genetic Algorithms in Search, Optimization, and Machine Learning*, 1989.
-- K. Deb, *Multi-Objective Optimization Using Evolutionary Algorithms*, Wiley, 2001.
-- DEAP, documentación oficial y tutoriales de tipos, operadores y algoritmos.
+### Material base de la asignatura
+
+- **Gálvez Ramírez, Nicolás.** *Introducción a la Computación Evolutiva*, material docente de IPD434, Universidad Técnica Federico Santa María. Archivo base: [`03_ComputacionEvolutiva.ipynb`](03_ComputacionEvolutiva.ipynb).
+- Este documento adapta, reorganiza y amplía ese material para fortalecer las conexiones conceptuales y el contexto de la asignatura.
+- Material práctico complementario: [`03_DEAP.ipynb`](03_DEAP.ipynb) y [`notebook/03_ga_n_reinas.ipynb`](notebook/03_ga_n_reinas.ipynb).
+
+---
+
+## Referencias bibliográficas
+
+- Eiben, A. E. y Smith, J. E. *Introduction to Evolutionary Computing*, 2.ª ed., Springer, 2015.
+- Goldberg, D. E. *Genetic Algorithms in Search, Optimization, and Machine Learning*, Addison-Wesley, 1989.
+- Deb, K. *Multi-Objective Optimization Using Evolutionary Algorithms*, Wiley, 2001.
+- Fortin, F.-A. et al. “DEAP: Evolutionary Algorithms Made Easy”, *Journal of Machine Learning Research*, 2012.
