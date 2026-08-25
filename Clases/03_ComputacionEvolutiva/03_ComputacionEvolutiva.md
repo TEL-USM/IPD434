@@ -32,87 +32,75 @@ Material basado y ampliado a partir del material desarrollado por el **Prof. Nic
 
 ---
 
-## Propósito de esta unidad
+## El punto de partida: elegir una configuración
 
-En IPD434 estudiamos métodos de *soft computing* cuando una solución exacta es costosa, desconocida o innecesaria.
+Un horario académico contiene muchas formas de asignar cursos, docentes, salas y bloques. Ninguna regla simple entrega de inmediato la mejor combinación.
 
-En esta unidad la pregunta es:
+Problema de búsqueda:
 
-> ¿Cómo buscar buenas soluciones cuando podemos evaluarlas, pero no sabemos construir directamente la mejor?
+> ¿Cómo encontrar una buena configuración cuando podemos comprobar su calidad, pero no sabemos construir directamente la mejor?
 
-La computación evolutiva responde manteniendo y transformando una **población** de soluciones candidatas.
+La computación evolutiva responde explorando y transformando una **población** de configuraciones candidatas.
 
 ---
 
-## Conexión con la asignatura
+## Calidad, factibilidad y espacio de búsqueda
 
-<div class="columns">
-<div>
+En el horario se distinguen tres elementos:
 
-**Unidad 1 · Soft Computing**
-
-Reconocimos problemas con incertidumbre, grandes espacios de decisión y soluciones aproximadas.
-
-**Unidad 2 · Sistemas difusos**
-
-Incorporamos conocimiento experto para convertir entradas en decisiones interpretables.
-
-</div>
-<div>
-
-**Esta unidad · Computación evolutiva**
-
-Buscamos configuraciones de decisiones que optimicen una medida de calidad.
-
-**Unidad posterior · Redes neuronales**
-
-Aprenderemos parámetros desde datos, usualmente mediante optimización basada en gradiente.
-
-</div>
-</div>
+| Elemento | Pregunta | Ejemplo |
+|---|---|---|
+| **Candidatos** | ¿Qué configuraciones se pueden proponer? | Asignaciones de cursos, salas y bloques |
+| **Calidad** | ¿Qué preferimos entre dos candidatos? | Menos topes, mejor uso de salas, más preferencias atendidas |
+| **Condiciones obligatorias** | ¿Qué no se puede violar? | Capacidad, disponibilidad y compatibilidad |
 
 <div class="bridge">
-Aquí no aprendemos una regla ni una función de predicción: diseñamos una búsqueda para hallar buenas configuraciones.
+Cuando la incógnita es una configuración y podemos evaluarla, el problema se transforma en uno de <strong>búsqueda y optimización</strong>.
 </div>
-
----
-
-## Resultados de aprendizaje
-
-Al finalizar, se espera poder:
-
-1. Formular un problema como optimización, satisfacción de restricciones o ambos.
-2. Elegir una representación coherente con el dominio y las restricciones.
-3. Explicar el equilibrio entre exploración, explotación y diversidad.
-4. Diseñar selección, recombinación, mutación y supervivencia.
-5. Implementar y analizar un algoritmo evolutivo para un problema combinatorio.
-6. Evaluar un método estocástico con presupuestos y repeticiones comparables.
 
 ---
 
 ## Ruta conceptual
 
-### Problema → espacio de búsqueda → metaheurística → población → evidencia
+### Formulación → espacio de búsqueda → metaheurística → población → evidencia
 
-Cada etapa restringe la siguiente: una mala formulación o representación no se arregla agregando más generaciones al algoritmo.
+La formulación define la decisión y su evaluación. Luego se selecciona una estrategia para recorrer el espacio de posibilidades.
+
+Cada etapa condiciona la siguiente: una mala formulación o representación no se arregla agregando más generaciones al algoritmo.
 
 ---
 
-## Resolver problemas como una caja negra
+## ¿Qué parte del problema es la incógnita?
+
+Un mismo sistema puede describirse mediante **entrada**, **modelo** y **salida**. El tipo de problema depende de cuál de esas piezas es la incógnita.
 
 ![w:610](images/blackbox.png)
 
-Un sistema puede verse como una relación entre **entrada**, **modelo** y **salida**. Según cuál de estos elementos conocemos y cuál deseamos encontrar, cambia el tipo de problema.
+<div class="bridge">
+En el horario, el modelo y la evaluación están definidos. La <strong>entrada</strong> es la incógnita: una configuración de decisiones. Esa es la situación de optimización.
+</div>
 
 ---
 
-## Problemas de optimización
+## Tres preguntas distintas sobre una misma caja negra
 
-Conocemos el modelo y la forma de evaluar su salida. La incógnita es la **entrada** que produce el mejor resultado.
+| Problema | Lo que conocemos | Lo que buscamos | Ejemplo |
+|---|---|---|---|
+| **Simulación** | Una entrada y un modelo | La salida que produce el modelo | Pronóstico meteorológico |
+| **Modelado** | Entradas y salidas observadas | Un modelo que explique y generalice | Clasificador de imágenes |
+| **Optimización** | Un modelo y cómo evaluar su salida | La entrada que da el mejor resultado | Planificación académica |
+
+La distinción no clasifica algoritmos. Aclara qué objeto estamos intentando obtener. En optimización, ese objeto es una **solución candidata**.
+
+---
+
+## Optimización: buscar la mejor entrada posible
+
+En optimización conocemos el modelo y la forma de evaluar su salida. La incógnita es la **entrada** o configuración que produce el mejor resultado.
 
 ![w:430](images/optimizacion.png)
 
-En IPD434 podemos pensar en la planificación académica:
+En la planificación académica:
 
 - **Modelo:** asignación de cursos a profesores, salas y bloques.
 - **Entrada buscada:** una configuración particular de esas asignaciones.
@@ -121,22 +109,9 @@ En IPD434 podemos pensar en la planificación académica:
 
 ---
 
-## Problemas de modelado y simulación
+## Optimización como formulación general
 
-| Problema | Información conocida | Incógnita | Ejemplo |
-|---|---|---|---|
-| **Modelado** | Entradas y salidas observadas | Un modelo que explique los datos y generalice | Clasificador de imágenes |
-| **Simulación** | Una entrada y un modelo | La salida producida por el modelo | Pronóstico meteorológico |
-
-![w:390](images/modelado.png) ![w:390](images/simulacion.png)
-
-La distinción importa porque la computación evolutiva puede buscar directamente una solución o puede ajustar los parámetros de un modelo.
-
----
-
-## Por qué la optimización aparece en toda la asignatura
-
-Muchos problemas de modelado también se pueden reescribir como optimización:
+Muchos problemas de modelado también se entrenan reescribiéndolos como optimización:
 
 $$
 \theta^*=\arg\min_{\theta}\ \mathcal{L}(\text{datos},\,\text{modelo}_{\theta})
@@ -144,7 +119,7 @@ $$
 
 - En una red neuronal, $\theta$ son pesos y $\mathcal{L}$ puede ser el error de predicción.
 - En un sistema difuso, $\theta$ puede representar parámetros de membresía o reglas.
-- En esta unidad, $\theta$ será una solución candidata, como un horario, una ruta o una configuración.
+- En optimización de configuraciones, $\theta$ es una solución candidata, como un horario, una ruta o una configuración.
 
 <div class="callout">
 La computación evolutiva es especialmente útil cuando la función se puede evaluar, pero no es fácil derivarla, es discontinua, ruidosa o proviene de una simulación.
@@ -152,9 +127,9 @@ La computación evolutiva es especialmente útil cuando la función se puede eva
 
 ---
 
-## Optimización combinatoria
+## Cuando las decisiones se combinan, el espacio crece rápido
 
-> Busca el mejor objeto dentro de un conjunto finito de objetos.
+La **optimización combinatoria** busca el mejor objeto dentro de un conjunto finito de objetos.
 
 El conjunto puede ser finito y aun así ser imposible de recorrer exhaustivamente. Por ejemplo, ordenar $n$ actividades tiene $n!$ posibilidades.
 
@@ -170,7 +145,7 @@ La metaheurística administra un presupuesto limitado de evaluaciones de $f$.
 
 ---
 
-## Un problema de búsqueda tiene tres tareas
+## Formular la búsqueda: generar, evaluar y respetar condiciones
 
 | Tarea | Pregunta que se responde | Ejemplo: horario académico |
 |---|---|---|
@@ -179,12 +154,26 @@ La metaheurística administra un presupuesto limitado de evaluaciones de $f$.
 | **Aceptar** | ¿Es factible y debe conservarse? | Respeta restricciones y compite con otros |
 
 <div class="bridge">
-Antes de hablar de algoritmos, debemos hacer explícitos el espacio, la evaluación y las restricciones. Eso hace que el diseño sea discutible y reproducible.
+Una formulación explícita del espacio, la evaluación y las restricciones hace que el diseño sea discutible y reproducible.
 </div>
 
 ---
 
-## Las siglas distinguen objetivo y restricciones
+## La formulación fija el significado de solución
+
+La formulación define:
+
+- el espacio de candidatos
+- el criterio de calidad
+- las restricciones de factibilidad
+
+La misma instancia puede ser FOP, CSP o CSOP según cómo se combinen estos elementos.
+
+---
+
+## Objetivo y restricciones definen tres formulaciones
+
+La diferencia entre estos nombres está en qué se considera una solución.
 
 ![w:350](images/cop.png)
 
@@ -202,37 +191,130 @@ Antes de hablar de algoritmos, debemos hacer explícitos el espacio, la evaluaci
 
 ![w:310](images/nqueens.png)
 
-Dos reinas entran en conflicto si comparten fila, columna o diagonal. El ejemplo es pequeño, visual y permite separar con cuidado **objetivo**, **restricciones** y **representación** antes de implementar.
+Dos reinas entran en conflicto si comparten fila, columna o diagonal. El ejemplo permite aplicar las tres formulaciones y luego introducir la representación y los algoritmos.
 
 ---
 
-## N reinas como FOP, CSP y CSOP
+## La misma instancia con tres formulaciones
 
-| Formulación | Qué se define | Cuándo se resuelve |
+| Formulación | Criterio de solución | Resultado aceptado |
 |---|---|---|
-| **FOP** | Una evaluación, como el número de conflictos | Al encontrar la configuración con el mejor valor |
-| **CSP** | Predicados de factibilidad | Al encontrar una configuración que cumple todos los predicados |
-| **CSOP** | Restricciones y una evaluación | Al obtener la mejor configuración entre las que son factibles |
+| **FOP** | Maximizar una función de evaluación | Tablero con el mejor valor de evaluación |
+| **CSP** | Satisfacer un predicado de factibilidad | Tablero sin reinas en jaque |
+| **CSOP** | Satisfacer restricciones y optimizar una evaluación | Mejor tablero entre los que cumplen las restricciones |
 
-Por ejemplo, una formulación CSOP puede exigir una reina por fila y columna, y minimizar los conflictos diagonales:
-
-$$
-\min D(s)\quad\text{sujeto a una reina por fila y columna}
-$$
-
-Esta formulación también aparece en aplicaciones reales, donde algunas condiciones son obligatorias y otras expresan preferencias.
+Las tres formulaciones usan un tablero $n\times n$ con $n$ reinas. Cambia la forma de expresar la condición de solución.
 
 ---
 
-## La representación ya es parte de la solución
+## N reinas como problema de optimización libre
 
-Representar el tablero completo permite demasiadas configuraciones inútiles. Si imponemos una reina por columna, podemos usar un vector:
+**Representación:** tablero de ajedrez de tamaño $n\times n$ con $n$ reinas.
+
+**Espacio de búsqueda:**
 
 $$
-x=(x_1,\ldots,x_n),\qquad x_i=\text{fila de la reina en la columna }i
+S=\{s\mid s\text{ es una configuración del tablero con }n\text{ reinas}\}
 $$
 
-Una primera versión exige que no se repitan filas. Una versión aún mejor restringe directamente el espacio a **permutaciones** de $\{1,\ldots,n\}$.
+**Función de evaluación:** $f(s)$ es la cantidad de reinas que no están en jaque.
+
+$$
+S^*=\{s\in S\mid f(s)=n\}
+$$
+
+No hay restricciones explícitas. Los tableros con reinas en conflicto reciben una evaluación menor.
+
+---
+
+## N reinas como satisfacción de restricciones
+
+**Representación y espacio:** el mismo tablero y el mismo conjunto $S$ de configuraciones con $n$ reinas.
+
+**Predicado de factibilidad:**
+
+$$
+\operatorname{enJaque}(s)=
+\begin{cases}
+\text{verdadero}, & \text{si dos reinas se atacan}\\
+\text{falso}, & \text{en otro caso}
+\end{cases}
+$$
+
+**Soluciones:**
+
+$$
+S^*=\{s\in S\mid \operatorname{enJaque}(s)=\text{falso}\}
+$$
+
+No se ordenan las soluciones factibles. Cualquier tablero sin ataques resuelve el CSP.
+
+---
+
+## N reinas como optimización con restricciones
+
+**Representación y espacio:** el mismo tablero y el mismo conjunto $S$ de configuraciones con $n$ reinas.
+
+**Restricciones:** $\operatorname{mismaFila}(s)$ y $\operatorname{mismaColumna}(s)$ indican que existen dos reinas en una fila o columna común.
+
+**Función de evaluación:** $D(s)$ cuenta los ataques por diagonal.
+
+$$
+\begin{aligned}
+\min_{s\in S}\ & D(s)\\
+\text{sujeto a}\quad & \operatorname{mismaFila}(s)=\text{falso}\\
+& \operatorname{mismaColumna}(s)=\text{falso}
+\end{aligned}
+$$
+
+Las restricciones conservan una reina por fila y columna. La evaluación distingue los tableros factibles según sus diagonales.
+
+---
+
+## La representación convierte la formulación en candidatos
+
+La formulación define qué solución es válida. La representación define cómo codificarla.
+
+En N reinas, un vector reduce el espacio del tablero. Las versiones siguientes difieren en cómo manejan la restricción de filas.
+
+---
+
+## Representación versión 1: vector con restricción explícita
+
+Cada posición del vector representa una columna. Su valor indica la fila de la reina en esa columna:
+
+$$
+x=(x_1,\ldots,x_n),\qquad x_i\in\{1,\ldots,n\}
+$$
+
+La posición asegura una reina por columna. El espacio incluye vectores con filas repetidas:
+
+$$
+S_1=\{1,\ldots,n\}^n
+$$
+
+El predicado $\operatorname{todosDistintos}(x)$ es verdadero cuando no hay dos valores iguales. La búsqueda mantiene esa condición como una restricción explícita:
+
+$$
+\min_{x\in S_1}D(x)\qquad\text{sujeto a}\qquad \operatorname{todosDistintos}(x)=\text{verdadero}
+$$
+
+---
+
+## Representación versión 2: espacio de permutaciones
+
+La codificación del vector se conserva, pero el espacio de búsqueda excluye desde el inicio las filas repetidas:
+
+$$
+S_2=\{x\in\{1,\ldots,n\}^n\mid \operatorname{todosDistintos}(x)\}
+=\operatorname{Perm}(\{1,\ldots,n\})
+$$
+
+La condición de fila deja de ser un predicado externo. Cada vector de $S_2$ contiene una reina por fila y columna por construcción.
+
+$$
+x^*\in\arg\min_{x\in S_2}D(x)
+$$
 
 <div class="example-space">
 Para seis reinas, el vector x = [5, 3, 1, 6, 4, 2] es una permutación. Esto garantiza una reina por fila y columna. Solo falta evaluar las diagonales.
@@ -240,25 +322,23 @@ Para seis reinas, el vector x = [5, 3, 1, 6, 4, 2] es una permutación. Esto gar
 
 ---
 
-## Reducir el espacio sin perder soluciones relevantes
+## Evaluar los ataques diagonales
 
-Con una permutación, el conflicto diagonal queda dado por:
+En el vector $x$, $x_i$ es la fila de la reina situada en la columna $i$. Para dos columnas $i$ y $j$, hay ataque diagonal cuando la diferencia de filas coincide con la diferencia de columnas:
 
 $$
 C(x)=\sum_{i<j}\mathbf{1}\{|x_i-x_j|=|i-j|\}
 $$
 
-- La representación elimina conflictos de fila y columna **por construcción**.
-- $C(x)$ cuenta pares de reinas que comparten diagonal.
-- $C(x)=0$ indica una solución al CSP de N reinas.
+La función indicadora vale $1$ cuando el par comparte diagonal y $0$ en caso contrario. Por tanto, $C(x)$ cuenta todos los pares en conflicto.
 
-<div class="warn">
-La representación no es un detalle de programación: determina el tamaño del espacio, el costo de evaluar y qué operadores producen soluciones válidas.
-</div>
+La permutación elimina los conflictos de fila y columna por construcción. $C(x)=0$ indica una solución válida de N reinas.
 
 ---
 
-## Paradigmas de búsqueda
+## Del espacio de búsqueda a la estrategia de búsqueda
+
+La formulación ya define qué candidatos son válidos y cómo se evalúan. Una estrategia de búsqueda decide qué permutaciones generar, evaluar y conservar dentro de un presupuesto limitado.
 
 <div class="columns">
 <div>
@@ -281,18 +361,18 @@ La representación no es un detalle de programación: determina el tamaño del e
 </div>
 </div>
 
-En IPD434 nos interesan métodos aproximados: hacen explícito el intercambio entre calidad, costo y tiempo de cómputo.
+Los métodos aproximados eligen qué regiones del espacio recorrer y hacen explícito el intercambio entre calidad, costo y tiempo de cómputo.
 
 ---
 
 ## Construir o perturbar
 
-| Enfoque | Idea | Ejemplo de horario |
+| Enfoque | Idea | Ejemplo con N reinas |
 |---|---|---|
-| **Constructivo** | Crear una solución desde un estado vacío | Asignar cursos uno a uno |
-| **Perturbativo** | Modificar una solución existente | Cambiar una sala o bloque |
+| **Constructivo** | Crear una solución desde un estado vacío | Asignar una fila disponible a cada columna |
+| **Perturbativo** | Modificar una solución existente | Intercambiar las filas de dos columnas |
 
-La mayoría de las metaheurísticas usa ambos enfoques: necesita construir soluciones iniciales y luego producir variaciones para buscar mejoras.
+En N reinas, ambos enfoques operan sobre permutaciones. Las metaheurísticas suelen construir soluciones iniciales y luego producir variaciones para buscar mejoras.
 
 ---
 
@@ -300,7 +380,7 @@ La mayoría de las metaheurísticas usa ambos enfoques: necesita construir soluc
 
 Una heurística es una regla práctica que orienta una decisión con información del problema.
 
-Ejemplo de estrategia voraz: al construir un horario, asignar primero el curso con menor cantidad de bloques compatibles.
+Ejemplo de estrategia voraz para N reinas: asignar una fila disponible a cada columna, eligiendo la que produzca menos conflictos diagonales con las reinas ya ubicadas.
 
 | Ventaja | Límite |
 |---|---|
@@ -312,11 +392,11 @@ Una heurística puede generar una buena población inicial. También puede compl
 
 ---
 
-## Actividad breve: diseñar una heurística para 2048
+## Heurística para 2048
 
 ![w:430](images/2048.png)
 
-Antes de proponer una regla, debemos precisar el objetivo. Puede ser obtener la ficha de mayor valor, mantener casillas libres o prolongar la partida.
+Una regla requiere precisar el objetivo. Puede ser obtener la ficha de mayor valor, mantener casillas libres o prolongar la partida.
 
 Una heurística posible es conservar las fichas de mayor valor en una esquina y evitar movimientos que cierren el tablero.
 
@@ -346,7 +426,7 @@ No codifican reglas específicas de un único dominio. En cambio, establecen có
 - **Reinicio:** introduce una nueva región cuando se detecta estancamiento.
 - **Criterio de término:** limita evaluaciones, iteraciones, tiempo o ausencia de mejora.
 
-Este vocabulario reaparecerá en los algoritmos evolutivos. La diferencia es que allí se trabaja con una **población** y no con un único candidato.
+La búsqueda evolutiva conserva este vocabulario, pero trabaja con una **población** y no con un único candidato.
 
 ---
 
@@ -365,14 +445,14 @@ Explotar demasiado lleva a convergencia prematura en un óptimo local. Explorar 
 
 | Método | Mecanismo para evitar o manejar óptimos locales |
 |---|---|
-| Ascenso de colina | Acepta mejoras en el vecindario. Puede detenerse en un óptimo local. |
-| Búsqueda local iterada | Perturba la solución y vuelve a ejecutar una búsqueda local. |
-| Búsqueda tabú | Usa memoria para evitar movimientos o soluciones visitadas recientemente. |
-| Recocido simulado | Acepta a veces una solución peor para escapar de un óptimo local. |
-| GRASP | Construye una solución voraz con decisiones aleatorias y luego la mejora localmente. |
+| Hill-Climbing | Acepta mejoras en el vecindario. Puede detenerse en un óptimo local. |
+| Iterative Local Search | Perturba la solución y vuelve a ejecutar una búsqueda local. |
+| Tabu Search | Usa memoria para evitar movimientos o soluciones visitadas recientemente. |
+| Simulated Annealing | Acepta a veces una solución peor para escapar de un óptimo local. |
+| GRASP (Greedy Randomized Adaptive Search Procedure) | Construye una solución voraz con decisiones aleatorias y luego la mejora localmente. |
 
 <div class="callout">
-No buscamos memorizar algoritmos aislados: buscamos reconocer cómo cada uno administra exploración, explotación y presupuesto.
+El objetivo es reconocer cómo cada método administra exploración, explotación y presupuesto.
 </div>
 
 ---
@@ -389,9 +469,9 @@ Los pesos incorporan una preferencia que debe justificarse. La optimización con
 
 ---
 
-## Dominancia y frente de Pareto
+## Dominancia: comparar soluciones objetivo por objetivo
 
-Para minimización, $x$ domina a $y$ si:
+En minimización, $x$ domina a $y$ cuando no es peor en ningún objetivo y es mejor en al menos uno:
 
 $$
 f_i(x)\le f_i(y)\ \forall i
@@ -399,9 +479,29 @@ f_i(x)\le f_i(y)\ \forall i
 \exists j:\ f_j(x)<f_j(y)
 $$
 
-![w:430](images/multi-objective.png)
+| Solución | $f_1$ | $f_2$ |
+|---|---:|---:|
+| $A$ | 2 | 8 |
+| $B$ | 3 | 8 |
+| $C$ | 1 | 10 |
 
-Las soluciones no dominadas forman una aproximación al frente de Pareto. El algoritmo puede ofrecer alternativas. La elección final depende de las preferencias del contexto de aplicación.
+$A$ domina a $B$: mejora $f_1$ y mantiene $f_2$. Entre $A$ y $C$ no hay dominancia: $C$ mejora $f_1$, pero empeora $f_2$.
+
+---
+
+## Frente de Pareto: soluciones no dominadas
+
+El frente de Pareto reúne las soluciones que no son dominadas por ninguna otra:
+
+$$
+\mathcal{P}=\{x\in\Omega\mid \nexists y\in\Omega:\ y\text{ domina a }x\}
+$$
+
+![w:330](images/multi-objective.png)
+
+En el gráfico, los puntos azules son soluciones evaluadas, los rojos forman el frente y el verde es una solución encontrada sobre él.
+
+En el frente, mejorar un objetivo exige empeorar al menos otro. Elegir una solución requiere preferencias externas al algoritmo.
 
 ---
 
@@ -415,7 +515,7 @@ Las soluciones no dominadas forman una aproximación al frente de Pareto. El alg
   - *Adaptativo:* responde al desempeño observado.
   - *Autoadaptativo:* los parámetros evolucionan junto con las soluciones.
 
-Esta distinción será importante al discutir mutación, tamaño de población y presión de selección.
+La elección entre ajuste previo y control durante la ejecución afecta la mutación, el tamaño de población y la presión de selección.
 
 ---
 
@@ -674,7 +774,7 @@ Sin embargo, demasiado elitismo produce copias y reduce diversidad:
 
 **Conservar el mejor valor ↔ mantener diversidad para adaptarse**
 
-La pregunta adecuada no es “¿usar elitismo?”, sino cuántos individuos preservar y qué mecanismo mantendrá suficiente exploración.
+La elección del elitismo depende de cuántos individuos se preservan y de qué mecanismo mantiene suficiente exploración.
 
 ---
 
@@ -702,7 +802,7 @@ La pregunta adecuada no es “¿usar elitismo?”, sino cuántos individuos pres
 - calidad objetivo.
 - estancamiento o pérdida de diversidad.
 
-Para comparar configuraciones conviene usar el mismo presupuesto de **evaluaciones de aptitud**.
+La comparación entre configuraciones requiere el mismo presupuesto de **evaluaciones de aptitud**.
 
 </div>
 </div>
@@ -727,7 +827,7 @@ Las fronteras modernas son flexibles. Aun así, las familias ayudan a reconocer 
 | Programación genética (GP) | Árboles o programas | Intercambio y cambio de subárboles | Evolución de expresiones o programas |
 
 <div class="bridge">
-En un informe técnico se deben indicar la representación y los operadores concretos. El nombre de la familia no entrega información suficiente para reproducir el método.
+La familia por sí sola no permite reproducir un método. Es necesario especificar la representación y los operadores concretos.
 </div>
 
 ---
@@ -771,9 +871,9 @@ Comparten la idea poblacional, pero sus mecanismos no son los de un algoritmo ge
 
 ---
 
-## Actividad: algoritmo evolutivo para N reinas
+## Algoritmo evolutivo para N reinas
 
-Diseñe un EA que encuentre una permutación con $C(x)=0$.
+Diseño de un EA que encuentre una permutación con $C(x)=0$.
 
 | Decisión | Propuesta inicial razonable |
 |---|---|
@@ -785,7 +885,7 @@ Diseñe un EA que encuentre una permutación con $C(x)=0$.
 | Supervivencia | Generacional con elitismo moderado |
 | Término | Éxito, presupuesto de evaluaciones o estancamiento |
 
-No son elecciones universales: son una hipótesis de diseño que debemos poner a prueba.
+No son elecciones universales. Son hipótesis de diseño que deben evaluarse.
 
 ---
 
@@ -834,7 +934,7 @@ Un algoritmo evolutivo es estocástico. Una ejecución aislada solo muestra un r
 
 ---
 
-## Preguntas para discutir en clase
+## Casos para analizar
 
 1. ¿Qué se pierde y qué se gana al restringir N reinas a permutaciones?
 2. ¿Qué pasaría si usamos cruzamiento de un punto sin reparación?
@@ -842,7 +942,7 @@ Un algoritmo evolutivo es estocástico. Una ejecución aislada solo muestra un r
 4. ¿Qué señal mostraría que el elitismo está causando convergencia prematura?
 5. En un horario, ¿qué restricciones son duras y qué preferencias deberían ser objetivos?
 
-Estas preguntas conectan la implementación con decisiones de modelado, que es el aprendizaje central de la unidad.
+Estos casos conectan la implementación con decisiones de modelado.
 
 ---
 
@@ -866,17 +966,17 @@ $$
 - Los resultados deben evaluarse con repeticiones, líneas base y presupuestos comparables.
 
 <div class="bridge">
-La próxima unidad abordará otra manera de optimizar: ajustar parámetros de modelos a partir de datos mediante aprendizaje y gradiente.
+El ajuste de parámetros de modelos a partir de datos también puede formularse como un problema de optimización.
 </div>
 
 ---
 
 ## Referencias y atribución del material
 
-### Material base de la asignatura
+### Material de referencia
 
 - **Gálvez Ramírez, Nicolás.** *Introducción a la Computación Evolutiva*, material docente de IPD434, Universidad Técnica Federico Santa María. Archivo base: [`03_ComputacionEvolutiva.ipynb`](03_ComputacionEvolutiva.ipynb).
-- Este documento adapta, reorganiza y amplía ese material para fortalecer las conexiones conceptuales y el contexto de la asignatura.
+- Este documento adapta, reorganiza y amplía ese material para fortalecer las conexiones conceptuales.
 - Material práctico complementario: [`03_DEAP.ipynb`](03_DEAP.ipynb) y [`notebook/03_ga_n_reinas.ipynb`](notebook/03_ga_n_reinas.ipynb).
 
 ---
