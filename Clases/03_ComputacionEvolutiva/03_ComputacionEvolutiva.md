@@ -342,11 +342,15 @@ La permutación elimina los conflictos de fila y columna por construcción. $C(x
 
 Existen distintos paradigmas para afrontar la búsqueda de soluciones en el espacio de búsqueda.
 
+Ya definimos cómo representar y evaluar un candidato. Ahora debemos decidir cómo recorrer ese espacio.
+
 ---
 
 ## Aproximación sistemática y búsqueda local
 
 ### Aproximación sistemática
+
+La primera alternativa intenta cubrir el espacio completo.
 
 - **Completitud.**
 - Búsqueda sistemática sobre el espacio, garantizando:
@@ -360,6 +364,8 @@ Existen distintos paradigmas para afrontar la búsqueda de soluciones en el espa
 
 ### Búsqueda local
 
+La segunda alternativa acepta explorar solo una parte del espacio para reducir el costo.
+
 - **Incompletitud.**
 - Búsqueda parcial sobre distintos subespacios.
 - No puede garantizar:
@@ -371,6 +377,8 @@ Existen distintos paradigmas para afrontar la búsqueda de soluciones en el espa
 ---
 
 ## Búsqueda constructiva y perturbativa
+
+Además de decidir cuánto espacio recorrer, debemos decidir cómo generar los candidatos que evaluaremos.
 
 ### Búsqueda constructiva
 
@@ -391,6 +399,8 @@ Existen distintos paradigmas para afrontar la búsqueda de soluciones en el espa
 - Generalmente son **miopes**: evalúan solo la ganancia inmediata sin considerar el impacto global.
 - **Ejemplo:** un **algoritmo greedy** construye una solución paso a paso, eligiendo siempre la opción localmente mejor según la heurística.
 
+Por eso pueden ser rápidas, pero no garantizan el óptimo global.
+
 ---
 
 ## Ejemplo: 2048
@@ -398,6 +408,8 @@ Existen distintos paradigmas para afrontar la búsqueda de soluciones en el espa
 - ¿Qué heurística usaría para terminar el juego?
 
 ![w:430](images/2048.png)
+
+La regla elegida puede funcionar muchas veces, pero una buena decisión inmediata no garantiza el mejor resultado final.
 
 ---
 
@@ -409,9 +421,13 @@ Existen distintos paradigmas para afrontar la búsqueda de soluciones en el espa
 - No son reglas específicas del problema, sino un **marco genérico** aplicable a distintos contextos.
 - Suelen combinar **búsqueda local** para mejorar soluciones en un área reducida con **búsqueda perturbativa** para explorar nuevas regiones.
 
+La metaheurística define la estrategia general. La heurística aporta conocimiento del problema cuando está disponible.
+
 ---
 
 ## Conceptos clave
+
+Mecanismos que una metaheurística puede combinar:
 
 ### Búsqueda local
 
@@ -420,6 +436,8 @@ Existen distintos paradigmas para afrontar la búsqueda de soluciones en el espa
 ### Búsqueda perturbativa
 
 > Modificar un candidato a solución conocido para obtener uno nuevo.
+
+La búsqueda local intensifica una región y la perturbación ayuda a cambiar de región.
 
 ---
 
@@ -444,6 +462,8 @@ Ambas son relevantes. Debe existir un equilibrio que varía entre problemas.
 
 ![w:610](images/convergence-ea.png)
 
+El resto de las decisiones de una metaheurística implementa este equilibrio.
+
 ---
 
 ## ¿Cómo buscan las metaheurísticas clásicas?
@@ -465,6 +485,8 @@ Ambas son relevantes. Debe existir un equilibrio que varía entre problemas.
 ## Criterio de selección
 
 > Directriz para seleccionar al siguiente candidato en la búsqueda.
+
+Una vez definido el vecindario, esta regla determina cómo avanzar.
 
 - **Alguna mejora:** primer vecino que mejora la función de evaluación.
 - **Mejor mejora:** vecino que maximiza la mejora de la función de evaluación.
@@ -512,6 +534,8 @@ Las técnicas difieren en cómo combinan intensificación, diversificación y ac
 
 En muchos problemas no buscamos optimizar un solo criterio, sino varios al mismo tiempo, que incluso pueden entrar en conflicto. Por ejemplo, minimizar costos y maximizar calidad.
 
+La idea de una única función de evaluación ya no es suficiente.
+
 - **Evaluación con pesos:** combina los objetivos en una sola función ponderada.
 - **Bi-objetivo o bi-criterio:** trata los objetivos por separado y busca un compromiso.
 - **Frente de Pareto:** conjunto de soluciones donde no se puede mejorar un objetivo sin empeorar otro.
@@ -533,6 +557,8 @@ La figura muestra este frente:
 ## Configuración de parámetros en metaheurísticas
 
 Las metaheurísticas requieren parámetros, como número de iteraciones, tamaño del vecindario o probabilidad de aceptar soluciones peores. La forma de configurarlos influye directamente en los resultados.
+
+Antes de comparar métodos, debemos dejar claro cómo se eligieron esos valores.
 
 - **Parameter Tuning:** fija los valores antes de ejecutar, mediante pruebas o recomendaciones.
 - **Parameter Control:** modifica los valores durante la ejecución.
@@ -560,6 +586,8 @@ Las metaheurísticas requieren parámetros, como número de iteraciones, tamaño
 
 > Metaheurísticas bioinspiradas basadas en los principios de la teoría de la evolución y la selección natural de Charles Darwin.
 
+Una familia de metaheurísticas que explota precisamente esa búsqueda poblacional es la computación evolutiva.
+
 - Tuvieron gran auge desde los años 90 y fueron creadas en los años 70.
 - Se conocen como **algoritmos evolutivos** (*EA, Evolutionary Algorithms*).
 - Amplían la búsqueda a varios candidatos simultáneamente.
@@ -570,6 +598,8 @@ Las metaheurísticas requieren parámetros, como número de iteraciones, tamaño
 ## Algoritmos evolutivos: framework
 
 ![w:560](images/ea-workflow.png)
+
+En cada generación se seleccionan padres, se producen descendientes y se decide quién continúa.
 
 ---
 
@@ -583,6 +613,8 @@ En los algoritmos genéticos, cada **solución real** debe traducirse a una form
   - **Codificación:** del mundo real al evolutivo.
   - **Decodificación:** del mundo evolutivo al real.
 
+La elección de esta representación condiciona qué operadores serán válidos.
+
 ---
 
 ## Ejemplo activo: problema de las 6 reinas
@@ -591,6 +623,8 @@ En los algoritmos genéticos, cada **solución real** debe traducirse a una form
 - **Fenotipo:** configuración correspondiente del tablero.
 
 ![w:400](images/phenotype.png)
+
+Cada posición del vector indica la fila ocupada por la reina de una columna.
 
 ---
 
@@ -605,6 +639,8 @@ En los algoritmos genéticos, cada **solución real** debe traducirse a una form
 
 - Es el valor concreto que toma un gen en un individuo.
 - Representa una instanciación específica de esa variable.
+
+Estos términos permiten describir con precisión qué modifican los operadores.
 
 ---
 
@@ -628,6 +664,8 @@ La **función de fitness** es la función de evaluación utilizada en los algori
 - Refleja qué tan bien adaptado está un individuo al problema.
 - Normalmente decodifica el genotipo al fenotipo y mide su desempeño en el mundo real.
 
+La selección y la supervivencia usarán esta medida para comparar individuos.
+
 ---
 
 ## Población
@@ -641,6 +679,8 @@ Una población es el conjunto de **candidatos a solución** que el algoritmo man
 
 Es la base sobre la que actúan los operadores evolutivos que impulsan la búsqueda.
 
+La siguiente pregunta es si la población conserva suficientes alternativas para seguir explorando.
+
 ---
 
 ## Diversidad
@@ -652,7 +692,15 @@ La diversidad indica **qué tan distintas** son las soluciones dentro de la pobl
 - Variación en los valores de la función de fitness.
 - Cantidad de fenotipos diferentes, es decir, soluciones distintas en el mundo real.
 - Cantidad de genotipos diferentes, es decir, cromosomas distintos.
-- Métricas estadísticas como la entropía.
+- Métricas estadísticas como la [entropía](https://es.wikipedia.org/wiki/Entrop%C3%ADa_%28teor%C3%ADa_de_la_informaci%C3%B3n%29).
+
+Para una población binaria, la entropía en la posición $j$ es:
+
+$$H_j=-p_j\log p_j-(1-p_j)\log(1-p_j)$$
+
+Aquí $p_j$ es la frecuencia del alelo $1$ y $1-p_j$ la del alelo $0$.
+
+La entropía mide la incertidumbre de una distribución: es baja cuando un alelo domina y alta cuando ambos están equilibrados.
 
 ---
 
@@ -690,7 +738,6 @@ La probabilidad de selección es proporcional a la aptitud asignada a cada indiv
 
 - Es una **perturbación** aplicada a un **padre** para generar un **hijo**.
   - Es una operación unaria, sobre un solo individuo.
-- La perturbación se aplica de forma **aleatoria**.
   - Las mutaciones son **estocásticas**.
   - Pueden no ocurrir.
 - Permite conectar distintos sectores del espacio de búsqueda.
@@ -830,6 +877,8 @@ Fogel et al. (1966) propusieron la programación evolutiva como una simulación 
 | Selección | Un padre muta para producir un hijo |
 | Supervivencia | Torneo round-robin |
 
+En un torneo **round-robin**, cada individuo compite contra varios oponentes y sobrevive según sus victorias.
+
 Su especialización es la adaptación al ambiente mediante mutación.
 
 ---
@@ -845,6 +894,8 @@ Rechenberg y Schwefel desarrollaron las estrategias evolutivas durante las déca
 | Mutación | Perturbación gaussiana |
 | Selección | Aleatoria uniforme |
 | Supervivencia | Elitismo |
+
+Aquí, $\mu$ indica el número de padres y $\lambda$ el número de descendientes generados.
 
 En los esquemas $(\mu,\lambda)$ y $(\mu+\lambda)$:
 
@@ -896,12 +947,12 @@ La idea evolutiva también se extiende a poblaciones que interactúan o a modelo
 
 ## Coevolución
 
-Las poblaciones se evalúan en interacción. Puede modelar cooperación o competencia:
+En la coevolución, la aptitud de un individuo depende de su interacción con otros individuos o poblaciones que también evolucionan. Por eso, una solución puede mejorar o empeorar según cambien sus oponentes o colaboradores.
 
-- Si una población mejora frente a otra, la relación puede cambiar según el criterio de evaluación.
 - La simbiosis representa coevolución positiva.
 - El parasitismo representa coevolución negativa.
-- Puede ser monopoblacional o multipoblacional, según quién evalúa a quién.
+- Puede ser monopoblacional cuando interactúan individuos de la misma población.
+- Puede ser multipoblacional cuando interactúan poblaciones diferentes.
 
 ---
 
