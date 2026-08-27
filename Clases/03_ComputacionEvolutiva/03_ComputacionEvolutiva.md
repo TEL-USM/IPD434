@@ -336,654 +336,588 @@ La permutación elimina los conflictos de fila y columna por construcción. $C(x
 
 ---
 
-## Del espacio de búsqueda a la estrategia de búsqueda
+## Paradigmas de búsqueda
 
-La formulación ya define qué candidatos son válidos y cómo se evalúan. Una estrategia de búsqueda decide qué permutaciones generar, evaluar y conservar dentro de un presupuesto limitado.
+### Hard Computing y Soft Computing en optimización combinatoria
 
-<div class="columns">
-<div>
+Existen distintos paradigmas para afrontar la búsqueda de soluciones en el espacio de búsqueda.
+
+---
+
+## Aproximación sistemática y búsqueda local
 
 ### Aproximación sistemática
 
-- Recorre el espacio siguiendo una estrategia exhaustiva.
-- Puede garantizar óptimo o demostrar que no existe solución.
-- Su costo suele crecer de forma prohibitiva.
+- **Completitud.**
+- Búsqueda sistemática sobre el espacio, garantizando:
+  - una solución óptima, o
+  - que no existe solución.
+- Es computacionalmente costosa.
 
-</div>
-<div>
+---
+
+## Aproximación sistemática y búsqueda local
 
 ### Búsqueda local
 
-- Examina una parte del espacio desde uno o pocos candidatos.
-- Puede ser rápida y útil.
-- No garantiza óptimo, factibilidad ni inexistencia de solución.
-
-</div>
-</div>
-
-Los métodos aproximados eligen qué regiones del espacio recorrer y hacen explícito el intercambio entre calidad, costo y tiempo de cómputo.
-
----
-
-## Construir o perturbar
-
-| Enfoque | Idea | Ejemplo con N reinas |
-|---|---|---|
-| **Constructivo** | Crear una solución desde un estado vacío | Asignar una fila disponible a cada columna |
-| **Perturbativo** | Modificar una solución existente | Intercambiar las filas de dos columnas |
-
-En N reinas, ambos enfoques operan sobre permutaciones. Las metaheurísticas suelen construir soluciones iniciales y luego producir variaciones para buscar mejoras.
+- **Incompletitud.**
+- Búsqueda parcial sobre distintos subespacios.
+- No puede garantizar:
+  - una solución óptima,
+  - una solución factible, ni
+  - que no existe solución.
+- Es computacionalmente rápida.
 
 ---
 
-## Heurísticas: reglas que aprovechan estructura
+## Búsqueda constructiva y perturbativa
 
-Una heurística es una regla práctica que orienta una decisión con información del problema.
+### Búsqueda constructiva
 
-Ejemplo de estrategia voraz para N reinas: asignar una fila disponible a cada columna, eligiendo la que produzca menos conflictos diagonales con las reinas ya ubicadas.
+- Encuentra la solución desde un inicio vacío.
+- Generalmente produce soluciones incompletas durante el proceso.
 
-| Ventaja | Límite |
-|---|---|
-| Puede obtener una solución razonable muy rápido. | Una decisión localmente buena puede bloquear una solución global mejor. |
+### Búsqueda perturbativa
 
-<div class="bridge">
-Una heurística puede generar una buena población inicial. También puede complementar el trabajo de una metaheurística.
-</div>
+- Encuentra una solución modificando una existente.
+- Generalmente busca mejoras sobre un candidato de baja calidad.
 
 ---
 
-## Heurística para 2048
+## Heurísticas
+
+- Son **reglas prácticas o criterios** para guiar la búsqueda de soluciones.
+- Se apoyan en el **conocimiento del problema** para tomar decisiones rápidas.
+- Generalmente son **miopes**: evalúan solo la ganancia inmediata sin considerar el impacto global.
+- **Ejemplo:** un **algoritmo greedy** construye una solución paso a paso, eligiendo siempre la opción localmente mejor según la heurística.
+
+---
+
+## Ejemplo: 2048
+
+- ¿Qué heurística usaría para terminar el juego?
 
 ![w:430](images/2048.png)
 
-Una regla requiere precisar el objetivo. Puede ser obtener la ficha de mayor valor, mantener casillas libres o prolongar la partida.
+---
 
-Una heurística posible es conservar las fichas de mayor valor en una esquina y evitar movimientos que cierren el tablero.
+## Metaheurísticas
 
-La regla usa conocimiento del juego y permite decidir con rapidez. Sin embargo, una buena decisión inmediata no garantiza el mejor resultado al final de la partida.
+> Proceso automático para buscar una buena solución, ya sea construyéndola o reparándola, respecto a un conjunto de candidatos finito pero intratable por su tamaño.
+
+- Proporcionan **estrategias globales** para acercarse rápidamente a un óptimo, aunque no siempre garantizan el mejor.
+- No son reglas específicas del problema, sino un **marco genérico** aplicable a distintos contextos.
+- Suelen combinar **búsqueda local** para mejorar soluciones en un área reducida con **búsqueda perturbativa** para explorar nuevas regiones.
 
 ---
 
-## Metaheurísticas: estrategias de búsqueda reutilizables
+## Conceptos clave
 
-> Proceso automatizado para encontrar una buena solución en un espacio grande, construyéndola o mejorándola, sin garantía de óptimo global.
+### Búsqueda local
 
-No codifican reglas específicas de un único dominio. En cambio, establecen cómo generar, evaluar, aceptar y diversificar candidatos.
+> Encontrar una solución óptima en una porción reducida del espacio de búsqueda.
 
-| Heurística | Metaheurística |
-|---|---|
-| Decide con conocimiento particular del problema. | Define una estrategia de búsqueda aplicable a distintas formulaciones. |
-| Ej.: priorizar asignaturas con mayor demanda. | Ej.: búsqueda local, recocido simulado o evolución. |
+### Búsqueda perturbativa
 
----
-
-## Lenguaje mínimo de búsqueda local
-
-- **Candidato:** solución que puede evaluarse.
-- **Movimiento o perturbación:** cambio aplicado a un candidato.
-- **Vecindario $N(x)$:** conjunto de candidatos alcanzables con un movimiento.
-- **Criterio de selección:** decide qué vecino pasa a ser el siguiente candidato.
-- **Reinicio:** introduce una nueva región cuando se detecta estancamiento.
-- **Criterio de término:** limita evaluaciones, iteraciones, tiempo o ausencia de mejora.
-
-La búsqueda evolutiva conserva este vocabulario, pero trabaja con una **población** y no con un único candidato.
+> Modificar un candidato a solución conocido para obtener uno nuevo.
 
 ---
 
-## Exploración y explotación
+## Conceptos clave
+
+### Explotación o intensificación
+
+> Concentrar la búsqueda en la porción del espacio de búsqueda visitada.
+
+### Exploración o diversificación
+
+> Ampliar la búsqueda a un fragmento más grande del espacio de búsqueda.
+
+---
+
+## Conceptos clave: Explotación vs exploración
+
+Ambas son relevantes. Debe existir un equilibrio que varía entre problemas.
+
+- Si nos concentramos en explotar, podemos estancarnos prematuramente en un óptimo local.
+- Si nos concentramos en explorar, la búsqueda puede no converger a una solución.
 
 ![w:610](images/convergence-ea.png)
 
-- **Explotar (intensificar):** refinar regiones que ya parecen prometedoras.
-- **Explorar (diversificar):** visitar regiones nuevas del espacio de búsqueda.
+---
 
-Explotar demasiado lleva a convergencia prematura en un óptimo local. Explorar demasiado impide consolidar mejoras. El equilibrio depende del problema, la representación y el presupuesto.
+## ¿Cómo buscan las metaheurísticas clásicas?
+
+### Candidato
+
+> Solución construida u obtenida de otro proceso que será evaluada y modificada en pos de mejoras.
+
+### Movimiento: perturbación
+
+> Cambio que se puede aplicar al candidato para generar nuevas soluciones.
+
+### Vecindario
+
+> Conjunto de nuevas soluciones generadas desde el candidato al aplicar el movimiento en las distintas opciones posibles.
+
+---
+
+## Criterio de selección
+
+> Directriz para seleccionar al siguiente candidato en la búsqueda.
+
+- **Alguna mejora:** primer vecino que mejora la función de evaluación.
+- **Mejor mejora:** vecino que maximiza la mejora de la función de evaluación.
+
+---
+
+## Criterios de reinicio y término
+
+### Criterios de reinicio
+
+> Criterios para evitar el estancamiento en un óptimo local.
+
+- Reiniciar luego de cierta cantidad de iteraciones.
+- Reiniciar desde un nuevo candidato inicial.
+
+### Criterio de término
+
+> Criterio de término de la metaheurística.
+
+- No encontrar un mejor vecino.
+- Cumplir un número de iteraciones.
+- Alcanzar un tiempo máximo.
+
+Estas decisiones concretan el equilibrio entre explotación y exploración.
 
 ---
 
 ## Metaheurísticas clásicas
 
-| Método | Mecanismo para evitar o manejar óptimos locales |
+Con estos mecanismos ya podemos comparar metaheurísticas clásicas. Hill Climbing es una búsqueda local de referencia. Las demás incorporan diversificación o aceptación menos codiciosa.
+
+| Método | Mecanismo de búsqueda |
 |---|---|
-| Hill-Climbing | Acepta mejoras en el vecindario. Puede detenerse en un óptimo local. |
-| Iterative Local Search | Perturba la solución y vuelve a ejecutar una búsqueda local. |
-| Tabu Search | Usa memoria para evitar movimientos o soluciones visitadas recientemente. |
-| Simulated Annealing | Acepta a veces una solución peor para escapar de un óptimo local. |
-| GRASP (Greedy Randomized Adaptive Search Procedure) | Construye una solución voraz con decisiones aleatorias y luego la mejora localmente. |
+| [Hill Climbing](https://en.wikipedia.org/wiki/Hill_climbing) | Acepta mejoras del vecindario y puede quedar en un óptimo local. |
+| [Iterated Local Search](https://en.wikipedia.org/wiki/Iterated_local_search) | Perturba la solución y reinicia la búsqueda local. |
+| [Tabu Search](https://en.wikipedia.org/wiki/Tabu_search) | Usa memoria para evitar movimientos recientes. |
+| [Simulated Annealing](https://en.wikipedia.org/wiki/Simulated_annealing) | Acepta ocasionalmente soluciones peores para escapar. |
+| [GRASP](https://en.wikipedia.org/wiki/Greedy_randomized_adaptive_search_procedure) | Alterna construcción voraz aleatorizada y búsqueda local. |
 
-<div class="callout">
-El objetivo es reconocer cómo cada método administra exploración, explotación y presupuesto.
-</div>
+Las técnicas difieren en cómo combinan intensificación, diversificación y aceptación.
 
 ---
 
-## Optimización con varios objetivos
+## ¿Y el multiobjetivo?
 
-En planificación académica, minimizar topes puede entrar en conflicto con minimizar salas o maximizar preferencias. Una suma ponderada los combina:
+En muchos problemas no buscamos optimizar un solo criterio, sino varios al mismo tiempo, que incluso pueden entrar en conflicto. Por ejemplo, minimizar costos y maximizar calidad.
 
-$$
-f(x)=w_1 f_1(x)+w_2 f_2(x)+\cdots+w_m f_m(x)
-$$
-
-Los pesos incorporan una preferencia que debe justificarse. La optimización con varios objetivos mantiene el conflicto explícito y busca un conjunto de soluciones de compromiso.
+- **Evaluación con pesos:** combina los objetivos en una sola función ponderada.
+- **Bi-objetivo o bi-criterio:** trata los objetivos por separado y busca un compromiso.
+- **Frente de Pareto:** conjunto de soluciones donde no se puede mejorar un objetivo sin empeorar otro.
 
 ---
 
-## Dominancia: comparar soluciones objetivo por objetivo
+## ¿Y el multiobjetivo?
 
-En minimización, $x$ domina a $y$ cuando no es peor en ningún objetivo y es mejor en al menos uno:
+La figura muestra este frente:
 
-$$
-f_i(x)\le f_i(y)\ \forall i
-\qquad\land\qquad
-\exists j:\ f_j(x)<f_j(y)
-$$
-
-| Solución | $f_1$ | $f_2$ |
-|---|---:|---:|
-| $A$ | 2 | 8 |
-| $B$ | 3 | 8 |
-| $C$ | 1 | 10 |
-
-$A$ domina a $B$: mejora $f_1$ y mantiene $f_2$. Entre $A$ y $C$ no hay dominancia: $C$ mejora $f_1$, pero empeora $f_2$.
-
----
-
-## Frente de Pareto: soluciones no dominadas
-
-El frente de Pareto reúne las soluciones que no son dominadas por ninguna otra:
-
-$$
-\mathcal{P}=\{x\in\Omega\mid \nexists y\in\Omega:\ y\text{ domina a }x\}
-$$
+- Los puntos azules (*bruteforce*) representan las soluciones evaluadas.
+- Los puntos rojos son las soluciones no dominadas.
+- El punto verde es una solución encontrada sobre el frente.
 
 ![w:330](images/multi-objective.png)
 
-En el gráfico, los puntos azules son soluciones evaluadas, los rojos forman el frente y el verde es una solución encontrada sobre él.
+---
 
-En el frente, mejorar un objetivo exige empeorar al menos otro. Elegir una solución requiere preferencias externas al algoritmo.
+## Configuración de parámetros en metaheurísticas
+
+Las metaheurísticas requieren parámetros, como número de iteraciones, tamaño del vecindario o probabilidad de aceptar soluciones peores. La forma de configurarlos influye directamente en los resultados.
+
+- **Parameter Tuning:** fija los valores antes de ejecutar, mediante pruebas o recomendaciones.
+- **Parameter Control:** modifica los valores durante la ejecución.
+  - **Deterministic:** sigue una regla fija.
+  - **Adaptive:** cambia según el desempeño observado.
+  - **Self-Adaptive:** evoluciona junto con las soluciones.
 
 ---
 
-## Parámetros: definirlos antes o durante la búsqueda
+## Configuración de parámetros en metaheurísticas
 
-![w:500](images/parameterconfig.png)
-
-- **Ajuste previo:** los valores se fijan antes de ejecutar, mediante pruebas o conocimiento previo.
-- **Control durante la ejecución:** los valores cambian mientras el algoritmo trabaja.
-  - *Determinista:* sigue una regla programada.
-  - *Adaptativo:* responde al desempeño observado.
-  - *Autoadaptativo:* los parámetros evolucionan junto con las soluciones.
-
-La elección entre ajuste previo y control durante la ejecución afecta la mutación, el tamaño de población y la presión de selección.
+![w:900](images/parameterconfig.png)
 
 ---
 
-## La transición clave: ¿por qué una población?
+## ¿Podemos buscar con varios candidatos simultáneamente?
 
-Una búsqueda local ve principalmente el vecindario de un candidato. Una población permite mantener varias hipótesis de solución al mismo tiempo.
-
-| Enfoque | Evolución de la búsqueda |
-|---|---|
-| Búsqueda local | Un candidato → una trayectoria |
-| Búsqueda poblacional | Una población → varias trayectorias |
-
-<div class="bridge">
-La computación evolutiva usa diversidad poblacional como memoria de regiones distintas y la selección como mecanismo para concentrar recursos en las más prometedoras.
-</div>
+- **Sí.** En lugar de avanzar con una sola solución, podemos trabajar con un conjunto de candidatos en paralelo.
+- Esto permite cubrir mejor distintas zonas del espacio de búsqueda y reducir el riesgo de quedar atrapado en un óptimo local.
+- Para ello utilizaremos **poblaciones**.
 
 ---
 
-## Idea central
+## Computación evolutiva
 
-> Las técnicas evolutivas son metaheurísticas inspiradas en la evolución natural. Transforman una población de soluciones mediante selección, variación y supervivencia.
+> Metaheurísticas bioinspiradas basadas en los principios de la teoría de la evolución y la selección natural de Charles Darwin.
 
-La evolución natural aporta la idea general. Sin embargo, la evaluación sigue siendo una decisión de ingeniería. La **aptitud** define qué significa que una solución esté bien adaptada al problema.
-
-| Biología | Optimización |
-|---|---|
-| Individuo | Solución candidata |
-| Ambiente | Función de evaluación y restricciones |
-| Reproducción | Generación de descendencia |
-| Adaptación | Mejor desempeño según el objetivo |
+- Tuvieron gran auge desde los años 90 y fueron creadas en los años 70.
+- Se conocen como **algoritmos evolutivos** (*EA, Evolutionary Algorithms*).
+- Amplían la búsqueda a varios candidatos simultáneamente.
+- Perturban los candidatos con operadores evolutivos clásicos.
 
 ---
 
-## Ciclo general de un algoritmo evolutivo
+## Algoritmos evolutivos: framework
 
 ![w:560](images/ea-workflow.png)
 
-$$
-P_t\longrightarrow P'_t\longrightarrow O_t\longrightarrow P_{t+1}
-$$
+---
 
-Selección de padres → variación → evaluación y supervivencia
+## Representación en algoritmos genéticos
 
-Cada flecha representa una decisión. Cambiar la representación, los operadores o el reemplazo cambia el comportamiento del algoritmo.
+En los algoritmos genéticos, cada **solución real** debe traducirse a una forma que el algoritmo pueda manipular. Para eso distinguimos dos niveles:
+
+- **Fenotipo, mundo real:** la solución tal como existe en el problema original, por ejemplo un tablero, un horario o una ruta.
+- **Genotipo, mundo evolutivo:** la forma codificada de la solución, utilizada por el algoritmo.
+- **Representación:** mapeo entre ambos mundos.
+  - **Codificación:** del mundo real al evolutivo.
+  - **Decodificación:** del mundo evolutivo al real.
 
 ---
 
-## Pseudocódigo: el orden importa
+## Ejemplo activo: problema de las 6 reinas
 
-```text
-P ← inicializar población
-evaluar P
-mientras no se cumpla el criterio de término:
-    padres ← seleccionar(P)
-    hijos ← variar(padres)          # recombinación y/o mutación
-    evaluar hijos
-    P ← seleccionar_supervivientes(P, hijos)
-retornar mejor solución observada
-```
-
-La calidad que vemos al final depende de **toda** esta cadena. Por eso, “usar un algoritmo genético” no es una especificación suficiente para reproducir un resultado.
-
----
-
-## Genotipo, fenotipo y representación
-
-<div class="columns">
-<div>
-
-### Fenotipo
-
-La solución interpretada en el dominio: tablero, horario, ruta o asignación de recursos.
-
-### Genotipo
-
-La codificación manipulada por el algoritmo: bits, vector real, permutación o árbol.
-
-</div>
-<div>
+- **Genotipo:** vector de representación $[5,3,1,6,4,2]$.
+- **Fenotipo:** configuración correspondiente del tablero.
 
 ![w:400](images/phenotype.png)
 
-**Codificar** lleva del fenotipo al genotipo. **Decodificar** permite interpretar un genotipo en el problema real.
+---
 
-</div>
-</div>
+## Componentes de una solución
+
+### Gen
+
+- Es cada elemento básico que forma la representación de un individuo.
+- Corresponde a una variable o posición dentro de la solución.
+
+### Alelo
+
+- Es el valor concreto que toma un gen en un individuo.
+- Representa una instanciación específica de esa variable.
 
 ---
 
-## Componentes de un individuo
+## Ejemplo activo: problema de las 6 reinas
 
-Para el vector de seis reinas $X=[5,3,1,6,4,2]$:
+Para $X=[5,3,1,6,4,2]$:
 
-- **Individuo o cromosoma:** el vector completo $X$.
-- **Gen:** una posición, por ejemplo $X[0]$, asociada a la primera columna.
-- **Alelo:** su valor particular, aquí $5$, que indica la fila de esa reina.
+- **Individuo, genotipo:** vector de representación $X$.
+- **Gen $X[0]$:** posición asociada a la primera columna.
+- **Alelo $X[0]$:** fila en la que está ubicada la reina de la primera columna.
 
-<div class="callout">
-Estos nombres ayudan a describir los operadores. Cada cambio debe tener una interpretación útil y debe preservar o reparar las restricciones necesarias.
-</div>
+![w:300](images/phenotype.png)
 
 ---
 
-## Una representación útil conecta con sus operadores
+## Función de fitness
 
-Una codificación debería:
+La **función de fitness** es la función de evaluación utilizada en los algoritmos genéticos.
 
-- cubrir todas las soluciones relevantes.
-- evitar, reparar o penalizar candidatos inválidos.
-- admitir variaciones pequeñas con significado.
-- permitir una evaluación eficiente.
-- evitar redundancia innecesaria.
-
-<div class="warn">
-Un cruzamiento de un punto sobre dos permutaciones puede repetir filas y eliminar otras. Para N reinas se requieren operadores de permutación o una estrategia explícita de reparación.
-</div>
+- Mide la calidad de cada genotipo y su capacidad de sobrevivir en el proceso evolutivo.
+- Refleja qué tan bien adaptado está un individuo al problema.
+- Normalmente decodifica el genotipo al fenotipo y mide su desempeño en el mundo real.
 
 ---
 
-## Aptitud: medir la calidad de cada individuo
+## Población
 
-La función de **aptitud** o *fitness* permite comparar individuos. Para N reinas podemos minimizar directamente los conflictos diagonales:
+Una población es el conjunto de **candidatos a solución** que el algoritmo manipula en cada generación.
 
-$$
-f(x)=C(x)
-$$
+- Se habla de **multiconjunto** porque pueden existir individuos repetidos.
+- Los individuos estáticos no cambian durante la ejecución.
+- Las poblaciones dinámicas evolucionan aplicando selección, mutación o recombinación.
+- El tamaño de la población $pop$ suele mantenerse constante.
 
-Si una implementación requiere maximizar, una transformación posible es:
-
-$$
-F(x)=\frac{1}{1+C(x)}
-$$
-
-La transformación debe preservar el orden relevante y no exagerar diferencias numéricas. En DEAP, el signo de los pesos permite declarar minimización o maximización sin cambiar artificialmente el objetivo.
+Es la base sobre la que actúan los operadores evolutivos que impulsan la búsqueda.
 
 ---
 
-## Población y diversidad
+## Diversidad
 
-Una población es un conjunto de candidatos en el que puede haber elementos repetidos. Su tamaño suele fijarse, pero una población grande no garantiza diversidad por sí sola.
+La diversidad indica **qué tan distintas** son las soluciones dentro de la población. Es clave para mantener un equilibrio entre **exploración** y **explotación**.
 
-| Dónde medir diversidad | Pregunta |
-|---|---|
-| Genotipo | ¿Los cromosomas son distintos? |
-| Fenotipo | ¿Representan soluciones distintas? |
-| Aptitud | ¿Obtienen calidades distintas? |
+**Formas de medirla:**
 
-Varios cromosomas diferentes pueden representar el mismo fenotipo. Por eso, la medida de diversidad debe corresponder al problema.
-
----
-
-## Diversidad: lo que conviene monitorear
-
-Para una población binaria, la entropía en la posición $j$ puede expresarse como:
-
-$$
-H_j=-p_j\log p_j-(1-p_j)\log(1-p_j)
-$$
-
-También se pueden usar distancia de Hamming, distancia euclidiana, individuos únicos o diversidad de objetivos.
-
-<div class="bridge">
-Registrar solo la mejor aptitud no permite saber si la población convergió de forma adecuada o perdió diversidad demasiado pronto.
-</div>
+- Variación en los valores de la función de fitness.
+- Cantidad de fenotipos diferentes, es decir, soluciones distintas en el mundo real.
+- Cantidad de genotipos diferentes, es decir, cromosomas distintos.
+- Métricas estadísticas como la entropía.
 
 ---
 
-## Operadores: tres decisiones diferentes
+## Operadores
 
-| Tipo | Pregunta | Ejemplos |
-|---|---|---|
-| Selección de padres | ¿Quién puede producir descendencia? | ruleta, ordenamiento, torneo |
-| Variación | ¿Cómo se producen nuevos candidatos? | recombinación, mutación |
-| Supervivencia | ¿Quién queda disponible en la próxima generación? | elitismo, ordenamiento, edad |
+Son los mecanismos principales que permiten que una población evolucione de una generación a otra. Se dividen en tres categorías:
 
-Separar estas etapas evita una confusión frecuente: ser elegido como padre no implica sobrevivir, y sobrevivir no implica tener más hijos.
+- **Operadores de selección de evolución:** determinan qué individuos se convierten en padres.
+- **Operadores de evolución:** mutación y recombinación producen nuevos candidatos.
+- **Operadores de selección de supervivencia:** deciden qué individuos permanecen en la población siguiente.
 
 ---
 
 ## Selección de padres
 
-| Método | Idea | Riesgo o control |
-|---|---|---|
-| Aleatoria | No usa la aptitud | Sirve como referencia, pero no aprovecha la calidad |
-| Ruleta | Probabilidad proporcional a la aptitud | Es sensible a la escala y a valores extremos |
-| Ordenamiento | Probabilidad según la posición ordenada | Controla la presión, pero pierde la magnitud absoluta |
-| Torneo | Muestrea $k$ y escoge el mejor | $k$ regula la presión |
+Los operadores de selección de padres filtran miembros de la población según su calidad, permitiéndoles ser padres de la próxima generación.
 
-![w:200](images/roulettewheel.png)
-
-Un torneo más grande aumenta la presión de selección y puede reducir la diversidad.
+- Buscan favorecer buenas características y mejorar globalmente la función de fitness.
+- No se debe dejar sin posibilidades a un individuo de baja calidad.
+- Pueden ser probabilísticos: aleatoria, ranking, torneos o ruletas.
 
 ---
 
-## Recombinación: combinar información útil
+## Ejemplo: Roulette-Wheel Selection
 
-La recombinación toma dos o más padres para formar descendencia. Es útil solo si los fragmentos heredados conservan significado en la representación.
+![w:500](images/roulettewheel.png)
 
-![w:460](images/recombination.png)
-
-- Cadenas binarias: uno o varios puntos de corte.
-- Vectores reales: combinaciones aritméticas o intermedias.
-- Permutaciones: PMX, OX o CX, que evitan duplicados.
-
-En N reinas, OX conserva un segmento de un padre y completa el resto según el orden del otro. El resultado sigue siendo una permutación válida.
+La probabilidad de selección es proporcional a la aptitud asignada a cada individuo.
 
 ---
 
-## Mutación: recuperar y abrir alternativas
+## Mutación
 
-La mutación es una perturbación estocástica aplicada a un individuo.
+> Operadores que permiten modificar la población.
 
-![w:470](images/mutation.png)
-
-| Representación | Mutaciones habituales |
-|---|---|
-| Bits | inversión de un bit |
-| Vectores reales | ruido gaussiano |
-| Permutaciones | intercambio, inserción, inversión |
-
-Una tasa muy alta se aproxima al muestreo aleatorio. Una tasa muy baja puede congelar la población. También se debe distinguir entre la probabilidad de mutar un individuo y la probabilidad de modificar cada gen.
+- Es una **perturbación** aplicada a un **padre** para generar un **hijo**.
+  - Es una operación unaria, sobre un solo individuo.
+- La perturbación se aplica de forma **aleatoria**.
+  - Las mutaciones son **estocásticas**.
+  - Pueden no ocurrir.
+- Permite conectar distintos sectores del espacio de búsqueda.
 
 ---
 
-## Recombinación y mutación cumplen roles complementarios
+## Mutaciones clásicas
 
-### Padres → recombinación → mutación → variantes evaluables
+![w:560](images/mutation.png)
 
-- La recombinación reutiliza y combina información ya presente en la población.
-- La mutación introduce alternativas que la recombinación por sí sola podría no alcanzar.
-- Ninguna garantiza una mejora. La aptitud se conoce después de evaluar.
-
-<div class="callout">
-En el lenguaje de las metaheurísticas, ambos son mecanismos de perturbación. La selección y el reemplazo determinan cuánto se aprovechan las soluciones que funcionaron bien.
-</div>
+Perturbaciones clásicas aplicadas a los individuos.
 
 ---
 
-## Selección de supervivientes
+## Recombinación
 
-![w:420](images/survivalrank.png)
+La recombinación mezcla la información genética de dos padres en uno o dos hijos.
 
-- **Reemplazo generacional:** la descendencia sustituye toda la población.
-- **Reemplazo estacionario:** se cambian pocos individuos por iteración.
-- **Ordenamiento por aptitud:** padres e hijos compiten y permanecen los mejores.
-- **Edad:** se limita cuántas generaciones puede permanecer un individuo.
-- **Elitismo:** se preserva explícitamente uno o más mejores individuos.
+- Es un procedimiento estocástico y aleatorizado.
+- Tiene una probabilidad de recombinación, por lo que puede no ocurrir.
+- También depende del punto de cruzamiento.
 
 ---
 
-## Elitismo: ventajas y riesgos
+## Recombinación: N reinas
 
-Con elitismo, el mejor valor observado no empeora entre generaciones, porque al menos un buen individuo se conserva.
+![w:900](images/recombination.png)
 
-Sin embargo, demasiado elitismo produce copias y reduce diversidad:
-
-**Conservar el mejor valor ↔ mantener diversidad para adaptarse**
-
-La elección del elitismo depende de cuántos individuos se preservan y de qué mecanismo mantiene suficiente exploración.
+Ejemplo de recombinación para N reinas.
 
 ---
 
-## Cómo empezar y cómo terminar
+## Mutación y recombinación
 
-<div class="columns">
-<div>
+Cuando se combinan, siguen el camino evolutivo:
 
-### Inicialización
-
-![w:330](images/initialpop.png)
-
-- aleatoria, para cubrir distintas regiones.
-- heurística, para incluir buenas soluciones conocidas.
-- híbrida, para equilibrar ambas.
-
-</div>
-<div>
-
-### Término
-
-- presupuesto de evaluaciones.
-- número de generaciones.
-- tiempo máximo.
-- calidad objetivo.
-- estancamiento o pérdida de diversidad.
-
-La comparación entre configuraciones requiere el mismo presupuesto de **evaluaciones de aptitud**.
-
-</div>
-</div>
+1. Recombinación → descendencia.
+2. Descendencia → mutaciones.
 
 ---
 
-## Cuatro familias históricas
+## Operadores de selección de supervivencia
+
+> Operadores que emulan la adaptabilidad al ambiente de la generación actual y/o su descendencia.
+
+---
+
+## Elitismo
+
+El elitismo permite mantener en la generación al o a los mejores individuos de la generación anterior respecto a su adaptación (*fitness*).
+
+Variantes:
+
+- Mantener al mejor generador de hijos.
+- Mantener al mejor fenotipo.
+- Mantener al mejor genotipo.
+
+---
+
+## Ranking de fitness
+
+Selecciona $n\leq size(pop)$ individuos ordenados según su valor de fitness.
+
+- En el ranking participan padres e hijos.
+- El tamaño de $n$ depende de otros criterios de supervivencia.
+
+---
+
+## Edad de los individuos
+
+La eliminación de individuos puede depender de su edad.
+
+- Simula la condición finita de permanencia de un individuo de una especie.
+- Se define un parámetro de **máxima cantidad de generaciones** para los individuos.
+
+---
+
+## Ejemplo: ranking de supervivencia
+
+![w:900](images/survivalrank.png)
+
+---
+
+## Criterios de inicio
+
+Para iniciar un algoritmo evolutivo se debe contar con una **población inicial**.
+
+- Esta población puede generarse con procesos heurísticos.
+- Se recomienda partir con una diversidad alta.
+- Los individuos pueden generarse aleatoriamente para obtener una población aleatorizada.
+
+![w:600](images/initialpop.png)
+
+---
+
+## Criterios de término
+
+Como gran parte de las metaheurísticas, los algoritmos evolutivos no tienen un criterio fijo de detención.
+
+- Se programan para pasar por soluciones de distinta calidad.
+- Pueden estar iterando eternamente si no se fija un criterio.
+
+Algunos criterios son:
+
+- **Convergencia:** porcentaje de la población con el mismo fitness.
+- Tiempo sin mejoras en la adaptación generacional.
+- Total de evaluaciones de fitness.
+- Número de iteraciones.
+- Tiempo de ejecución.
+
+---
+
+## Tipos de algoritmos evolutivos
+
+Existen distintas familias de algoritmos evolutivos. Las cuatro áreas principales son:
+
+1. Programación evolutiva (*EP, Evolutionary Programming*).
+2. Estrategias evolutivas (*ES, Evolution Strategies*).
+3. Algoritmos genéticos (*GA, Genetic Algorithms*).
+4. Programación genética (*GP, Genetic Programming*).
 
 ![w:600](images/ea.png)
 
-Las fronteras modernas son flexibles. Aun así, las familias ayudan a reconocer combinaciones frecuentes de representación y operadores.
+Comparten el ciclo evolutivo, pero difieren en representación, operadores y selección.
 
 ---
 
-## Comparación de familias evolutivas
+## Programación evolutiva (EP)
 
-| Familia | Representación típica | Variación característica | Énfasis |
-|---|---|---|---|
-| Programación evolutiva (EP) | Vectores reales | Mutación gaussiana | Predicción y competencia, con poca recombinación en su forma histórica |
-| Estrategias evolutivas (ES) | Vectores reales y parámetros | Recombinación y mutación | Autoadaptación y esquemas $(\mu,\lambda)$ / $(\mu+\lambda)$ |
-| Algoritmos genéticos (GA) | Cadenas, luego representaciones generales | Cruzamiento y mutación | Generaciones, selección y recombinación |
-| Programación genética (GP) | Árboles o programas | Intercambio y cambio de subárboles | Evolución de expresiones o programas |
+Fogel et al. (1966) propusieron la programación evolutiva como una simulación de adaptación. Cada individuo se comporta como una especie diferente y no hay recombinación.
 
-<div class="bridge">
-La familia por sí sola no permite reproducir un método. Es necesario especificar la representación y los operadores concretos.
-</div>
-
----
-
-## Estrategias de evolución: dos esquemas de supervivencia
-
-Con $\mu$ padres y $\lambda$ descendientes:
-
-| Esquema | Supervivientes |
+| Característica | Aplicación |
 |---|---|
-| $(\mu,\lambda)$ | Solo compiten los $\lambda$ hijos. Los padres desaparecen. |
-| $(\mu+\lambda)$ | Padres e hijos compiten juntos. Este esquema permite elitismo. |
+| Representación | Vector de valores reales |
+| Recombinación | No hay |
+| Mutación | Perturbación gaussiana |
+| Selección | Un padre muta para producir un hijo |
+| Supervivencia | Torneo round-robin |
 
-Esta distinción conecta directamente con la selección de supervivientes vista antes: el diseño del reemplazo modifica tanto presión de selección como diversidad.
-
----
-
-## Derivaciones y métodos inspirados en la naturaleza
-
-<div class="columns">
-<div>
-
-### Coevolución
-
-Una o varias poblaciones se evalúan en interacción. Puede modelar cooperación (simbiosis) o competencia (parasitismo).
-
-La calidad de una solución puede depender de con quién se compara, no solo de una función fija.
-
-</div>
-<div>
-
-### Otras metaheurísticas poblacionales
-
-- **Ant Colony Optimization:** la información colectiva se expresa mediante feromonas.
-- **Particle Swarm Optimization:** los candidatos se mueven guiados por experiencia propia y del grupo.
-
-Comparten la idea poblacional, pero sus mecanismos no son los de un algoritmo genético.
-
-</div>
-</div>
+Su especialización es la adaptación al ambiente mediante mutación.
 
 ---
 
-## Algoritmo evolutivo para N reinas
+## Estrategias evolutivas (ES)
 
-Diseño de un EA que encuentre una permutación con $C(x)=0$.
+Rechenberg y Schwefel desarrollaron las estrategias evolutivas durante las décadas de 1960 y 1970. Introducen recombinación y parámetros que pueden adaptarse durante la ejecución.
 
-| Decisión | Propuesta inicial razonable |
+| Característica | Aplicación |
 |---|---|
-| Individuo | Permutación de $\{1,\ldots,n\}$ |
-| Aptitud | Número de conflictos diagonales $C(x)$, a minimizar |
-| Padres | Torneo |
-| Recombinación | OX u otro operador de permutaciones |
-| Mutación | Intercambio de dos posiciones |
-| Supervivencia | Generacional con elitismo moderado |
-| Término | Éxito, presupuesto de evaluaciones o estancamiento |
+| Representación | Vector de valores reales |
+| Recombinación | Discreta o intermedia |
+| Mutación | Perturbación gaussiana |
+| Selección | Aleatoria uniforme |
+| Supervivencia | Elitismo |
 
-No son elecciones universales. Son hipótesis de diseño que deben evaluarse.
+En los esquemas $(\mu,\lambda)$ y $(\mu+\lambda)$:
 
----
-
-## Implementación: la biblioteca no reemplaza el diseño
-
-El material práctico complementario, [`03_DEAP.ipynb`](03_DEAP.ipynb) y [`notebook/03_ga_n_reinas.ipynb`](notebook/03_ga_n_reinas.ipynb), permite implementar el ciclo usando DEAP.
-
-DEAP separa:
-
-- definición de individuos y aptitud.
-- registro de operadores.
-- ejecución del ciclo evolutivo.
-- estadísticas y registro experimental.
-
-<div class="warn">
-La biblioteca puede ejecutar los operadores, pero no decide una representación válida, qué objetivos importan ni si una comparación experimental es justa.
-</div>
+- $(\mu,\lambda)$: solo compiten los $\lambda$ hijos.
+- $(\mu+\lambda)$: padres e hijos compiten juntos.
 
 ---
 
-## Protocolo experimental mínimo
+## Algoritmos genéticos (GA)
 
-1. Fijar instancia, restricciones y presupuesto de evaluaciones.
-2. Definir una línea base: muestreo aleatorio o heurística simple.
-3. Ejecutar varias semillas independientes.
-4. Registrar la mejor aptitud, el promedio, la dispersión y la diversidad por generación.
-5. Reportar éxito, costo computacional y distribución de resultados.
-6. Comparar curvas respecto de evaluaciones, no solo respecto de generaciones.
+Holland (1973) desarrolló los algoritmos genéticos, posteriormente estudiados por De Jong. Crean nuevas generaciones mediante cruzamiento y mutación. La población intermedia de padres vive una sola generación.
 
-La tasa de éxito es la proporción de ejecuciones que alcanzan $C(x)=0$.
-
----
-
-## Qué significa una comparación justa
-
-| Práctica insuficiente | Práctica recomendable |
+| Característica | Aplicación |
 |---|---|
-| Informar la mejor corrida. | Informar mediana, dispersión y tasa de éxito. |
-| Comparar generaciones con poblaciones de tamaños distintos. | Igualar evaluaciones de aptitud o declarar claramente el presupuesto. |
-| Cambiar todos los parámetros a la vez. | Realizar análisis de sensibilidad controlado. |
-| Usar una semilla implícita. | Registrar semillas, instancia y configuración. |
+| Representación | Vector o cadena de bits, entre otras |
+| Recombinación | Cruzamiento a un punto, probabilístico |
+| Mutación | *Bit-flip*, probabilística |
+| Selección de padres | Roulette-Wheel proporcional a fitness |
+| Supervivencia | Según edad o aptitud |
 
-<div class="callout">
-Un algoritmo evolutivo es estocástico. Una ejecución aislada solo muestra un resultado posible. Varias ejecuciones permiten estudiar el comportamiento habitual y su variabilidad.
-</div>
-
----
-
-## Casos para analizar
-
-1. ¿Qué se pierde y qué se gana al restringir N reinas a permutaciones?
-2. ¿Qué pasaría si usamos cruzamiento de un punto sin reparación?
-3. ¿Cómo se comparan población 50 por 100 generaciones y población 100 por 50 generaciones?
-4. ¿Qué señal mostraría que el elitismo está causando convergencia prematura?
-5. En un horario, ¿qué restricciones son duras y qué preferencias deberían ser objetivos?
-
-Estos casos conectan la implementación con decisiones de modelado.
+Usar un algoritmo genético no basta para reproducir un resultado: también importan la formulación, la representación, la aptitud y los operadores.
 
 ---
 
-## Síntesis
+## Programación genética (GP)
 
-$$
-\text{formular}
-\rightarrow
-\text{representar}
-\rightarrow
-\text{evaluar}
-\rightarrow
-\text{variar y seleccionar}
-\rightarrow
-\text{medir con evidencia}
-$$
+Koza (1990) derivó la programación genética de los algoritmos genéticos al cambiar la representación: los individuos son árboles o programas.
 
-- Un algoritmo evolutivo administra un presupuesto de evaluaciones sobre una población.
-- Representación, aptitud, operadores y supervivencia forman un diseño inseparable.
-- La selección impulsa la explotación. La variación y la diversidad sostienen la exploración.
-- Los resultados deben evaluarse con repeticiones, líneas base y presupuestos comparables.
+- Optimiza expresiones, código o modelos.
+- La recombinación intercambia subárboles.
+- La mutación modifica aleatoriamente el árbol.
+- Puede combinar optimización y aprendizaje.
 
-<div class="bridge">
-El ajuste de parámetros de modelos a partir de datos también puede formularse como un problema de optimización.
-</div>
+| Característica | Aplicación |
+|---|---|
+| Representación | Árboles |
+| Recombinación | Intercambio de subárboles |
+| Mutación | Cambio aleatorio en el árbol |
+| Selección de padres | Proporcional a fitness |
+| Supervivencia | Según edad o aptitud |
 
 ---
 
-## Referencias y atribución del material
+## Derivaciones
 
-### Material de referencia
-
-- **Gálvez Ramírez, Nicolás.** *Introducción a la Computación Evolutiva*, material docente de IPD434, Universidad Técnica Federico Santa María. Archivo base: [`03_ComputacionEvolutiva.ipynb`](03_ComputacionEvolutiva.ipynb).
-- Este documento adapta, reorganiza y amplía ese material para fortalecer las conexiones conceptuales.
-- Material práctico complementario: [`03_DEAP.ipynb`](03_DEAP.ipynb) y [`notebook/03_ga_n_reinas.ipynb`](notebook/03_ga_n_reinas.ipynb).
+La idea evolutiva también se extiende a poblaciones que interactúan o a modelos inspirados en otros sistemas naturales.
 
 ---
 
-## Referencias bibliográficas
+## Coevolución
 
-- Eiben, A. E. y Smith, J. E. *Introduction to Evolutionary Computing*, 2.ª ed., Springer, 2015.
-- Goldberg, D. E. *Genetic Algorithms in Search, Optimization, and Machine Learning*, Addison-Wesley, 1989.
-- Deb, K. *Multi-Objective Optimization Using Evolutionary Algorithms*, Wiley, 2001.
-- Fortin, F.-A. et al. “DEAP: Evolutionary Algorithms Made Easy”, *Journal of Machine Learning Research*, 2012.
+Las poblaciones se evalúan en interacción. Puede modelar cooperación o competencia:
+
+- Si una población mejora frente a otra, la relación puede cambiar según el criterio de evaluación.
+- La simbiosis representa coevolución positiva.
+- El parasitismo representa coevolución negativa.
+- Puede ser monopoblacional o multipoblacional, según quién evalúa a quién.
+
+---
+
+## Algoritmos bio-inspirados
+
+La idea poblacional también aparece fuera de las familias evolutivas:
+
+- **Ant Colony Optimization:** búsqueda colectiva mediante feromonas.
+- **Particle Swarm Optimization:** movimiento guiado por la experiencia propia y grupal.
+
+Comparten la búsqueda poblacional, pero no todos los mecanismos de un algoritmo genético.
+
+---
+
+## Ejemplo activo: problema de las N reinas
+
+Defina y programe un algoritmo evolutivo para resolver el problema de las N reinas.
+
+![w:300](images/nqueens.png)
