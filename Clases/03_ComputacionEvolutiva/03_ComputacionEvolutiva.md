@@ -785,6 +785,24 @@ Cuando se combinan, siguen el camino evolutivo:
 
 ---
 
+## Torneo de supervivencia: competir para permanecer
+
+El torneo también puede decidir qué individuos forman la población siguiente:
+
+1. Se sortean varios candidatos.
+2. Sobrevive el mejor según su adaptación.
+3. El proceso se repite hasta completar la población siguiente.
+
+- Un torneo pequeño conserva más diversidad y ejerce menor presión selectiva.
+- Un torneo grande favorece a los mejores, pero puede causar convergencia prematura.
+- En N reinas, gana el individuo con menos conflictos.
+
+<div class="bridge">
+El torneo puede seleccionar padres o supervivientes. El elitismo garantiza que el mejor pase a la siguiente generación.
+</div>
+
+---
+
 ## Elitismo
 
 El elitismo permite mantener en la generación al o a los mejores individuos de la generación anterior respecto a su adaptación (*fitness*).
@@ -852,118 +870,16 @@ Algunos criterios son:
 
 ## Tipos de algoritmos evolutivos
 
-Existen distintas familias de algoritmos evolutivos. Las cuatro áreas principales son:
+Las familias comparten el ciclo evolutivo, pero se diferencian principalmente por la representación y los operadores.
 
-1. Programación evolutiva (*EP, Evolutionary Programming*).
-2. Estrategias evolutivas (*ES, Evolution Strategies*).
-3. Algoritmos genéticos (*GA, Genetic Algorithms*).
-4. Programación genética (*GP, Genetic Programming*).
+| Familia | Representación típica | Rasgo distintivo |
+|---|---|---|
+| **EP** · programación evolutiva | Vectores | Mutación, sin recombinación |
+| **ES** · estrategias evolutivas | Vectores reales | Mutación y recombinación, con elitismo |
+| **GA** · algoritmos genéticos | Cadenas o vectores | Cruzamiento y mutación |
+| **GP** · programación genética | Árboles o programas | Intercambio de subárboles |
 
-![w:600](images/ea.png)
-
-Comparten el ciclo evolutivo, pero difieren en representación, operadores y selección.
-
----
-
-## Programación evolutiva (EP)
-
-Fogel et al. (1966) propusieron la programación evolutiva como una simulación de adaptación. Cada individuo se comporta como una especie diferente y no hay recombinación.
-
-| Característica | Aplicación |
-|---|---|
-| Representación | Vector de valores reales |
-| Recombinación | No hay |
-| Mutación | Perturbación gaussiana |
-| Selección | Un padre muta para producir un hijo |
-| Supervivencia | Torneo round-robin |
-
-En un torneo **round-robin**, cada individuo compite contra varios oponentes y sobrevive según sus victorias.
-
-Su especialización es la adaptación al ambiente mediante mutación.
-
----
-
-## Estrategias evolutivas (ES)
-
-Rechenberg y Schwefel desarrollaron las estrategias evolutivas durante las décadas de 1960 y 1970. Introducen recombinación y parámetros que pueden adaptarse durante la ejecución.
-
-| Característica | Aplicación |
-|---|---|
-| Representación | Vector de valores reales |
-| Recombinación | Discreta o intermedia |
-| Mutación | Perturbación gaussiana |
-| Selección | Aleatoria uniforme |
-| Supervivencia | Elitismo |
-
-Aquí, $\mu$ indica el número de padres y $\lambda$ el número de descendientes generados.
-
-En los esquemas $(\mu,\lambda)$ y $(\mu+\lambda)$:
-
-- $(\mu,\lambda)$: solo compiten los $\lambda$ hijos.
-- $(\mu+\lambda)$: padres e hijos compiten juntos.
-
----
-
-## Algoritmos genéticos (GA)
-
-Holland (1973) desarrolló los algoritmos genéticos, posteriormente estudiados por De Jong. Crean nuevas generaciones mediante cruzamiento y mutación. La población intermedia de padres vive una sola generación.
-
-| Característica | Aplicación |
-|---|---|
-| Representación | Vector o cadena de bits, entre otras |
-| Recombinación | Cruzamiento a un punto, probabilístico |
-| Mutación | *Bit-flip*, probabilística |
-| Selección de padres | Roulette-Wheel proporcional a fitness |
-| Supervivencia | Según edad o aptitud |
-
-Usar un algoritmo genético no basta para reproducir un resultado: también importan la formulación, la representación, la aptitud y los operadores.
-
----
-
-## Programación genética (GP)
-
-Koza (1990) derivó la programación genética de los algoritmos genéticos al cambiar la representación: los individuos son árboles o programas.
-
-- Optimiza expresiones, código o modelos.
-- La recombinación intercambia subárboles.
-- La mutación modifica aleatoriamente el árbol.
-- Puede combinar optimización y aprendizaje.
-
-| Característica | Aplicación |
-|---|---|
-| Representación | Árboles |
-| Recombinación | Intercambio de subárboles |
-| Mutación | Cambio aleatorio en el árbol |
-| Selección de padres | Proporcional a fitness |
-| Supervivencia | Según edad o aptitud |
-
----
-
-## Derivaciones
-
-La idea evolutiva también se extiende a poblaciones que interactúan o a modelos inspirados en otros sistemas naturales.
-
----
-
-## Coevolución
-
-En la coevolución, la aptitud de un individuo depende de su interacción con otros individuos o poblaciones que también evolucionan. Por eso, una solución puede mejorar o empeorar según cambien sus oponentes o colaboradores.
-
-- La simbiosis representa coevolución positiva.
-- El parasitismo representa coevolución negativa.
-- Puede ser monopoblacional cuando interactúan individuos de la misma población.
-- Puede ser multipoblacional cuando interactúan poblaciones diferentes.
-
----
-
-## Algoritmos bio-inspirados
-
-La idea poblacional también aparece fuera de las familias evolutivas:
-
-- **Ant Colony Optimization:** búsqueda colectiva mediante feromonas.
-- **Particle Swarm Optimization:** movimiento guiado por la experiencia propia y grupal.
-
-Comparten la búsqueda poblacional, pero no todos los mecanismos de un algoritmo genético.
+El ejemplo de N reinas corresponde a un **algoritmo genético**, porque evoluciona una representación por permutación mediante selección, recombinación y mutación.
 
 ---
 
