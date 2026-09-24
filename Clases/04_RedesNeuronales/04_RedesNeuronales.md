@@ -880,3 +880,185 @@ Ambos modelos calculan una combinación afín de las características. Cambian l
 
 Una sigmoide aplicada al puntaje produce una probabilidad diferenciable. Con entropía cruzada se obtiene regresión logística, una conexión directa con las redes neuronales.
 
+---
+
+## Redes neuronales con varias capas
+
+Una red neuronal conecta unidades de cálculo. La salida de una capa se usa como entrada de la siguiente.
+
+![w:720](images/dnn.png)
+
+- La **arquitectura** describe cuántas capas y unidades tiene la red, y cómo están conectadas.
+- Una red con una o más capas ocultas es una red multicapa.
+- Cuando hay muchas capas ocultas, se habla de una red profunda.
+
+---
+
+## Tipos de capas
+
+| Capa | Rol | Características |
+|---|---|---|
+| Entrada | Recibe la representación de cada ejemplo | Tiene una unidad por característica. No transforma los datos por sí misma. |
+| Oculta | Construye representaciones internas | Aplica pesos, sesgos y una activación. Puede haber una o varias. |
+| Salida | Produce la predicción final | Su tamaño y activación dependen de la tarea. |
+
+Para una imagen, la entrada puede contener píxeles. Para datos tabulares, puede contener variables como edad, consumo o temperatura.
+
+---
+
+## Conexión entre capas
+
+En una capa densa, cada unidad de una capa se conecta con todas las unidades de la capa siguiente. Cada conexión tiene un peso aprendido.
+
+$$
+\mathbf z^{(\ell)}=\mathbf W^{(\ell)}\mathbf a^{(\ell-1)}+\mathbf b^{(\ell)},
+\qquad
+\mathbf a^{(\ell)}=g^{(\ell)}\big(\mathbf z^{(\ell)}\big)
+$$
+
+- $\mathbf a^{(0)}=\mathbf x$ es el vector de entrada.
+- $\mathbf W^{(\ell)}$ contiene los pesos entre las capas $\ell-1$ y $\ell$.
+- $\mathbf b^{(\ell)}$ contiene un sesgo por unidad de la capa $\ell$.
+- $g^{(\ell)}$ es la función de activación aplicada a cada componente.
+
+---
+
+## Profundidad, ancho y salida
+
+- **Profundidad:** número de capas ocultas. Aumentarla permite construir representaciones en varios niveles.
+- **Ancho:** número de unidades en una capa. Afecta la cantidad de patrones que la capa puede representar.
+- **Parámetros:** cada conexión y cada sesgo se ajustan durante el entrenamiento.
+
+La capa de salida debe corresponder con el objetivo:
+
+| Tarea | Salida habitual |
+|---|---|
+| Regresión | Una unidad lineal por valor a predecir |
+| Clasificación binaria | Una unidad sigmoide |
+| Clasificación multiclase | Una unidad por clase y softmax |
+
+---
+
+## Función de activación
+
+Una función de activación transforma el puntaje $z$ de una unidad en su salida $a$:
+
+$$
+z=\mathbf w^\top\mathbf x+b,
+\qquad
+$$
+
+Su función principal es introducir no linealidad. Sin activaciones no lineales, varias capas densas seguidas se reducen a una sola transformación lineal.
+
+<div class="callout">
+La activación de las capas ocultas permite representar relaciones que un perceptrón o una regresión lineal no pueden capturar por sí solos.
+</div>
+
+---
+
+## Activaciones lineal y ReLU
+
+<div class="columns">
+<div>
+
+### Lineal
+
+$$g(z)=z$$
+
+- No limita ni transforma de forma no lineal el puntaje.
+- Se usa habitualmente en la salida de una regresión.
+- No aporta capacidad adicional en capas ocultas.
+
+</div>
+<div>
+
+### ReLU
+
+$$g(z)=\max(0,z)$$
+
+- Devuelve cero para valores negativos.
+- Es una elección frecuente para capas ocultas.
+- Puede dejar una unidad con salida cero de forma persistente.
+
+</div>
+</div>
+
+---
+
+## Leaky ReLU
+
+Leaky ReLU conserva una pendiente pequeña cuando el puntaje es negativo:
+
+$$
+g(z)=
+\begin{cases}
+z, & z>0\\
+\alpha z, & z\leq 0
+\end{cases}
+\qquad \alpha>0\text{ pequeño}
+$$
+
+- Es una variante de ReLU para reducir el riesgo de unidades inactivas.
+- Para $z<0$, la salida y el gradiente no son exactamente cero.
+- Se usa en capas ocultas cuando ReLU presenta muchas unidades inactivas.
+
+---
+
+## Sigmoide y tangente hiperbólica
+
+<div class="columns">
+<div>
+
+### Sigmoide
+
+$$\sigma(z)=\frac{1}{1+e^{-z}}$$
+
+- Produce valores entre 0 y 1.
+- En la salida binaria puede interpretarse como probabilidad.
+- En capas ocultas puede producir gradientes muy pequeños para valores extremos.
+
+</div>
+<div>
+
+### Tangente hiperbólica
+
+$$\tanh(z)=\frac{e^z-e^{-z}}{e^z+e^{-z}}$$
+
+- Produce valores entre $-1$ y $1$.
+- Está centrada en cero.
+- También puede saturarse para valores de gran magnitud.
+
+</div>
+</div>
+
+---
+
+## Softmax para varias clases
+
+Para $K$ puntajes de salida $z_1,\ldots,z_K$, softmax produce una distribución de probabilidades:
+
+$$
+\operatorname{softmax}(\mathbf z)_k=
+\frac{e^{z_k}}{\sum_{j=1}^{K}e^{z_j}}
+$$
+
+- Cada salida está entre 0 y 1.
+- La suma de las $K$ salidas es 1.
+- La clase predicha suele ser la de mayor probabilidad.
+
+<div class="bridge">
+Softmax se aplica en la capa de salida para clasificación multiclase con clases mutuamente excluyentes.
+</div>
+
+---
+
+## Selección de activación
+
+| Ubicación o tarea | Elección habitual | Motivo |
+|---|---|---|
+| Capas ocultas | ReLU o Leaky ReLU | Introducen no linealidad y suelen facilitar el entrenamiento. |
+| Salida de regresión | Lineal | Permite predecir valores sin restringir su rango. |
+| Salida binaria | Sigmoide | Produce un puntaje entre 0 y 1. |
+| Salida multiclase | Softmax | Distribuye la probabilidad entre las clases. |
+
+La activación se elige junto con la pérdida y la tarea. Por ejemplo, sigmoide y entropía cruzada binaria forman una combinación habitual.
