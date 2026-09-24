@@ -9,13 +9,17 @@ style: |
   h2, h3 { color: #12394f; }
   code { font-size: 0.84em; }
   table { font-size: 0.77em; }
-  img { max-height: 430px; }
+  img { max-height: 430px; display: block; margin: 0 auto; }
   .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
   .callout { background: #eef6fb; border-left: 6px solid #2f6f9f; border-radius: 6px; padding: 0.7em 0.9em; }
   .bridge { background: #f7f8fa; border-left: 6px solid #6b7280; border-radius: 6px; padding: 0.65em 0.9em; }
   .warn { background: #fff4df; border-left: 6px solid #b7791f; border-radius: 6px; padding: 0.65em 0.9em; }
   .example-space { background: #eef8f1; border-left: 6px solid #2f855a; border-radius: 6px; padding: 0.65em 0.9em; }
   .small { font-size: 0.82em; }
+  .diagram-focus { width: 650px; height: 520px; margin: 0 auto; overflow: hidden; position: relative; }
+  .diagram-focus img { position: absolute; width: auto; height: 580px; max-width: none; max-height: none; left: -106px; top: -16px; margin: 0; }
+  .matrix-focus { text-align: center; }
+  .matrix-focus img { display: block; width: 900px; max-width: 100%; height: auto; max-height: none; margin: 28px auto 0; }
 ---
 <!-- _class: lead -->
 
@@ -25,7 +29,6 @@ style: |
 ## Redes neuronales
 ### De evaluación de datos a arquitecturas profundas
 
-Dr. Nicolás Gálvez Ramírez<br>
 Dr. Patricio Olivares Roncagliolo
 
 ---
@@ -72,6 +75,24 @@ Al finalizar se espera poder:
 
 ---
 
+## Aprendizaje Automático
+
+El aprendizaje automático (*Machine Learning*) reúne métodos que ajustan un modelo a partir de ejemplos para producir predicciones o decisiones sobre observaciones nuevas.
+
+<div class="callout">
+Aprender significa capturar regularidades de los datos para generalizar a observaciones que todavía no hemos visto.
+</div>
+
+---
+
+## Aprendizaje Automático
+
+<div class="diagram-focus">
+<img src="images/diagrama.png" alt="Relación entre inteligencia artificial, aprendizaje automático y aprendizaje profundo">
+</div>
+
+---
+
 ## ¿Cuándo usar aprendizaje automático?
 
 <div class="columns">
@@ -81,7 +102,7 @@ Al finalizar se espera poder:
 
 **Programación explícita**
 
-Una persona debe anticipar los patrones, escribir las reglas y mantener sus excepciones.
+Se debe anticipar los patrones, escribir las reglas y mantener sus excepciones.
 
 </div>
 <div>
@@ -90,41 +111,243 @@ Una persona debe anticipar los patrones, escribir las reglas y mantener sus exce
 
 **Aprendizaje desde ejemplos**
 
-El modelo ajusta sus parámetros para capturar regularidades presentes en los datos.
+Un modelo ajusta sus parámetros para capturar regularidades presentes en los datos.
 
 </div>
 </div>
 
-No es la opción adecuada si una regla simple resuelve el problema con mayor seguridad, ni cuando los datos disponibles no representan el contexto de uso.
+Qué solución usar depende de si existe una regla simple que permita resolver el problema, o si los datos disponibles permiten obtener una relación generalizable.
 
 ---
 
-## Formulación supervisada
+## Bibliotecas de Aprendizaje Automático
 
-En clasificación:
+<div class="columns">
+<div>
+
+![w:420](images/bibliotecas.png)
+
+</div>
+<div>
+
+- **NumPy y Pandas:** representar y preparar datos.
+- **Scikit-learn:** modelos clásicos, particiones y métricas.
+- **PyTorch:** construir y entrenar redes neuronales.
+
+</div>
+</div>
+
+<div class="bridge">
+La biblioteca facilita el trabajo, pero la tarea, los datos y la métrica siguen siendo decisiones de diseño.
+</div>
+
+---
+
+## Scikit-Learn
+
+Scikit-learn es una biblioteca de Python para aprendizaje automático. Incluye modelos de clasificación y regresión, herramientas para preparar datos y métricas para evaluar resultados.
+
+<div class="columns">
+<div>
+
+**Instalación**
+
+```bash
+pip install -U scikit-learn
+```
+
+</div>
+<div>
+
+**Enlaces**
+
+[Sitio oficial](https://scikit-learn.org/stable/)<br>
+[Guía de instalación](https://scikit-learn.org/stable/install.html)
+
+</div>
+</div>
+
+<div class="bridge">
+Con la biblioteca instalada, el trabajo se organiza en objetos con responsabilidades distintas.
+</div>
+
+---
+
+## Scikit-Learn
+
+Una ventaja de Scikit-Learn es la consistencia de su API: sus objetos siguen convenciones comunes y separan sus responsabilidades.
+
+| Objeto | Responsabilidad | Método típico |
+|---|---|---|
+| Estimador | Ajustar parámetros | `fit(X, y)` |
+| Transformador | Cambiar la representación | `fit` y `transform` |
+| Predictor | Producir salidas | `predict(X)` |
+
+Un flujo típico encadena: **ajustar con entrenamiento → transformar sin volver a ajustar → predecir sobre datos nuevos**.
+
+Así, podemos cambiar de modelo sin rehacer toda la lógica experimental: `fit` ajusta, `transform` transforma y `predict` predice.
+
+---
+
+## Tipos de Aprendizaje Automático
+
+Los paradigmas se distinguen por la información que guía el aprendizaje.
+
+| Tipo | Información disponible | Qué busca el modelo | Ejemplo |
+|---|---|---|---|
+| Supervisado | Entradas con objetivo conocido | Predecir el objetivo de un caso nuevo | Estimar consumo eléctrico desde mediciones históricas |
+| No supervisado | Datos sin objetivo | Encontrar grupos o estructura | Agrupar usuarios según su patrón de uso |
+| Semisupervisado | Pocas etiquetas y muchos datos sin etiqueta | Aprovechar ambos conjuntos | Clasificar imágenes médicas con pocas etiquetas |
+| Por refuerzo | Estados, acciones y recompensas | Elegir acciones con mayor retorno | Controlar el uso de energía de un sistema |
+
+---
+
+## Aprendizaje Supervisado
+
+Cada ejemplo de entrenamiento contiene una entrada y su objetivo conocido:
+
+$$
+\mathcal D=\{(x_i,y_i)\}_{i=1}^{n}
+$$
+
+El modelo ajusta sus parámetros para que, dada una entrada nueva $x$, su predicción $f_\theta(x)$ se aproxime al objetivo esperado $y$.
+
+<div class="bridge">
+La forma del objetivo y define la tarea. Puede representar una categoría o una cantidad.
+</div>
+
+---
+
+## Tipos de Aprendizaje Supervisado
+
+El objetivo $y$ determina qué debe predecir el modelo.
+
+| Tarea | Forma del objetivo | Pregunta | Ejemplos |
+|---|---|---|---|
+| Clasificación | Categoría o etiqueta | ¿A qué clase pertenece? | Detectar una falla, filtrar spam, identificar una prenda |
+| Regresión | Cantidad numérica | ¿Qué valor se espera? | Estimar consumo eléctrico, precio o temperatura |
+
+Esta diferencia define la salida del modelo, la función de pérdida y la métrica de evaluación.
+
+---
+
+## Clasificación: predecir una categoría
+
+Cada objetivo pertenece a una de $K$ clases posibles:
 
 $$
 f_\theta:\mathbb R^d\rightarrow\{1,\dots,K\}
 $$
 
-En regresión:
+- **Clasificación binaria:** dos clases posibles, por ejemplo `falla` y `sin falla`.
+- **Clasificación multiclase:** una clase entre varias posibles, como `manzana`, `plátano` o `naranja`.
+
+<div class="example-space">
+Un filtro de correo puede clasificar un mensaje como "spam" o "no spam". El objetivo es asignar una etiqueta, no medir una cantidad.
+</div>
+
+---
+
+## Regresión: predecir una cantidad
+
+El objetivo es un valor numérico continuo, o un vector de valores:
 
 $$
 f_\theta:\mathbb R^d\rightarrow\mathbb R^m
 $$
 
-Se estiman parámetros $\theta$ minimizando una pérdida empírica:
+Por ejemplo, un modelo puede estimar el consumo eléctrico de la próxima hora en kWh, la temperatura de un equipo en $^\circ\mathrm{C}$ o el precio de una vivienda en millones.
 
-$$
-\hat\theta=\arg\min_\theta\frac{1}{n}\sum_{i=1}^{n}
-\ell\big(y_i,f_\theta(x_i)\big)
-$$
-
-$x_i$ contiene las características de una observación, $y_i$ es su objetivo conocido y $\ell$ cuantifica el costo de la predicción. Entrenar consiste en ajustar $\theta$ para reducir ese costo.
+<div class="example-space">
+Un pronóstico de consumo de 120 kWh no pertenece a una clase. Debe compararse con el consumo real y el error conserva la unidad del problema.
+</div>
 
 ---
 
-## Particiones del conjunto de datos
+## Componentes de un experimento supervisado
+
+![w:1120](images/flujo_modelo_supervisado.png)
+
+<div class="bridge">
+La pérdida guía el ajuste de θ con los datos de entrenamiento. La validación permite elegir hiperparámetros y la prueba se reserva para reportar el desempeño final.
+</div>
+
+---
+
+## Protocolo de entrenamiento y evaluación supervisada
+
+La salida $\hat y$ define si la tarea es clasificación o regresión. El protocolo experimental define cómo se ajusta el modelo y cómo se estima su desempeño fuera de los datos usados para decidir.
+
+| Componente | Rol formal | Se desarrolla en |
+|---|---|---|
+| Parámetros $\theta$ y pérdida $\ell$ | Ajustar el modelo con entrenamiento | Pérdida promedio |
+| Datos y preprocesamiento | Preservar la información disponible sin fuga | Particiones y preprocesamiento |
+| Hiperparámetros $\mathcal H$ | Elegir una configuración con validación | Selección de modelos |
+| Métricas | Cuantificar la calidad de las predicciones | Evaluación de clasificación y regresión |
+
+---
+
+## Cómo se ajustan los parámetros del modelo
+
+Sea $\mathcal D_{\mathrm{train}}=\{(x_i,y_i)\}_{i=1}^{n_{\mathrm{train}}}$. Cada ejemplo produce un error mediante la pérdida $\ell(\hat y,y)$.
+
+$$
+\widehat L_{\mathrm{train}}(\theta)
+=\frac{1}{n_{\mathrm{train}}}\sum_{i=1}^{n_{\mathrm{train}}}
+\ell\big(f_\theta(x_i),y_i\big)
+$$
+
+El entrenamiento resume los errores individuales en una pérdida promedio y busca los parámetros que la minimizan:
+
+$$
+\hat\theta=\arg\min_\theta \widehat L_{\mathrm{train}}(\theta)
+$$
+
+Esta optimización responde cuánto se equivoca el modelo en los ejemplos disponibles para aprender. Un error bajo allí no garantiza un buen desempeño en ejemplos nuevos.
+
+---
+
+## Parámetros e hiperparámetros en el aprendizaje
+
+Los **parámetros** son valores internos que el modelo aprende, como pesos y sesgos.
+Los **hiperparámetros** configuran el modelo y su entrenamiento, como arquitectura, tasa de aprendizaje, tamaño de lote y regularización.
+
+$\mathcal A_{\mathbf h}$ es el procedimiento de entrenamiento definido por $\mathbf h$. Usa $\mathcal D_{\mathrm{train}}$ para calcular gradientes y actualizar los parámetros.
+
+$$
+\hat\theta(\mathbf h)=\mathcal A_{\mathbf h}\big(\mathcal D_{\mathrm{train}}\big)
+$$
+
+$\hat\theta(\mathbf h)$ son los parámetros finales aprendidos con esa configuración.
+
+---
+
+## Selección de hiperparámetros mediante validación
+
+Cada configuración $\mathbf h$ produce una función entrenada $f_{\hat\theta(\mathbf h)}$, definida por los parámetros obtenidos. La validación permite comparar esas funciones sin usar todavía el conjunto de prueba:
+
+$$
+\mathbf h^*=\arg\min_{\mathbf h\in\mathcal H}
+\widehat L_{\mathrm{val}}\big(\hat\theta(\mathbf h)\big)
+$$
+
+- $\mathcal H$: conjunto de configuraciones candidatas.
+- $\widehat L_{\mathrm{val}}$: pérdida promedio calculada sobre validación.
+- $\mathbf h^*$: configuración cuyo modelo obtiene la menor pérdida de validación.
+
+La prueba se reserva para estimar el desempeño final de la configuración seleccionada.
+
+---
+
+## Particiones para ajuste, selección y evaluación
+
+El conjunto de datos se divide en subconjuntos disjuntos:
+
+$$
+\mathcal D=\mathcal D_{\mathrm{train}}\;\dot\cup\;
+\mathcal D_{\mathrm{val}}\;\dot\cup\;
+\mathcal D_{\mathrm{test}}
+$$
 
 | Partición | Uso | ¿Ajusta decisiones? |
 |---|---|---|
@@ -138,371 +361,522 @@ Preprocesar con estadísticas calculadas sobre todos los datos, seleccionar mode
 
 ---
 
+## Porcentajes habituales de partición
+
+Los porcentajes son orientativos. Elija la proporción según el tamaño de los datos y la precisión necesaria.
+
+| Estructura | Proporción | Cuándo usarla |
+|---|---:|---|
+| Entrenamiento / prueba | 80  / 20 | Caso general o validación cruzada |
+| Entrenamiento / prueba | 70 / 30 o 60 / 40 | Dataset grande con prueba más estable |
+| Entrenamiento / validación / prueba | 80 / 10 / 10 | Ajuste moderado de parámetros |
+| Entrenamiento / validación / prueba | 70 / 15 / 15 | Dataset grande o muchas configuraciones |
+| Entrenamiento / validación / prueba | 90 / 5 / 5 | Dataset muy grande. El 5% debe bastar para validar y probar |
+
+---
+
+## Preprocesamiento
+
+Un transformador, por ejemplo un escalador o codificador, debe estimarse **únicamente** en $\mathcal D_{\mathrm{train}}$:
+
+$$
+\widehat T=\operatorname{fit}(X_{\mathrm{train}}),
+\qquad
+X_s'=\widehat T(X_s),
+\quad
+s\in\{\mathrm{train},\mathrm{val},\mathrm{test}\}
+$$
+
+Esto permite aplicar la misma representación a cada partición sin incorporar información de validación o prueba durante el ajuste.
+
+---
+
+## Secuencia de selección y prueba final
+
+1. **Dividir** los datos respetando grupos, tiempo y clases cuando corresponda.
+2. **Ajustar** el preprocesamiento solo con entrenamiento.
+3. **Transformar** entrenamiento, validación y prueba con esos mismos parámetros.
+4. **Seleccionar** arquitectura e hiperparámetros usando validación.
+5. **Evaluar** la prueba una sola vez al final.
+
+---
+
+## Métricas de evaluación
+
+Una métrica resume la calidad de las predicciones comparando los objetivos reales $y$ con las predicciones $\hat y$:
+
+$$
+M\big(\mathbf y,\hat{\mathbf y}\big)\in\mathbb R
+$$
+
+La métrica debe responder a la decisión que se quiere apoyar. Por eso importa:
+
+- qué error se considera relevante
+- si las clases están desbalanceadas
+- qué unidades tiene el objetivo
+- qué costo tiene equivocarse
+
+Una misma predicción puede parecer buena o mala según la métrica utilizada.
+
+---
+
+## Métricas para clasificación
+
+En clasificación, la predicción es una etiqueta o un puntaje que luego se convierte en etiqueta mediante un umbral.
+
+En clasificación binaria, la calidad del modelo se describe contando aciertos y errores: verdaderos positivos (TP), verdaderos negativos (TN), falsos positivos (FP) y falsos negativos (FN).
+
+---
+
+## Clasificación binaria: aciertos y errores
+
+Supongamos que la clase positiva representa la condición que queremos detectar:
+
+| Resultado | Condición real | Predicción | Interpretación | Ejemplo |
+|---|---|---|---|---|
+| $TP$ | Positiva | Positiva | Acierto al detectar la condición | <img src="images/cinco.jpg" alt="esto es 5" width="48" style="display:inline-block; vertical-align:middle; margin-right:8px;">esto es 5 |
+| $TN$ | Negativa | Negativa | Acierto al descartar la condición | <img src="images/tres.jpg" alt="esto no es 5" width="48" style="display:inline-block; vertical-align:middle; margin-right:8px;">esto no es 5 |
+| $FP$ | Negativa | Positiva | Falsa alarma | <img src="images/tres.jpg" alt="esto no es 5" width="48" style="display:inline-block; vertical-align:middle; margin-right:8px;">esto no es 5 |
+| $FN$ | Positiva | Negativa | Omisión de un caso real | <img src="images/cinco.jpg" alt="esto es 5" width="48" style="display:inline-block; vertical-align:middle; margin-right:8px;">esto es 5 |
+
+El significado de "positivo" depende de la decisión. No tiene por qué corresponder a la clase más frecuente.
+
+---
+
 ## Matriz de confusión binaria
 
-![w:500](images/matrizConfusion.png)
+Una matriz de confusión cruza la clase real con la clase predicha y cuenta cuántos casos caen en cada combinación.
 
-| | Predice positivo | Predice negativo |
-|---|---:|---:|
-| Real positivo | $TP$ | $FN$ |
-| Real negativo | $FP$ | $TN$ |
-
-El significado de “positivo” debe asociarse a la condición relevante, no necesariamente a la clase más frecuente.
-
-$TP$ y $TN$ son aciertos. $FP$ es una falsa alarma y $FN$ una omisión. La importancia de cada error depende del problema, no de la tabla.
+En clasificación binaria, sus cuatro celdas corresponden a $TP$, $TN$, $FP$ y $FN$. Así permite observar por separado los aciertos y los tipos de error.
 
 ---
 
-## Métricas de clasificación
+## Matriz de confusión binaria
 
-$$
-\text{exactitud}=\frac{TP+TN}{TP+TN+FP+FN}
-$$
-
-$$
-\text{precisi\'on}=\frac{TP}{TP+FP},\qquad
-\text{exhaustividad}=\frac{TP}{TP+FN}
-$$
-
-$$
-\text{specificity}=\frac{TN}{TN+FP}
-$$
-
-$$
-F_1=2\frac{\text{precisi\'on}\cdot\text{exhaustividad}}
-{\text{precisi\'on}+\text{exhaustividad}}
-$$
-
-La precisión responde “¿cuántos positivos predichos eran correctos?”. La exhaustividad o *recall* responde “¿cuántos positivos reales fueron detectados?”.
-
----
-
-## Elegir una métrica
-
-- Exactitud (*accuracy*): clases balanceadas y costos semejantes.
-- Exhaustividad o sensibilidad (*recall*): omitir un positivo es costoso.
-- Precisión (*precision*): una falsa alarma es costosa.
-- $F_1$: compromiso entre precisión y exhaustividad.
-- ROC-AUC o PR-AUC: comparar puntajes a través de umbrales.
-
-<div class="example-space">
-En detección de fallas raras, una exactitud de $99\%$ puede obtenerse prediciendo siempre “sin falla”. La métrica debe reflejar la decisión operacional.
+<div class="matrix-focus">
+<img src="images/matrizConfusion.png" alt="Matriz de confusión binaria">
 </div>
 
 ---
 
-## Métricas de regresión
+## Cómo leer una matriz de confusión
+
+La matriz cruza dos perspectivas sobre los mismos casos:
+
+- **Filas:** condición real observada.
+- **Columnas:** clase predicha por el modelo.
+- **Diagonal:** aciertos $TP$ y $TN$.
+- **Fuera de la diagonal:** errores $FP$ y $FN$.
+
+La matriz conserva los conteos necesarios para calcular exactitud, precisión, exhaustividad y especificidad. La importancia de cada celda depende del problema.
+
+---
+
+## Cálculo de métricas a partir de una matriz de confusión
+
+El notebook [04_clasificacion_titanic.ipynb](notebook/04_clasificacion_titanic.ipynb) reproduce el cálculo sobre el dataset [Titanic: Machine Learning from Disaster](https://www.kaggle.com/competitions/titanic/data). Sobre sus 179 casos de prueba:
+
+| | Predice positivo | Predice negativo |
+|---|---:|---:|
+| Real positivo | $TP=59$ | $FN=17$ |
+| Real negativo | $FP=16$ | $TN=87$ |
+
+- Exactitud: $(59+87)/179=81{,}6\%$.
+- Precisión: $59/(59+16)=78{,}7\%$.
+- Exhaustividad: $59/(59+17)=77{,}6\%$.
+
+La misma matriz puede verse "bien" o "mal" según qué error sea más costoso.
+
+---
+
+## Exactitud
+
+**Exactitud (*accuracy*)**
+
+Aciertos sobre el total de casos:
+
+$$
+\operatorname{Acc}=\frac{TP+TN}{TP+TN+FP+FN}
+$$
+
+- ¿Qué proporción del total fue clasificada correctamente?
+- Usar cuando las clases y los costos de error son similares.
+
+---
+
+## Especificidad
+
+**Especificidad (*specificity*, TNR)**
+
+Negativos reales reconocidos correctamente:
+
+$$
+\operatorname{Esp}=\frac{TN}{TN+FP}
+$$
+
+- ¿Qué proporción de los negativos reales fue descartada correctamente?
+- Usar cuando importa no marcar como positivos los negativos reales y una falsa alarma $FP$ resulta costosa.
+
+---
+
+## Precisión
+
+**Precisión (*precision*, PPV)**
+
+Positivos reales entre las predicciones positivas:
+
+$$
+\operatorname{Prec}=\frac{TP}{TP+FP}
+$$
+
+- ¿Cuántos casos marcados como positivos eran realmente positivos?
+- Usar cuando una falsa alarma $FP$ es costosa en relación con omitir positivos.
+
+---
+
+## Exhaustividad
+
+**Exhaustividad (*recall*, sensibilidad, TPR)**
+
+Positivos reales detectados por el modelo:
+
+$$
+\operatorname{Rec}=\frac{TP}{TP+FN}
+$$
+
+- ¿Cuántos positivos reales fueron detectados?
+- Usar cuando una omisión $FN$ es costosa en relación con generar falsas alarmas.
+
+---
+
+## Limitaciones de las métricas
+
+Consideremos 20 números: 3 son 5 y 17 no son 5.
+
+El modelo "nada es 5" predice "no es 5" para todos los casos:
+
+$$
+TP=0,\qquad TN=17,\qquad FP=0,\qquad FN=3
+$$
+
+Su exactitud es:
+
+$$
+\operatorname{Acc}=\frac{0+17}{20}=85\%
+$$
+
+El valor parece alto, pero el modelo no detecta ninguno de los tres cincos.
+
+---
+
+## Limitaciones de las métricas
+
+Para el modelo "nada es 5", las otras métricas muestran un comportamiento muy diferente:
+
+$$
+\operatorname{Rec}=\frac{0}{0+3}=0,
+\qquad
+\operatorname{Esp}=\frac{17}{17+0}=1
+$$
+
+La precisión es indefinida porque el modelo no predice ningún positivo. Una biblioteca puede aplicar una convención configurable para evitar esta división por cero:
+
+$$
+\operatorname{Prec}=\frac{0}{0+0}=\frac{0}{0}
+$$
+
+La exactitud está dominada por la clase mayoritaria. Por eso debemos examinar qué tipo de acierto o error importa en el problema.
+
+---
+
+## $F_1$: equilibrio entre precisión y exhaustividad
+
+$$
+F_1=2\frac{\operatorname{Prec}\cdot\operatorname{Rec}}
+{\operatorname{Prec}+\operatorname{Rec}}
+$$
+
+El $F_1$ es la media armónica de precisión y exhaustividad.
+
+- Solo es alto cuando ambas métricas son altas.
+- Es útil cuando precisión y exhaustividad tienen una importancia comparable.
+
+---
+
+## Curva ROC: interpretación de sus ejes
+
+La curva ROC muestra cómo cambia el desempeño de un clasificador al modificar el umbral aplicado a su puntaje:
+
+$$
+\operatorname{TPR}=\frac{TP}{TP+FN},
+\qquad
+\operatorname{FPR}=\frac{FP}{FP+TN}
+$$
+
+- **Eje vertical:** TPR o sensibilidad, proporción de positivos reales detectados.
+- **Eje horizontal:** FPR, proporción de negativos reales clasificados erróneamente como positivos.
+- **Cada punto:** una regla de decisión distinta, con un compromiso entre detección y falsas alarmas.
+- **Interpretación:** el punto ideal es $(0,1)$. La diagonal representa un clasificador equivalente al azar.
+
+---
+
+## Curva ROC y ROC AUC
+
+![w:1060](images/curva_roc.png)
+
+El ejemplo muestra un clasificador cuya curva se encuentra por encima del azar. 
+[Visualización interactiva de una curva ROC](http://www.navan.name/roc/)
+
+---
+
+## Métricas para regresión
+
+En regresión, la predicción es una **cantidad numérica**. Las métricas comparan $y$ y $\hat y$ mediante una noción de distancia o variación explicada.
+
+---
+
+## MAE: Mean Absolute Error
 
 $$
 MAE=\frac{1}{n}\sum_{i=1}^{n}|y_i-\hat y_i|
 $$
 
+El MAE es el error absoluto promedio. Cada unidad de error contribuye de la misma forma, sin importar si la predicción quedó por encima o por debajo del valor real.
+
+- Usarlo cuando se necesita una medida directa e interpretable en las unidades del objetivo.
+- Es menos sensible a valores extremos que las métricas cuadráticas.
+
+---
+
+## MSE: Mean Square Error
+
 $$
-MSE=\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat y_i)^2,
-\qquad RMSE=\sqrt{MSE}
+MSE=\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat y_i)^2
 $$
+
+El MSE eleva cada error al cuadrado. Por eso un error grande pesa mucho más que varios errores pequeños.
+
+- Usarlo cuando los errores grandes son especialmente costosos o deben penalizarse con fuerza.
+- Su unidad queda elevada al cuadrado y es sensible a valores extremos.
+
+---
+
+## RMSE: Root Mean Square Error
+
+$$
+RMSE=\sqrt{MSE}
+$$
+
+El RMSE conserva las unidades de la variable objetivo y resume la magnitud típica del error, dando más peso a las desviaciones grandes.
+
+- Usarlo cuando se quiere relacionar el desempeño con una tolerancia operacional.
+- Mantiene la sensibilidad del MSE frente a valores extremos.
+
+---
+
+## $R^2$: comparación con una línea base
+
+El coeficiente de determinación compara el error cuadrático del modelo con el de predecir siempre la media del conjunto evaluado:
 
 $$
 R^2=1-\frac{\sum_i(y_i-\hat y_i)^2}{\sum_i(y_i-\bar y)^2}
 $$
 
-MAE es más robusto a errores extremos. MSE los penaliza con mayor fuerza.
+$R^2=1$ indica ajuste perfecto. $R^2=0$ corresponde al predictor constante $\bar y$ en ese conjunto evaluado. Un valor negativo indica que el modelo rinde peor que esa línea base.
 
-RMSE conserva la unidad de la variable objetivo. $R^2$ compara contra predecir siempre la media y puede ser negativo sobre datos de prueba.
-
----
-
-## Perceptrón
-
-![w:520](images/perceptron.png)
-
-$$
-z=\mathbf w^\top\mathbf x+b,\qquad
-\hat y=\phi(z)
-$$
-
-El perceptrón aprende una frontera lineal. Si las clases no son linealmente separables, una sola unidad no puede resolver el problema sin transformar las características.
-
-Los pesos determinan la orientación de la frontera y el sesgo $b$ permite desplazarla respecto del origen.
+- Usarlo para comparar cuánto mejora el modelo respecto de una referencia simple.
+- Complementarlo con MAE o RMSE para conocer el error en las unidades originales.
 
 ---
 
-## Red multicapa
+## Modelos predictivos supervisados
 
-![w:620](images/nn_simple.png)
-
-Para la capa $l$:
+Un modelo predictivo aprende una función parametrizada a partir de datos etiquetados:
 
 $$
-\mathbf z^{(l)}=W^{(l)}\mathbf a^{(l-1)}+\mathbf b^{(l)},\qquad
-\mathbf a^{(l)}=\phi^{(l)}(\mathbf z^{(l)})
+f_\theta:\mathcal X\longrightarrow\mathcal Y,
+\qquad
+\hat y=f_\theta(\mathbf x)
 $$
 
-Componer transformaciones lineales con activaciones no lineales permite representar fronteras complejas.
+Los parámetros $\theta$ se ajustan con entrenamiento y luego se evalúan sobre datos no vistos.
 
-Sin activaciones no lineales, varias capas densas consecutivas se reducen algebraicamente a una sola transformación lineal.
+- **Clasificación:** $\mathcal Y$ contiene etiquetas discretas.
+- **Regresión:** $\mathcal Y\subseteq\mathbb R^m$ contiene valores numéricos.
+
+La tarea fija el tipo de salida, la función de pérdida y las métricas de evaluación.
 
 ---
 
-## Descenso de gradiente
-
-Se actualizan parámetros en dirección opuesta al gradiente:
-
-$$
-\theta_{t+1}=\theta_t-\eta\nabla_\theta L(\theta_t)
-$$
-
-donde $\eta$ es la tasa de aprendizaje.
-
-- $\eta$ muy grande: oscilación o divergencia.
-- $\eta$ muy pequeña: convergencia lenta.
-- Mini-batches: estimación ruidosa pero eficiente del gradiente.
-
-Una época corresponde a recorrer una vez el conjunto de entrenamiento. Una actualización ocurre por cada mini-lote procesado.
-
----
-
-## Retropropagación
-
-La regla de la cadena propaga derivadas desde la pérdida hacia cada capa.
-
-$$
-\frac{\partial L}{\partial W^{(l)}}
-=
-\frac{\partial L}{\partial \mathbf z^{(l)}}
-\frac{\partial \mathbf z^{(l)}}{\partial W^{(l)}}
-$$
-
-Retropropagación calcula gradientes. Un optimizador como SGD o Adam usa esos gradientes para actualizar parámetros.
-
-El procedimiento reutiliza derivadas intermedias desde la salida hacia la entrada, lo que evita calcular por separado el efecto de cada parámetro.
-
----
-
-## Funciones de activación
-
-| Activación | Expresión | Uso habitual |
-|---|---|---|
-| Sigmoide | $\sigma(z)=1/(1+e^{-z})$ | Salida binaria |
-| Tanh | $\tanh(z)$ | Estados centrados en cero |
-| ReLU | $\max(0,z)$ | Capas ocultas |
-| Leaky ReLU | $\max(\alpha z,z)$ | Evitar unidades inactivas |
-| Softmax | $e^{z_k}/\sum_j e^{z_j}$ | Salida multiclase |
-
-La activación de salida debe corresponder a la codificación de etiquetas y a la función de pérdida.
-
-Por ejemplo, clasificación binaria suele combinar una salida sigmoide con entropía cruzada binaria. Clasificación multiclase excluyente usa *softmax*.
-
----
-
-## Entropía cruzada multiclase
-
-Para etiqueta one-hot $\mathbf y$ y probabilidades $\hat{\mathbf p}$:
-
-$$
-L=-\sum_{k=1}^{K}y_k\log\hat p_k
-$$
-
-con:
-
-$$
-\hat p_k=\frac{e^{z_k}}{\sum_j e^{z_j}}
-$$
-
-La clase predicha puede ser $\arg\max_k\hat p_k$, pero las probabilidades requieren calibración si se usarán para decisiones de riesgo.
-
-Minimizar esta pérdida aumenta la probabilidad asignada a la clase correcta y penaliza con fuerza las predicciones confiadas que resultan equivocadas.
-
----
-
-## Subajuste y sobreajuste
+## Ejemplos de modelos predictivos en Scikit-Learn
 
 <div class="columns">
 <div>
 
-**Subajuste**
+**Clasificación**
 
-- Error alto en entrenamiento.
-- Modelo o características insuficientes.
-- Optimización incompleta.
-
-</div>
-<div>
-
-**Sobreajuste**
-
-- Error bajo en entrenamiento.
-- Brecha alta en validación.
-- El modelo memoriza particularidades.
-
-</div>
-</div>
-
-El objetivo es generalización: buen desempeño sobre datos no utilizados para ajustar decisiones.
-
----
-
-## Regularización
-
-Penalización $L_2$:
-
-$$
-L_{total}=L_{datos}+\lambda\sum_j w_j^2
-$$
-
-Penalización $L_1$:
-
-$$
-L_{total}=L_{datos}+\lambda\sum_j|w_j|
-$$
-
-Otras estrategias:
-
-- dropout.
-- detención temprana.
-- aumento de datos.
-- reducción de capacidad.
-
-$L_1$ favorece pesos exactamente nulos. $L_2$ reduce su magnitud de manera suave. El valor de $\lambda$ se elige usando validación.
-
----
-
-## Dropout y detención temprana
-
-![w:480](images/dropout.png)
-
-Durante el entrenamiento, *dropout* anula activaciones con probabilidad $p$ y reduce la coadaptación.
-
-Durante inferencia no se eliminan unidades. La biblioteca ajusta la escala para mantener compatible el valor esperado de las activaciones.
-
-La detención temprana conserva el punto de mejor validación:
-
-$$
-t^*=\arg\min_t L_{\text{validaci\'on}}(t)
-$$
-
-La prueba se evalúa una vez, después de fijar $t^*$ y todas las decisiones.
-
----
-
-## Redes recurrentes
-
-![w:590](images/rnn.png)
-
-Una RNN actualiza un estado oculto:
-
-$$
-\mathbf h_t=\phi(W_x\mathbf x_t+W_h\mathbf h_{t-1}+\mathbf b)
-$$
-
-LSTM y GRU agregan compuertas para controlar memoria y flujo del gradiente en secuencias largas.
-
-El estado $\mathbf h_t$ resume la información previa que el modelo considera útil para procesar $\mathbf x_t$.
-
----
-
-## Patrones de entrada y salida secuencial
-
-| Patrón | Ejemplo |
-|---|---|
-| Uno a muchos | Generación de secuencia |
-| Muchos a uno | Clasificación de texto o serie |
-| Muchos a muchos, alineado | Etiquetado por instante |
-| Muchos a muchos, no alineado | Traducción secuencia a secuencia |
-
-Las particiones temporales deben respetar causalidad. Mezclar aleatoriamente observaciones futuras puede filtrar información.
-
----
-
-## Redes convolucionales
-
-![w:670](images/convolution_animation.gif)
-
-Para una convolución discreta 2D:
-
-$$
-Y_{i,j}=\sum_m\sum_n K_{m,n}X_{i+m,j+n}
-$$
-
-Los pesos compartidos detectan patrones locales en distintas posiciones con menos parámetros que una capa totalmente conectada.
-
-Cada filtro produce un mapa de características. Capas sucesivas combinan patrones simples para construir representaciones de mayor nivel.
-
----
-
-## Agrupación espacial
-
-<div class="columns">
-<div>
-
-![w:360](images/max-pooling.png)
-
-**Agrupación por máximo (*max pooling*):** conserva la activación máxima de una región.
+- Regresión logística: [`LogisticRegression`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html)
+- KNN: [`KNeighborsClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)
+- Árboles y bosques: [`DecisionTreeClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html), [`RandomForestClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html)
+- Support Vector Machine Classifier: [`SVC`](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)
 
 </div>
 <div>
 
-![w:360](images/avg-pooling.png)
+**Regresión**
 
-**Agrupación por promedio (*average pooling*):** conserva el promedio de la región.
+- Modelos lineales: [`LinearRegression`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html), [`Ridge`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html), [`Lasso`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html)
+- KNN: [`KNeighborsRegressor`](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html)
+- Árboles y ensambles: [`RandomForestRegressor`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html), [`GradientBoostingRegressor`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html)
+- Support Vector Machine Regressor: [`SVR`](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html)
 
 </div>
 </div>
 
-La agrupación (*pooling*) reduce la resolución y el costo, pero también descarta información espacial.
+---
 
-El tamaño de ventana y el paso determinan cuánto se reduce la representación. Una reducción agresiva puede eliminar detalles relevantes.
+## Modelo de regresión lineal
+
+Consideremos $m$ ejemplos de entrenamiento y $N$ características por ejemplo. Para incorporar el intercepto, definimos $x_0^{(i)}=1$:
+
+$$
+h_\theta\big(x^{(i)}\big)
+=\sum_{j=0}^{N}\theta_jx_j^{(i)}
+=\theta_0+\sum_{j=1}^{N}\theta_jx_j^{(i)}
+$$
+
+- $\theta_0$ es el intercepto y $\theta_j$ es el peso de la característica $j$.
+- $i=1,\ldots,m$ identifica el ejemplo y $j=1,\ldots,N$ la característica.
+
+El modelo es lineal en los parámetros, aunque las características pueden provenir de transformaciones no lineales.
 
 ---
 
-## Diseñar un experimento neuronal
+## Mínimos cuadrados ordinarios
 
-1. Definir tarea, población y métrica.
-2. Construir una línea base simple.
-3. Separar datos antes de ajustar transformaciones.
-4. Entrenar con semillas y presupuesto explícitos.
-5. Seleccionar con validación.
-6. Evaluar una vez sobre prueba.
-7. Analizar errores por clase, segmento o condición.
+El entrenamiento busca los valores de $\theta_0,\ldots,\theta_N$ que minimizan el error cuadrático promedio:
 
-<div class="callout">
-Una red más profunda solo es una mejor solución si mejora la métrica relevante bajo una comparación justa y un costo aceptable.
-</div>
+$$
+\operatorname{MSE}(\theta)
+=\frac{1}{m}\sum_{i=1}^{m}
+\left(h_\theta\big(x^{(i)}\big)-y^{(i)}\right)^2
+$$
 
----
+$$
+\hat\theta_0,\ldots,\hat\theta_N
+=\underset{\theta_0,\ldots,\theta_N}{\operatorname{argmin}}
+\;\operatorname{MSE}(\theta)
+$$
 
-## Ejemplo ejecutable
-
-El notebook [`notebook/04_clasificacion_fashion_mnist.ipynb`](notebook/04_clasificacion_fashion_mnist.ipynb):
-
-- normaliza imágenes de Fashion-MNIST.
-- separa entrenamiento, validación y prueba.
-- entrena una red densa con dropout.
-- usa detención temprana.
-- calcula la matriz de confusión y la exactitud por clase.
-
-El ejemplo sigue la API `tf.keras` y deja explícitas las semillas y la partición.
+Cada residuo $h_\theta(x^{(i)})-y^{(i)}$ mide el error de un ejemplo. Elevarlo al cuadrado penaliza más las desviaciones grandes.
 
 ---
 
-## Síntesis
+## Condición de óptimo en mínimos cuadrados
 
-- El diseño comienza por tarea, datos y métrica, no por la arquitectura.
-- Retropropagación calcula gradientes. El optimizador actualiza parámetros.
-- Regularización y validación controlan generalización.
-- RNN modelan dependencia secuencial. CNN explotan estructura local.
-- La evaluación final debe permanecer aislada del ajuste.
+La derivada parcial respecto de cada parámetro es:
+
+$$
+\frac{\partial\operatorname{MSE}(\theta)}{\partial\theta_j}
+=\frac{2}{m}\sum_{i=1}^{m}
+\left(h_\theta\big(x^{(i)}\big)-y^{(i)}\right)x_j^{(i)},
+\qquad j=0,\ldots,N
+$$
+
+En el mínimo, todas las derivadas se anulan. Por tanto, los parámetros satisfacen las ecuaciones normales escalares:
+
+$$
+\sum_{i=1}^{m}
+\left(h_\theta\big(x^{(i)}\big)-y^{(i)}\right)x_j^{(i)}=0,
+\qquad j=0,\ldots,N
+$$
+
+Estas ecuaciones forman un sistema de $N+1$ ecuaciones para $\theta_0,\ldots,\theta_N$. Resolverlo entrega los parámetros que minimizan el MSE.
+
+---
+
+## Descenso de gradiente en regresión lineal
+
+También podemos ajustar cada parámetro mediante actualizaciones iterativas:
+
+$$
+\theta_j\leftarrow\theta_j-
+\eta\frac{\partial\operatorname{MSE}(\theta)}{\partial\theta_j},
+\qquad j=0,\ldots,N
+$$
+
+- $\eta>0$ es la tasa de aprendizaje.
+- El gradiente indica cómo cambia el MSE al modificar cada parámetro.
+
+La misma regla se extenderá a redes neuronales, donde no existe en general una solución cerrada.
+
+---
+
+## Redes Neuronales
+
+Las redes neuronales son una familia de modelos paramétricos ampliamente utilizada para aprender relaciones complejas y generar nuevas salidas a partir de patrones aprendidos.
+
+- **Predicción:** clasificación de imágenes, recomendación, pronóstico y detección de anomalías.
+- **Modelos generativos:** creación de texto, imágenes, audio, video y código.
+- **LLM:** modelos de lenguaje a gran escala que permiten asistentes como ChatGPT, Claude y otros sistemas conversacionales.
 
 <div class="bridge">
-La Unidad 5 profundiza en dos rutas: metaheurísticas bioinspiradas y arquitecturas neuronales especializadas.
+La misma idea de apilar unidades simples permite construir modelos predictivos y generativos.
 </div>
 
 ---
 
-## Referencias
+## Ejemplos de aplicaciones de Redes Neuronales
 
-- Material original de IPD434: `04_RedesNeuronales.ipynb`.
-- I. Goodfellow, Y. Bengio y A. Courville, *Deep Learning*, MIT Press, 2016.
-- C. M. Bishop, *Pattern Recognition and Machine Learning*, Springer, 2006.
-- F. Chollet, *Deep Learning with Python*, 2.ª ed., Manning, 2021.
-- TensorFlow/Keras, documentación oficial de clasificación y modelos secuenciales.
+- [DeepMind](https://www.youtube.com/watch?v=V1eYniJ0Rnk): juegos y estrategia
+- [YOLOv3](https://www.youtube.com/watch?v=MPU2HistivI): detección de objetos
+- [Quick, Draw!](https://quickdraw.withgoogle.com/): reconocimiento de dibujos
+- [Piedra, papel o tijera](https://tenso.rs/demos/rock-paper-scissors/): reconocimiento de gestos
+- [ChatGPT](https://chat.openai.com/): generación de texto
+- [Y una laaaaarga lista](https://www.mygreatlearning.com/blog/deep-learning-applications/#deepdreaming)
+
+---
+
+## Redes Neuronales: El Perceptrón
+
+![w:900](images/perceptron.png)
+
+---
+
+## Redes Neuronales: El Perceptrón
+
+$$
+z=w_0+\sum_{j=1}^{N}w_jx_j,
+\qquad
+\hat y=\operatorname{step}(z)
+$$
+
+La función escalón convierte el puntaje en una etiqueta binaria:
+
+$$
+\operatorname{step}(z)=
+\begin{cases}
+0, & z<0\\
+1, & z\geq 0
+\end{cases}
+$$
+
+Los pesos definen la orientación de la frontera y $w_0$ la desplaza. Una sola unidad solo puede separar clases linealmente separables.
+
+
+---
+
+## Regresión lineal y perceptrón
+
+Ambos modelos calculan una combinación afín de las características. Cambian la interpretación de la salida:
+
+| Aspecto | Regresión lineal | Perceptrón |
+|---|---|---|
+| Puntaje | $h_\theta(x)=\theta_0+\sum_{j=1}^{N}\theta_jx_j$ | $z=w_0+\sum_{j=1}^{N}w_jx_j$ |
+| Salida | $\hat y=h_\theta(x)\in\mathbb R$ | $\hat y=\mathbb I\{z\geq0\}\in\{0,1\}$ |
+| Tarea | Predecir una cantidad | Separar dos clases |
+| Ajuste habitual | MSE | Criterio del perceptrón o pérdida de clasificación |
+| Geometría | Hiperplano de predicción | Hiperplano como frontera de decisión |
+
+Una sigmoide aplicada al puntaje produce una probabilidad diferenciable. Con entropía cruzada se obtiene regresión logística, una conexión directa con las redes neuronales.
+
