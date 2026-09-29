@@ -1,25 +1,73 @@
 ---
 marp: true
-math: mathjax
+math: katex
 paginate: true
 style: |
-  section { font-size: 27px; line-height: 1.35; }
-  section.lead { text-align: center; }
-  section.lead h1 { font-size: 2.1em; }
-  h2, h3 { color: #12394f; }
-  code { font-size: 0.84em; }
-  table { font-size: 0.77em; }
-  img { max-height: 430px; display: block; margin: 0 auto; }
-  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
-  .callout { background: #eef6fb; border-left: 6px solid #2f6f9f; border-radius: 6px; padding: 0.7em 0.9em; }
-  .bridge { background: #f7f8fa; border-left: 6px solid #6b7280; border-radius: 6px; padding: 0.65em 0.9em; }
-  .warn { background: #fff4df; border-left: 6px solid #b7791f; border-radius: 6px; padding: 0.65em 0.9em; }
-  .example-space { background: #eef8f1; border-left: 6px solid #2f855a; border-radius: 6px; padding: 0.65em 0.9em; }
-  .small { font-size: 0.82em; }
-  .diagram-focus { width: 650px; height: 520px; margin: 0 auto; overflow: hidden; position: relative; }
-  .diagram-focus img { position: absolute; width: auto; height: 580px; max-width: none; max-height: none; left: -106px; top: -16px; margin: 0; }
-  .matrix-focus { text-align: center; }
-  .matrix-focus img { display: block; width: 900px; max-width: 100%; height: auto; max-height: none; margin: 28px auto 0; }
+  section { font-size: 27px }
+  section { line-height: 1.35 }
+  section.lead { text-align: center }
+  section.lead h1 { font-size: 2.1em }
+  h2, h3 { color: #12394f }
+  code { font-size: 0.84em }
+  table { font-size: 0.77em }
+  img { max-height: 430px }
+  img { display: block }
+  img { margin: 0 auto }
+  .columns { display: grid }
+  .columns { grid-template-columns: 1fr 1fr }
+  .columns { gap: 32px }
+  .columns { align-items: start }
+  .callout { background: #eef6fb }
+  .callout { border-left: 6px solid #2f6f9f }
+  .callout { border-radius: 6px }
+  .callout { padding: 0.7em 0.9em }
+  .bridge { background: #f7f8fa }
+  .bridge { border-left: 6px solid #6b7280 }
+  .bridge { border-radius: 6px }
+  .bridge { padding: 0.65em 0.9em }
+  .warn { background: #fff4df }
+  .warn { border-left: 6px solid #b7791f }
+  .warn { border-radius: 6px }
+  .warn { padding: 0.65em 0.9em }
+  .example-space { background: #eef8f1 }
+  .example-space { border-left: 6px solid #2f855a }
+  .example-space { border-radius: 6px }
+  .example-space { padding: 0.65em 0.9em }
+  .small { font-size: 0.82em }
+  .diagram-focus { width: 650px }
+  .diagram-focus { height: 520px }
+  .diagram-focus { margin: 0 auto }
+  .diagram-focus { overflow: hidden }
+  .diagram-focus { position: relative }
+  .diagram-focus img { position: absolute }
+  .diagram-focus img { width: auto }
+  .diagram-focus img { height: 580px }
+  .diagram-focus img { max-width: none }
+  .diagram-focus img { max-height: none }
+  .diagram-focus img { left: -106px }
+  .diagram-focus img { top: -16px }
+  .diagram-focus img { margin: 0 }
+  .matrix-focus { text-align: center }
+  .matrix-focus img { display: block }
+  .matrix-focus img { width: 900px }
+  .matrix-focus img { max-width: 100% }
+  .matrix-focus img { height: auto }
+  .matrix-focus img { max-height: none }
+  .matrix-focus img { margin: 28px auto 0 }
+  .activation-grid { display: grid }
+  .activation-grid { grid-template-columns: repeat(3, 1fr) }
+  .activation-grid { gap: 8px 14px }
+  .activation-grid { align-items: start }
+  .activation-grid img { width: 100% }
+  .activation-grid img { max-height: none }
+  .activation-grid img { height: auto }
+  .digit-example { display: inline-block }
+  .digit-example { vertical-align: middle }
+  .digit-example { margin-right: 8px }
+  .code-compare pre { font-size: 0.52em }
+  .code-compare pre { line-height: 1.08 }
+  .shared-code pre { font-size: 0.58em }
+  .shared-code pre { line-height: 1.1 }
 ---
 <!-- _class: lead -->
 
@@ -131,7 +179,7 @@ Qué solución usar depende de si existe una regla simple que permita resolver e
 <div>
 
 - **NumPy y Pandas:** representar y preparar datos.
-- **Scikit-learn:** modelos clásicos, particiones y métricas.
+- **Scikit Learn:** modelos clásicos, particiones y métricas.
 - **PyTorch:** construir y entrenar redes neuronales.
 
 </div>
@@ -143,9 +191,9 @@ La biblioteca facilita el trabajo, pero la tarea, los datos y la métrica siguen
 
 ---
 
-## Scikit-Learn
+## Scikit Learn
 
-Scikit-learn es una biblioteca de Python para aprendizaje automático. Incluye modelos de clasificación y regresión, herramientas para preparar datos y métricas para evaluar resultados.
+Scikit Learn es una biblioteca de Python para aprendizaje automático. Incluye modelos de clasificación y regresión, herramientas para preparar datos y métricas para evaluar resultados.
 
 <div class="columns">
 <div>
@@ -173,9 +221,9 @@ Con la biblioteca instalada, el trabajo se organiza en objetos con responsabilid
 
 ---
 
-## Scikit-Learn
+## Scikit Learn
 
-Una ventaja de Scikit-Learn es la consistencia de su API: sus objetos siguen convenciones comunes y separan sus responsabilidades.
+Una ventaja de Scikit Learn es la consistencia de su API: sus objetos siguen convenciones comunes y separan sus responsabilidades.
 
 | Objeto | Responsabilidad | Método típico |
 |---|---|---|
@@ -240,7 +288,7 @@ f_\theta:\mathbb R^d\rightarrow\{1,\dots,K\}
 $$
 
 - **Clasificación binaria:** dos clases posibles, por ejemplo `falla` y `sin falla`.
-- **Clasificación multiclase:** una clase entre varias posibles, como `manzana`, `plátano` o `naranja`.
+- **Clasificación con varias clases:** una clase entre varias posibles, como `manzana`, `plátano` o `naranja`.
 
 <div class="example-space">
 Un filtro de correo puede clasificar un mensaje como "spam" o "no spam". El objetivo es asignar una etiqueta, no medir una cantidad.
@@ -344,8 +392,8 @@ La prueba se reserva para estimar el desempeño final de la configuración selec
 El conjunto de datos se divide en subconjuntos disjuntos:
 
 $$
-\mathcal D=\mathcal D_{\mathrm{train}}\;\dot\cup\;
-\mathcal D_{\mathrm{val}}\;\dot\cup\;
+\mathcal D=\mathcal D_{\mathrm{train}}\dot\cup
+\mathcal D_{\mathrm{val}}\dot\cup
 \mathcal D_{\mathrm{test}}
 $$
 
@@ -434,10 +482,10 @@ Supongamos que la clase positiva representa la condición que queremos detectar:
 
 | Resultado | Condición real | Predicción | Interpretación | Ejemplo |
 |---|---|---|---|---|
-| $TP$ | Positiva | Positiva | Acierto al detectar la condición | <img src="images/cinco.jpg" alt="esto es 5" width="48" style="display:inline-block; vertical-align:middle; margin-right:8px;">esto es 5 |
-| $TN$ | Negativa | Negativa | Acierto al descartar la condición | <img src="images/tres.jpg" alt="esto no es 5" width="48" style="display:inline-block; vertical-align:middle; margin-right:8px;">esto no es 5 |
-| $FP$ | Negativa | Positiva | Falsa alarma | <img src="images/tres.jpg" alt="esto no es 5" width="48" style="display:inline-block; vertical-align:middle; margin-right:8px;">esto no es 5 |
-| $FN$ | Positiva | Negativa | Omisión de un caso real | <img src="images/cinco.jpg" alt="esto es 5" width="48" style="display:inline-block; vertical-align:middle; margin-right:8px;">esto es 5 |
+| $TP$ | Positiva | Positiva | Acierto al detectar la condición | <img src="images/cinco.jpg" alt="esto es 5" width="48" class="digit-example">esto es 5 |
+| $TN$ | Negativa | Negativa | Acierto al descartar la condición | <img src="images/tres.jpg" alt="esto no es 5" width="48" class="digit-example">esto no es 5 |
+| $FP$ | Negativa | Positiva | Falsa alarma | <img src="images/tres.jpg" alt="esto no es 5" width="48" class="digit-example">esto no es 5 |
+| $FN$ | Positiva | Negativa | Omisión de un caso real | <img src="images/cinco.jpg" alt="esto es 5" width="48" class="digit-example">esto es 5 |
 
 El significado de "positivo" depende de la decisión. No tiene por qué corresponder a la clase más frecuente.
 
@@ -708,7 +756,7 @@ La tarea fija el tipo de salida, la función de pérdida y las métricas de eval
 
 ---
 
-## Ejemplos de modelos predictivos en Scikit-Learn
+## Ejemplos de modelos predictivos en Scikit Learn
 
 <div class="columns">
 <div>
@@ -765,7 +813,7 @@ $$
 $$
 \hat\theta_0,\ldots,\hat\theta_N
 =\underset{\theta_0,\ldots,\theta_N}{\operatorname{argmin}}
-\;\operatorname{MSE}(\theta)
+\operatorname{MSE}(\theta)
 $$
 
 Cada residuo $h_\theta(x^{(i)})-y^{(i)}$ mide el error de un ejemplo. Elevarlo al cuadrado penaliza más las desviaciones grandes.
@@ -882,15 +930,23 @@ Una sigmoide aplicada al puntaje produce una probabilidad diferenciable. Con ent
 
 ---
 
-## Redes neuronales con varias capas
+## Red neuronal multicapa
 
-Una red neuronal conecta unidades de cálculo. La salida de una capa se usa como entrada de la siguiente.
+El perceptrón construye una sola frontera lineal. Una red multicapa encadena unidades para construir representaciones intermedias antes de producir la salida.
 
 ![w:720](images/dnn.png)
+
+---
+
+## Red neuronal multicapa
 
 - La **arquitectura** describe cuántas capas y unidades tiene la red, y cómo están conectadas.
 - Una red con una o más capas ocultas es una red multicapa.
 - Cuando hay muchas capas ocultas, se habla de una red profunda.
+
+<div class="bridge">
+Primero identificamos las capas y sus conexiones. Luego veremos por qué cada capa necesita una activación no lineal.
+</div>
 
 ---
 
@@ -906,7 +962,7 @@ Para una imagen, la entrada puede contener píxeles. Para datos tabulares, puede
 
 ---
 
-## Conexión entre capas
+## Capas densas: conexiones y cálculo
 
 En una capa densa, cada unidad de una capa se conecta con todas las unidades de la capa siguiente. Cada conexión tiene un peso aprendido.
 
@@ -923,19 +979,29 @@ $$
 
 ---
 
-## Profundidad, ancho y salida
+## Red multicapa: composición de capas no lineales
+
+![w:760](images/nn_simple.png)
+
+Para la capa $\ell$, una combinación afín seguida de una activación produce una nueva representación:
+
+$$
+\mathbf z^{(\ell)}=W^{(\ell)}\mathbf a^{(\ell-1)}+\mathbf b^{(\ell)},
+\qquad
+\mathbf a^{(\ell)}=\phi^{(\ell)}(\mathbf z^{(\ell)})
+$$
+
+Componer transformaciones lineales con activaciones no lineales permite representar fronteras complejas. Sin esa no linealidad, varias capas densas seguidas se reducen algebraicamente a una sola transformación lineal.
+
+---
+
+## Profundidad y ancho
 
 - **Profundidad:** número de capas ocultas. Aumentarla permite construir representaciones en varios niveles.
 - **Ancho:** número de unidades en una capa. Afecta la cantidad de patrones que la capa puede representar.
 - **Parámetros:** cada conexión y cada sesgo se ajustan durante el entrenamiento.
 
-La capa de salida debe corresponder con el objetivo:
-
-| Tarea | Salida habitual |
-|---|---|
-| Regresión | Una unidad lineal por valor a predecir |
-| Clasificación binaria | Una unidad sigmoide |
-| Clasificación multiclase | Una unidad por clase y softmax |
+Más capas o más unidades aumentan la capacidad del modelo, pero también el costo de entrenamiento y el riesgo de sobreajuste. La arquitectura se selecciona con validación.
 
 ---
 
@@ -945,7 +1011,7 @@ Una función de activación transforma el puntaje $z$ de una unidad en su salida
 
 $$
 z=\mathbf w^\top\mathbf x+b,
-\qquad
+a=g(z)
 $$
 
 Su función principal es introducir no linealidad. Sin activaciones no lineales, varias capas densas seguidas se reducen a una sola transformación lineal.
@@ -965,9 +1031,9 @@ La activación de las capas ocultas permite representar relaciones que un percep
 
 $$g(z)=z$$
 
-- No limita ni transforma de forma no lineal el puntaje.
-- Se usa habitualmente en la salida de una regresión.
-- No aporta capacidad adicional en capas ocultas.
+- Conserva el puntaje sin limitar su rango.
+- Es habitual en la salida de una tarea de regresión.
+- No agrega capacidad de representación en capas ocultas.
 
 </div>
 <div>
@@ -976,9 +1042,9 @@ $$g(z)=z$$
 
 $$g(z)=\max(0,z)$$
 
-- Devuelve cero para valores negativos.
+- Devuelve cero para puntajes negativos.
 - Es una elección frecuente para capas ocultas.
-- Puede dejar una unidad con salida cero de forma persistente.
+- Una unidad puede quedar inactiva si recibe puntajes negativos de forma persistente.
 
 </div>
 </div>
@@ -998,7 +1064,7 @@ z, & z>0\\
 \qquad \alpha>0\text{ pequeño}
 $$
 
-- Es una variante de ReLU para reducir el riesgo de unidades inactivas.
+- Es una variante de ReLU que reduce el riesgo de unidades inactivas.
 - Para $z<0$, la salida y el gradiente no son exactamente cero.
 - Se usa en capas ocultas cuando ReLU presenta muchas unidades inactivas.
 
@@ -1047,8 +1113,34 @@ $$
 - La clase predicha suele ser la de mayor probabilidad.
 
 <div class="bridge">
-Softmax se aplica en la capa de salida para clasificación multiclase con clases mutuamente excluyentes.
+Softmax se aplica en la capa de salida cuando hay varias clases mutuamente excluyentes.
 </div>
+
+
+---
+
+## Funciones de activación: forma y rango
+
+Cada gráfico relaciona el puntaje de entrada $z$ con la salida de la activación. En softmax, se muestra la probabilidad de una clase al variar su puntaje y mantener fijos los otros dos.
+
+<div class="activation-grid">
+<img src="images/activacion_lineal.png" alt="Gráfico de la activación lineal">
+<img src="images/activacion_relu.png" alt="Gráfico de la activación ReLU">
+<img src="images/activacion_leaky_relu.png" alt="Gráfico de la activación Leaky ReLU">
+</div>
+
+---
+
+## Funciones de activación: forma y rango
+
+Cada gráfico relaciona el puntaje de entrada $z$ con la salida de la activación. En softmax, se muestra la probabilidad de una clase al variar su puntaje y mantener fijos los otros dos.
+
+<div class="activation-grid">
+<img src="images/activacion_sigmoide.png" alt="Gráfico de la activación sigmoide">
+<img src="images/activacion_tangente_hiperbolica.png" alt="Gráfico de la activación tangente hiperbólica">
+<img src="images/activacion_softmax.png" alt="Gráfico de la activación softmax">
+</div>
+
 
 ---
 
@@ -1059,6 +1151,750 @@ Softmax se aplica en la capa de salida para clasificación multiclase con clases
 | Capas ocultas | ReLU o Leaky ReLU | Introducen no linealidad y suelen facilitar el entrenamiento. |
 | Salida de regresión | Lineal | Permite predecir valores sin restringir su rango. |
 | Salida binaria | Sigmoide | Produce un puntaje entre 0 y 1. |
-| Salida multiclase | Softmax | Distribuye la probabilidad entre las clases. |
+| Salida con varias clases | Softmax | Distribuye la probabilidad entre las clases. |
 
 La activación se elige junto con la pérdida y la tarea. Por ejemplo, sigmoide y entropía cruzada binaria forman una combinación habitual.
+
+---
+
+## Salida, etiquetas y función de pérdida
+
+| Tarea | Salida del modelo | Pérdida habitual |
+|---|---|---|
+| Regresión | Valor lineal $\hat y\in\mathbb R$ | MSE o MAE |
+| Clasificación binaria | *Logit* o probabilidad sigmoide | Entropía cruzada binaria |
+| Clasificación con varias clases | Vector de *logits* | Entropía cruzada para varias clases |
+
+La codificación de etiquetas, la activación de salida y la pérdida deben ser compatibles. En PyTorch, `CrossEntropyLoss` recibe *logits* y aplica internamente la normalización necesaria.
+
+---
+
+## Entropía cruzada y *softmax* en clasificación con varias clases
+
+Para una etiqueta con una sola clase activa $\mathbf y$ y probabilidades $\hat{\mathbf p}$:
+
+$$
+L=-\sum_{k=1}^{K}y_k\log\hat p_k
+$$
+
+con:
+
+$$
+\hat p_k=\frac{e^{z_k}}{\sum_j e^{z_j}}
+$$
+
+Minimizar esta pérdida aumenta la probabilidad asignada a la clase correcta y penaliza con fuerza las predicciones confiadas que resultan equivocadas. La clase predicha puede ser $\arg\max_k\hat p_k$, pero las probabilidades requieren calibración si se usarán para decisiones de riesgo.
+
+---
+
+## Descenso de gradiente sobre un mini lote
+
+Una vez definidas la salida y la pérdida, el entrenamiento ajusta los pesos para reducir el error. En la práctica, el gradiente se estima con un mini lote $\mathcal B_t\subset\mathcal D_{\mathrm{train}}$:
+
+$$
+L_{\mathcal B_t}(\theta)
+=\frac{1}{|\mathcal B_t|}\sum_{(x_i,y_i)\in\mathcal B_t}
+\ell\big(f_\theta(x_i),y_i\big)
+$$
+
+$$
+\theta_{t+1}=\theta_t-\eta\nabla_\theta L_{\mathcal B_t}(\theta_t)
+$$
+
+El gradiente indica el cambio local de la pérdida. La tasa $\eta$ controla el tamaño de cada actualización.
+
+---
+
+## Mini lotes, actualizaciones y épocas
+
+- Un **mini lote** $\mathcal B_t$ produce una estimación estocástica del gradiente.
+- Una **actualización** modifica $\theta$ una vez, después de procesar un mini lote.
+- Una **época** recorre una vez todos los ejemplos de entrenamiento.
+
+Una tasa de aprendizaje muy grande puede oscilar o divergir. Una muy pequeña avanza lentamente. El optimizador usa el gradiente para decidir cómo actualizar los parámetros.
+
+---
+
+## Optimizadores: SGD y Adam
+
+Ambos convierten el gradiente de cada mini lote en una actualización de los pesos, pero lo hacen de manera distinta.
+
+<div class="columns">
+<div>
+
+**SGD**
+
+- Actualiza los pesos usando el gradiente del mini lote actual.
+- Usa una tasa de aprendizaje común, $\eta$.
+- Es simple y requiere poca memoria adicional.
+- El resultado depende bastante de elegir una tasa adecuada.
+
+</div>
+<div>
+
+**Adam**
+
+- Mantiene promedios de los gradientes recientes y de sus cuadrados.
+- Usa esos promedios para adaptar el tamaño del paso para cada parámetro.
+- Suele ser un buen punto de partida y requiere más memoria que SGD.
+- No garantiza el mejor desempeño: también se evalúa con validación.
+
+</div>
+</div>
+
+Existen otros optimizadores, como RMSprop y Adagrad. En esta unidad nos enfocaremos en **SGD y Adam**.
+
+---
+
+## Feedforward paso a paso
+
+Consideremos la red neuronal simple below:
+
+![w:600](images/nn_simple.png)
+
+La red tiene una sola neurona por capa:
+
+- **Capa de entrada:** $z^{(1)}$ (1 neurona)
+- **Capa oculta:** $z^{(2)}$ (1 neurona)
+- **Capa de salida:** $z^{(3)}$ (1 neurona)
+
+Conexiones: $z^{(1)} \xrightarrow{w^{(2)}} z^{(2)} \xrightarrow{w^{(3)}} z^{(3)}$
+
+---
+
+## Feedforward paso a paso
+
+### Propagación hacia adelante
+
+Para cada neurona calculamos:
+
+$$z^{(l)} = h^{(l)}\big(z^{(l-1)} \cdot w^{(l)}\big)$$
+
+donde $h^{(l)}$ es la función de activación de la capa $l$
+
+#### Capa oculta
+
+$$
+z^{(2)} = h^{(2)}\big(z^{(1)} \cdot w^{(2)}\big)
+$$
+
+#### Capa de salida
+
+$$
+z^{(3)} = h^{(3)}\big(z^{(2)} \cdot w^{(3)}\big)
+$$
+
+---
+
+## Backpropagation paso a paso
+
+Supongamos una función de costo cuadrática:
+
+$$
+J = \big(a^{(3)} - y\big)^2
+$$
+
+donde $a^{(3)} = z^{(3)}$ es la salida de la red.
+
+---
+
+## Backpropagation paso a paso
+
+### Paso 1: derivada respecto a $w^{(3)}$
+
+Para actualizar $w^{(3)}$ usamos la regla de la cadena:
+
+$$
+\frac{\partial J}{\partial w^{(3)}}
+= \frac{\partial z^{(3)}}{\partial w^{(3)}} \cdot
+  \frac{\partial a^{(3)}}{\partial z^{(3)}} \cdot
+  \frac{\partial J}{\partial a^{(3)}}
+$$
+
+Calculamos cada término:
+
+$$
+\begin{aligned}
+\frac{\partial J}{\partial a^{(3)}} &= \frac{\partial}{\partial a^{(3)}} (a^{(3)} - y)^2 = 2(a^{(3)} - y) \\
+\frac{\partial a^{(3)}}{\partial z^{(3)}} &= \frac{\partial}{\partial z^{(3)}} h^{(3)}(z^{(3)}) = \big(h^{(3)}\big)'(z^{(3)}) \\
+\frac{\partial z^{(3)}}{\partial w^{(3)}} &= \frac{\partial}{\partial w^{(3)}} (a^{(2)} \cdot w^{(3)}) = a^{(2)}
+\end{aligned}
+$$
+
+---
+
+## Backpropagation paso a paso
+
+Entonces:
+
+$$
+\frac{\partial J}{\partial w^{(3)}}
+= a^{(2)} \cdot \big(h^{(3)}\big)'(z^{(3})) \cdot 2(a^{(3)} - y)
+$$
+
+---
+
+## Backpropagation paso a paso
+
+### Paso 2: derivada respecto a $w^{(2)}$
+
+Para actualizar $w^{(2)}$ usamos la regla de la cadena:
+
+$$
+\frac{\partial J}{\partial w^{(2)}}
+= \frac{\partial z^{(2)}}{\partial w^{(2)}} \cdot
+  \frac{\partial a^{(2)}}{\partial z^{(2)}} \cdot
+  \frac{\partial z^{(3)}}{\partial a^{(2)}} \cdot
+  \boxed{\frac{\partial a^{(3)}}{\partial z^{(3)}} \cdot \frac{\partial J}{\partial a^{(3)}}}
+$$
+
+Las últimas dos derivadas ya se calcularon para $\frac{\partial J}{\partial w^{(3)}}$:
+
+- $\frac{\partial a^{(3)}}{\partial z^{(3)}} = \big(h^{(3)}\big)'(z^{(3)})$
+- $\frac{\partial J}{\partial a^{(3)}} = 2(a^{(3)} - y)$
+
+Estas derivadas se **propagan hacia atrás** para calcular gradientes de capas anteriores.
+
+---
+
+## Backpropagation paso a paso
+
+Definimos la señal de error:
+
+$$
+\delta^{(l)} = \frac{\partial J}{\partial z^{(l)}}
+$$
+
+Para la capa de salida:
+
+$$
+\delta^{(3)} = (a^{(3)} - y) \cdot \big(h^{(3)}\big)'(z^{(3)})
+$$
+
+ Para la capa oculta:
+
+$$
+\delta^{(2)} = \delta^{(3)} \cdot w^{(3)} \cdot \big(h^{(2)}\big)'(z^{(2)})
+$$
+
+---
+
+## Backpropagation paso a paso
+
+### Paso 3: gradientes finales
+
+Finalmente:
+
+$$
+\frac{\partial J}{\partial w^{(l)}} = \delta^{(l)} \cdot a^{(l-1)}
+$$
+
+donde $a^{(0)} = z^{(1)}$ es la entrada.
+
+---
+
+## Resumen del algoritmo
+
+| Paso | Operación |
+|------|-----------|
+| 1. Feedforward | Calcular $z^{(l)}, a^{(l)}$ desde entrada hasta salida |
+| 2. Salida | $\delta^{(3)} = (a^{(3)} - y)\, \big(h^{(3)}\big)'(z^{(3)})$ |
+| 3. Retropropagación | $\delta^{(2)} = \delta^{(3)} \cdot w^{(3)} \cdot \big(h^{(2)}\big)'(z^{(2)})$ |
+| 4. Gradientes | $\frac{\partial J}{\partial w^{(l)}} = \delta^{(l)} \cdot a^{(l-1)}$ |
+| 5. Actualización | $w^{(l)} \leftarrow w^{(l)} - \eta\, \frac{\partial J}{\partial w^{(l)}}$ |
+
+El key es que los gradientes de capas posteriores se reutilizan para calcular gradientes de capas anteriores, evitando cálculos redundantes.
+
+---
+
+## Entorno de ejecución: Google Colaboratory
+
+<div class="columns">
+<div>
+
+![w:140](images/colab_favicon_256px.png)
+
+**Colab** permite escribir y ejecutar notebooks Python desde el navegador.
+
+- No requiere configuración local inicial.
+- Facilita compartir el trabajo.
+- Puede ofrecer acceso a GPU.
+
+</div>
+<div>
+
+![w:560](images/colab_note.png)
+
+</div>
+</div>
+
+---
+
+## Ciclo de entrenamiento y evaluación en PyTorch
+
+1. **Definir** un `nn.Module`: capas, tamaños y activaciones.
+2. **Preparar** un `Dataset` y sus lotes con `DataLoader`.
+3. **Entrenar** con `model.train()`, `loss.backward()` y `optimizer.step()`.
+4. **Validar/evaluar** con `model.eval()` y `torch.no_grad()`.
+
+En clasificación con varias clases, la salida tiene una neurona por clase. `CrossEntropyLoss` recibe los *logits* directamente: no agregamos `softmax` dentro del modelo.
+
+<div class="callout">
+El ciclo es explícito, pero PyTorch tampoco decide por nosotros la arquitectura, la partición ni la métrica relevante.
+</div>
+
+---
+
+## Ejemplo Pytorch
+
+Ejemplo de clasificación binaria con datos artificiales: cuatro características, dos clases y una partición de 80 % para entrenamiento y 20 % para validación.
+
+<div class="shared-code">
+
+```python
+import numpy as np
+X = np.random.default_rng(7).normal(size=(1000, 4)).astype("float32")
+y = (X[:, 0] + X[:, 1] > 0).astype("int64")
+x_tr, x_val = X[:800], X[800:]
+y_tr, y_val = y[:800], y[800:]
+```
+
+</div>
+
+---
+
+## Ejemplo Pytorch
+
+<div class="columns code-compare">
+<div>
+
+**PyTorch: ciclo explícito**
+
+```python
+import torch
+from torch import nn
+from torch.utils.data import DataLoader, TensorDataset
+
+train = DataLoader(TensorDataset(
+    torch.from_numpy(x_tr), torch.from_numpy(y_tr)),
+    batch_size=32, shuffle=True)
+valid = DataLoader(TensorDataset(
+    torch.from_numpy(x_val), torch.from_numpy(y_val)), batch_size=32)
+model = nn.Sequential(
+    nn.Linear(4, 16), nn.ReLU(), nn.Linear(16, 2))
+loss_fn = nn.CrossEntropyLoss()
+opt = torch.optim.Adam(model.parameters())
+for _ in range(3):
+    model.train()
+    for xb, yb in train:
+        opt.zero_grad()
+        loss_fn(model(xb), yb).backward()
+        opt.step()
+model.eval()
+with torch.no_grad():
+    acc = sum((model(x).argmax(1) == y).sum().item()
+              for x, y in valid) / len(y_val)
+print("validación:", acc)
+```
+
+</div>
+<div>
+
+**TensorFlow/Keras: ciclo encapsulado**
+
+```python
+import tensorflow as tf
+
+train = tf.data.Dataset.from_tensor_slices(
+    (x_tr, y_tr)).shuffle(800).batch(32)
+valid = tf.data.Dataset.from_tensor_slices(
+    (x_val, y_val)).batch(32)
+model = tf.keras.Sequential([
+    tf.keras.layers.Input((4,)),
+    tf.keras.layers.Dense(16, activation="relu"),
+    tf.keras.layers.Dense(2)])
+model.compile(optimizer="adam",
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(
+        from_logits=True), metrics=["accuracy"])
+model.fit(train, validation_data=valid, epochs=3, verbose=0)
+print("validación:", model.evaluate(valid, verbose=0)[1])
+```
+
+</div>
+</div>
+
+Ambos ejemplos usan la misma red y pérdida. PyTorch muestra el cálculo de gradientes y la actualización; Keras los ejecuta dentro de `fit`.
+
+---
+
+## ¿El modelo funciona con datos nuevos?
+
+La pérdida de entrenamiento mide el error en ejemplos usados para ajustar los pesos. Por sí sola, no indica cómo responderá el modelo ante ejemplos que no ha visto.
+
+Medimos el error en un conjunto de **validación** separado del ajuste y comparamos:
+
+$$
+\text{brecha} = L_{\mathrm{val}} - L_{\mathrm{train}}
+$$
+
+- **Brecha pequeña y errores bajos:** el modelo también funciona bien en los ejemplos reservados.
+- **Brecha grande:** puede haberse ajustado demasiado a los ejemplos de entrenamiento.
+
+La validación guía la selección del modelo. La prueba se reserva para la evaluación final.
+
+---
+
+## Diagnóstico de subajuste y sobreajuste
+
+<div class="columns">
+<div>
+
+**Subajuste**
+
+- Error alto en entrenamiento.
+- Modelo o características insuficientes.
+- Optimización incompleta.
+
+</div>
+<div>
+
+**Sobreajuste**
+
+- Error bajo en entrenamiento.
+- Brecha alta en validación.
+- El modelo memoriza particularidades.
+
+</div>
+</div>
+
+El objetivo es generalización: buen desempeño sobre datos no utilizados para ajustar decisiones. Las curvas de aprendizaje permiten observar cómo evolucionan el error de entrenamiento y el de validación al aumentar datos o épocas.
+
+---
+
+## Penalización de la función objetivo
+
+Penalización $L_2$:
+
+$$
+L_{total}=L_{datos}+\lambda\sum_j w_j^2
+$$
+
+Penalización $L_1$:
+
+$$
+L_{total}=L_{datos}+\lambda\sum_j|w_j|
+$$
+
+El coeficiente $\lambda$ controla el compromiso entre ajustar los datos y restringir la complejidad efectiva del modelo.
+
+---
+
+## Estrategias de regularización y control de capacidad
+
+Además de las penalizaciones, el protocolo puede incluir:
+
+- **Dropout:** perturbar activaciones durante el entrenamiento.
+- **Detención temprana:** elegir la época según validación.
+- **Aumento de datos:** incorporar transformaciones que preservan la etiqueta.
+- **Reducción de capacidad:** limitar capas, unidades o parámetros.
+
+$L_1$ puede anular pesos, mientras que $L_2$ reduce su magnitud. Ajustamos $\lambda$ y las demás decisiones con validación.
+
+---
+
+## Dropout durante entrenamiento e inferencia
+
+![w:520](images/dropout.png)
+
+Para cada activación $a_j$, durante entrenamiento se muestrea una máscara:
+
+$$
+\widetilde a_j=\frac{m_j}{1-p}a_j,
+\qquad m_j\sim\operatorname{Bernoulli}(1-p)
+$$
+
+Así, *dropout* anula activaciones con probabilidad $p$ y reduce la coadaptación. Durante inferencia no se eliminan unidades, la escala ya queda compensada.
+
+---
+
+## Detención temprana basada en validación
+
+La detención temprana monitorea la pérdida de validación y conserva el instante de mejor desempeño:
+
+$$
+t^*=\arg\min_t L_{\mathrm{val}}(t)
+$$
+
+- Evita seguir ajustando cuando comienza el sobreajuste.
+- Puede detener el entrenamiento antes del presupuesto máximo.
+- Requiere decidir el criterio usando validación.
+
+La prueba se evalúa una vez, después de fijar $t^*$ y todas las decisiones.
+
+---
+
+## Arquitecturas según la estructura de los datos
+
+La arquitectura incorpora una **hipótesis inductiva**: una restricción que aprovecha la estructura esperada de la entrada.
+
+| Estructura de la entrada | Hipótesis incorporada | Arquitectura inicial |
+|---|---|---|
+| Vector sin orden espacial o temporal | Interacciones globales entre características | Red densa o MLP |
+| Secuencia ordenada | El pasado relevante afecta el presente | RNN, LSTM o GRU |
+| Imagen o grilla | Patrones locales pueden aparecer en distintas posiciones | CNN |
+
+La arquitectura, su capacidad y su costo computacional son hiperparámetros. Se comparan con el mismo protocolo de validación, no solo con la pérdida de entrenamiento.
+
+---
+
+## Redes recurrentes para dependencias temporales
+
+![w:820](images/rnn.png)
+
+Una RNN comparte los mismos parámetros en cada instante y actualiza un estado oculto:
+
+$$
+\mathbf h_t=\phi(W_x\mathbf x_t+W_h\mathbf h_{t-1}+\mathbf b)
+$$
+
+El estado $\mathbf h_t$ resume la información previa que el modelo considera útil en el paso $t$. LSTM y GRU agregan compuertas para controlar qué información se conserva, se olvida o se expone en secuencias largas.
+
+Las RNN simples pueden sufrir desvanecimiento o explosión del gradiente cuando deben transportar información a través de muchos pasos. Las compuertas atenúan este problema, aunque no eliminan la necesidad de validar el horizonte temporal y la arquitectura.
+
+---
+
+## Patrones de mapeo en datos secuenciales
+
+| Patrón | Entrada y salida | Ejemplo |
+|---|---|---|
+| Uno a muchos | Un vector $\rightarrow$ una secuencia | Generación de una descripción |
+| Muchos a uno | Una secuencia $\rightarrow$ una etiqueta | Clasificación de un texto |
+| Muchos a muchos, alineado | Un valor por instante | Etiquetado de actividad por segundo |
+| Muchos a muchos, no alineado | Una secuencia $\rightarrow$ otra secuencia | Traducción automática |
+
+En series temporales, las particiones deben respetar causalidad. Mezclar aleatoriamente observaciones futuras puede filtrar información y producir una estimación de desempeño optimista.
+
+---
+
+## Pronóstico un paso adelante con una LSTM
+
+El notebook usa la serie mensual de manchas solares para ilustrar una predicción un paso hacia adelante:
+
+$$
+(x_{t-w},\ldots,x_{t-1})\xrightarrow{\text{LSTM}}\mathbf h_t
+\xrightarrow{\text{Dense}}\hat x_t
+$$
+
+- Separa entrenamiento y prueba por fecha, sin mezclar observaciones futuras.
+- Ajusta el escalamiento exclusivamente sobre el período de entrenamiento.
+- Construye ejemplos mediante ventanas temporales de ancho $w$.
+- Compara la señal observada y la predicción en el período futuro.
+
+La ventana $w$ define cuánto pasado recibe el modelo. El horizonte de predicción y el método de validación temporal deben corresponder a la decisión real que se quiere apoyar.
+
+---
+
+## Convoluciones: filtros locales y pesos compartidos
+
+![w:670](images/convolution_animation.gif)
+
+Para una convolución discreta 2D:
+
+$$
+Y_{i,j}=\sum_m\sum_n K_{m,n}X_{i+m,j+n}
+$$
+
+Un filtro $K$ recorre vecindarios locales de la entrada $X$. Sus pesos se comparten en todas las posiciones, por lo que pueden detectar el mismo patrón en distintos lugares con menos parámetros que una capa totalmente conectada.
+
+Cada filtro produce un mapa de características. Capas sucesivas combinan bordes, texturas y patrones simples en representaciones de mayor nivel. El tamaño del filtro, el paso y el relleno son hiperparámetros que determinan la resolución de la salida.
+
+---
+
+## Pooling: reducción de resolución espacial
+
+<div class="columns">
+<div>
+
+![w:420](images/max-pooling.png)
+
+**Agrupación por máximo:** conserva la activación máxima de una región.
+
+</div>
+<div>
+
+![w:420](images/avg-pooling.png)
+
+**Agrupación por promedio:** conserva el promedio de la región.
+
+</div>
+</div>
+
+El *pooling* reduce la resolución espacial y el costo, pero también descarta información sobre la ubicación exacta de los patrones.
+
+El tamaño de ventana y el paso determinan cuánto se reduce la representación. Una reducción agresiva puede eliminar detalles relevantes. No siempre conviene usarla en tareas que requieren localización precisa.
+
+---
+
+## Arquitectura CNN para clasificar CIFAR-10
+
+El notebook usa imágenes de $32\times32$ píxeles, tres canales de color y diez clases. La arquitectura alterna extracción de características y reducción de resolución:
+
+$$
+\text{Conv2D}\rightarrow\text{MaxPooling}\rightarrow\text{Conv2D}
+\rightarrow\text{MaxPooling}\rightarrow\text{Conv2D}
+\rightarrow\text{Dense}\rightarrow\text{softmax}
+$$
+
+Las convoluciones extraen patrones locales. Las capas densas combinan la representación final para clasificar. La profundidad, los canales y la regularización deben seleccionarse con validación.
+
+<div class="warn">
+El ejemplo entrena durante un número fijo de épocas y evalúa en prueba. Para comparar arquitecturas, conviene añadir validación y mantener el mismo protocolo.
+</div>
+
+---
+
+## Diseño experimental antes de entrenar una red
+
+1. **Definir** la tarea, población objetivo, decisión y métrica de éxito.
+2. **Construir** una línea base simple que establezca un desempeño de referencia.
+3. **Separar** datos antes de ajustar transformaciones, respetando tiempo, grupos y clases cuando corresponda.
+4. **Fijar** presupuesto de cómputo, semillas, arquitectura inicial y espacio de hiperparámetros.
+
+<div class="callout">
+Una red más profunda solo es mejor si supera una línea base bajo una comparación justa y con un costo aceptable.
+</div>
+
+---
+
+## Selección, prueba y reporte del experimento
+
+1. **Entrenar** cada configuración solo con entrenamiento y monitorear validación.
+2. **Seleccionar** hiperparámetros y época con una regla definida antes de mirar prueba.
+3. **Reentrenar**, si el protocolo lo contempla, usando únicamente los datos autorizados.
+4. **Evaluar** el conjunto de prueba una vez y reportar la métrica acordada.
+5. **Analizar** errores por clase, segmento, condición y costo operacional.
+
+Al comparar modelos, informe también variabilidad entre semillas, tiempo de entrenamiento, recursos usados y limitaciones de los datos. Un único valor de exactitud no caracteriza completamente un experimento.
+
+---
+
+## Notebook de referencia: Fashion MNIST con PyTorch
+
+El notebook principal [`notebook/04_clasificacion_fashion_mnist_pytorch.ipynb`](notebook/04_clasificacion_fashion_mnist_pytorch.ipynb):
+
+- usa Fashion MNIST: imágenes en escala de grises de prendas, agrupadas en diez categorías.
+- normaliza imágenes y separa entrenamiento, validación y prueba.
+- entrena una red densa con `DataLoader`, *dropout* y un ciclo explícito.
+- usa detención temprana sobre la pérdida de validación.
+- calcula matriz de confusión, exactitud global y exactitud por clase.
+
+El ejemplo sigue la API de PyTorch y deja explícitas las semillas, la partición y el dispositivo utilizado. El notebook equivalente en TensorFlow queda como material de comparación en el anexo.
+
+---
+
+## Principios para diseñar y evaluar redes neuronales
+
+- El punto de partida es la tarea, los datos y la métrica. La arquitectura es una hipótesis que debe validarse.
+- El entrenamiento minimiza una pérdida promedio: retropropagación calcula gradientes y el optimizador actualiza parámetros.
+- La separación entre entrenamiento, validación y prueba protege la estimación de generalización.
+- Regularización, capacidad y detención temprana se eligen como parte del protocolo experimental.
+- RNN explotan dependencia temporal. CNN explotan localidad y compartición de pesos.
+
+<div class="bridge">
+Estos principios se retomarán al estudiar arquitecturas especializadas y sus aplicaciones en aprendizaje profundo.
+</div>
+
+---
+
+## Anexo: TensorFlow y Keras
+
+TensorFlow es un framework para trabajar con tensores, diferenciación automática y modelos de aprendizaje profundo.
+
+Su API de alto nivel más conocida es **Keras**, que permite describir modelos secuenciales y delegar el ciclo de entrenamiento en métodos como `fit`.
+
+En este curso lo dejamos como referencia. La implementación principal y los ejemplos de la clase usan PyTorch.
+
+<div class="bridge">
+La idea matemática no cambia: datos → modelo → pérdida → gradientes → actualización → evaluación.
+</div>
+
+---
+
+## Anexo: equivalencias entre PyTorch y TensorFlow/Keras
+
+| Concepto | PyTorch | TensorFlow / Keras |
+|---|---|---|
+| Tensor | `torch.Tensor` | `tf.Tensor` |
+| Capa densa | `nn.Linear` | `keras.layers.Dense` |
+| Modelo | `nn.Module` | `keras.Model` / `Sequential` |
+| Pérdida para varias clases | `nn.CrossEntropyLoss` | `SparseCategoricalCrossentropy(from_logits=True)` |
+| Optimizador | `torch.optim.Adam` | `keras.optimizers.Adam` |
+| Lotes de datos | `DataLoader` | `tf.data.Dataset` |
+| Entrenar/evaluar | `model.train()` / `model.eval()` | `training=True` / `training=False` |
+
+Las diferencias principales están en la interfaz y el nivel de automatización, no en el objetivo del aprendizaje.
+
+---
+
+## Anexo: ciclos de entrenamiento explícito y encapsulado
+
+<div class="columns">
+<div>
+
+**PyTorch: ciclo explícito**
+
+```python
+model.train()
+for x, y in loader:
+    optimizer.zero_grad()
+    loss = criterion(model(x), y)
+    loss.backward()
+    optimizer.step()
+```
+
+</div>
+<div>
+
+**TensorFlow/Keras: ciclo encapsulado**
+
+```python
+model.compile(
+    optimizer="adam",
+    loss=SparseCategoricalCrossentropy(from_logits=True)
+)
+model.fit(x_train, y_train,
+          validation_data=(x_val, y_val))
+```
+
+</div>
+</div>
+
+Ambos siguen el mismo flujo: paso hacia adelante, pérdida, gradientes y actualización. En PyTorch cada paso queda visible. `fit` empaqueta ese flujo y agrega opciones de entrenamiento.
+
+---
+
+## Anexo: notebooks equivalentes para el mismo experimento
+
+Los dos notebooks desarrollan el mismo experimento para comparar implementaciones:
+
+- [`04_clasificacion_fashion_mnist_pytorch.ipynb`](notebook/04_clasificacion_fashion_mnist_pytorch.ipynb): versión principal de la clase.
+- [`04_clasificacion_fashion_mnist_tensorflow.ipynb`](notebook/04_clasificacion_fashion_mnist_tensorflow.ipynb): versión de referencia para este anexo.
+
+Ambos normalizan Fashion MNIST, mantienen la misma partición entrenamiento/validación/prueba y usan una red densa con 128 unidades ReLU, dropout de 0.25 y 10 *logits*. También aplican detención temprana, reporte por clase y matriz de confusión normalizada.
+
+Los valores exactos pueden variar entre entornos de trabajo y hardware. La comparación justa debe conservar los datos, la arquitectura, las particiones y la métrica.
+
+---
+
+## Referencias y material de profundización
+
+- Material original de IPD434 (referencia histórica, con ejemplos TensorFlow): `04_RedesNeuronales.ipynb`.
+- Notebook principal reproducible: `notebook/04_clasificacion_fashion_mnist_pytorch.ipynb`.
+- Notebook de referencia para el anexo: `notebook/04_clasificacion_fashion_mnist_tensorflow.ipynb`.
+- A. Géron, *Hands On Machine Learning with Scikit Learn, Keras & TensorFlow*, O'Reilly.
+- Stanford, *CS229 Machine Learning Notes*.
+- I. Goodfellow, Y. Bengio y A. Courville, *Deep Learning*, MIT Press, 2016.
+- C. M. Bishop, *Pattern Recognition and Machine Learning*, Springer, 2006.
+- F. Chollet, *Deep Learning with Python*, 2.ª ed., Manning, 2021.
+- PyTorch, documentación oficial de módulos, optimización y carga de datos.
+- TensorFlow/Keras, documentación oficial de clasificación y modelos secuenciales.
