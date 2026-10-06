@@ -979,19 +979,11 @@ $$
 
 ---
 
-## Red multicapa: composición de capas no lineales
+## Composición de capas
 
 ![w:760](images/nn_simple.png)
 
-Para la capa $\ell$, una combinación afín seguida de una activación produce una nueva representación:
-
-$$
-\mathbf z^{(\ell)}=W^{(\ell)}\mathbf a^{(\ell-1)}+\mathbf b^{(\ell)},
-\qquad
-\mathbf a^{(\ell)}=\phi^{(\ell)}(\mathbf z^{(\ell)})
-$$
-
-Componer transformaciones lineales con activaciones no lineales permite representar fronteras complejas. Sin esa no linealidad, varias capas densas seguidas se reducen algebraicamente a una sola transformación lineal.
+La salida de cada capa se convierte en la entrada de la siguiente. Así, la red encadena transformaciones hasta producir una predicción.
 
 ---
 
@@ -1121,7 +1113,7 @@ Softmax se aplica en la capa de salida cuando hay varias clases mutuamente exclu
 
 ## Funciones de activación: forma y rango
 
-Cada gráfico relaciona el puntaje de entrada $z$ con la salida de la activación. En softmax, se muestra la probabilidad de una clase al variar su puntaje y mantener fijos los otros dos.
+Las curvas muestran cómo una activación transforma el puntaje $z$ en una salida.
 
 <div class="activation-grid">
 <img src="images/activacion_lineal.png" alt="Gráfico de la activación lineal">
@@ -1131,9 +1123,9 @@ Cada gráfico relaciona el puntaje de entrada $z$ con la salida de la activació
 
 ---
 
-## Funciones de activación: forma y rango
+## Sigmoide, tangente hiperbólica y softmax
 
-Cada gráfico relaciona el puntaje de entrada $z$ con la salida de la activación. En softmax, se muestra la probabilidad de una clase al variar su puntaje y mantener fijos los otros dos.
+Softmax depende de todos los puntajes. El gráfico muestra la probabilidad de una clase mientras varía su puntaje y los otros dos se mantienen fijos.
 
 <div class="activation-grid">
 <img src="images/activacion_sigmoide.png" alt="Gráfico de la activación sigmoide">
@@ -1189,7 +1181,7 @@ Minimizar esta pérdida aumenta la probabilidad asignada a la clase correcta y p
 
 ## Descenso de gradiente sobre un mini lote
 
-Una vez definidas la salida y la pérdida, el entrenamiento ajusta los pesos para reducir el error. En la práctica, el gradiente se estima con un mini lote $\mathcal B_t\subset\mathcal D_{\mathrm{train}}$:
+El entrenamiento ajusta los pesos para reducir la pérdida. En cada actualización, estima el gradiente con un mini lote $\mathcal B_t\subset\mathcal D_{\mathrm{train}}$:
 
 $$
 L_{\mathcal B_t}(\theta)
@@ -1211,96 +1203,74 @@ El gradiente indica el cambio local de la pérdida. La tasa $\eta$ controla el t
 - Una **actualización** modifica $\theta$ una vez, después de procesar un mini lote.
 - Una **época** recorre una vez todos los ejemplos de entrenamiento.
 
-Una tasa de aprendizaje muy grande puede oscilar o divergir. Una muy pequeña avanza lentamente. El optimizador usa el gradiente para decidir cómo actualizar los parámetros.
-
 ---
 
 ## Optimizadores: SGD y Adam
 
-Ambos convierten el gradiente de cada mini lote en una actualización de los pesos, pero lo hacen de manera distinta.
+Ambos usan el gradiente del mini lote, pero actualizan los pesos de forma distinta.
 
 <div class="columns">
 <div>
 
 **SGD**
 
-- Actualiza los pesos usando el gradiente del mini lote actual.
-- Usa una tasa de aprendizaje común, $\eta$.
+- Usa el gradiente actual y una tasa de aprendizaje común, $\eta$.
 - Es simple y requiere poca memoria adicional.
-- El resultado depende bastante de elegir una tasa adecuada.
+- Es sensible a $\eta$: una tasa inadecuada puede ralentizar o desestabilizar el ajuste.
 
 </div>
 <div>
 
 **Adam**
 
-- Mantiene promedios de los gradientes recientes y de sus cuadrados.
-- Usa esos promedios para adaptar el tamaño del paso para cada parámetro.
-- Suele ser un buen punto de partida y requiere más memoria que SGD.
-- No garantiza el mejor desempeño: también se evalúa con validación.
+- Combina promedios de gradientes recientes y de sus cuadrados.
+- Adapta el tamaño del paso para cada parámetro.
+- Suele ser un buen punto de partida, aunque requiere más memoria y no siempre supera a SGD.
 
 </div>
 </div>
 
-Existen otros optimizadores, como RMSprop y Adagrad. En esta unidad nos enfocaremos en **SGD y Adam**.
+Hay otros optimizadores, como RMSprop y Adagrad. Por ahora veremos **SGD y Adam**.
 
 ---
 
-## Feedforward paso a paso
+## Red de ejemplo para calcular gradientes
 
-Consideremos la red neuronal simple below:
+La entrada $x$ pasa por tres neuronas conectadas en serie. Cada una calcula un puntaje $z^{(l)}$ y una activación $a^{(l)}$. La tercera activación es la predicción $\hat y=a^{(3)}$.
 
 ![w:600](images/nn_simple.png)
 
-La red tiene una sola neurona por capa:
+---
 
-- **Capa de entrada:** $z^{(1)}$ (1 neurona)
-- **Capa oculta:** $z^{(2)}$ (1 neurona)
-- **Capa de salida:** $z^{(3)}$ (1 neurona)
+## Propagación hacia adelante
 
-Conexiones: $z^{(1)} \xrightarrow{w^{(2)}} z^{(2)} \xrightarrow{w^{(3)}} z^{(3)}$
+En cada neurona, primero calculamos el puntaje ponderado y luego aplicamos la activación:
+
+$$
+\begin{aligned}
+z^{(1)} &= xw^{(1)}, & a^{(1)} &= h^{(1)}(z^{(1)}) \\
+z^{(2)} &= a^{(1)}w^{(2)}, & a^{(2)} &= h^{(2)}(z^{(2)}) \\
+z^{(3)} &= a^{(2)}w^{(3)}, & \hat y=a^{(3)} &= h^{(3)}(z^{(3)})
+\end{aligned}
+$$
+
+La salida de una neurona se convierte en la entrada de la siguiente.
 
 ---
 
-## Feedforward paso a paso
+## Pérdida de una predicción
 
-### Propagación hacia adelante
-
-Para cada neurona calculamos:
-
-$$z^{(l)} = h^{(l)}\big(z^{(l-1)} \cdot w^{(l)}\big)$$
-
-donde $h^{(l)}$ es la función de activación de la capa $l$
-
-#### Capa oculta
-
-$$
-z^{(2)} = h^{(2)}\big(z^{(1)} \cdot w^{(2)}\big)
-$$
-
-#### Capa de salida
-
-$$
-z^{(3)} = h^{(3)}\big(z^{(2)} \cdot w^{(3)}\big)
-$$
-
----
-
-## Backpropagation paso a paso
-
-Supongamos una función de costo cuadrática:
+Para una observación con valor esperado $y$, usamos el error cuadrático:
 
 $$
 J = \big(a^{(3)} - y\big)^2
 $$
 
-donde $a^{(3)} = z^{(3)}$ es la salida de la red.
+La salida se obtiene con $a^{(3)}=h^{(3)}(z^{(3)})$. Calcularemos cuánto cambia $J$ al modificar cada peso.
 
 ---
 
-## Backpropagation paso a paso
-
-### Paso 1: derivada respecto a $w^{(3)}$
+## Derivada respecto al peso de salida
 
 Para actualizar $w^{(3)}$ usamos la regla de la cadena:
 
@@ -1323,20 +1293,18 @@ $$
 
 ---
 
-## Backpropagation paso a paso
+## Gradiente del peso de salida
 
 Entonces:
 
 $$
 \frac{\partial J}{\partial w^{(3)}}
-= a^{(2)} \cdot \big(h^{(3)}\big)'(z^{(3})) \cdot 2(a^{(3)} - y)
+= a^{(2)} \cdot \big(h^{(3)}\big)'(z^{(3)}) \cdot 2(a^{(3)} - y)
 $$
 
 ---
 
-## Backpropagation paso a paso
-
-### Paso 2: derivada respecto a $w^{(2)}$
+## Gradiente de una capa anterior
 
 Para actualizar $w^{(2)}$ usamos la regla de la cadena:
 
@@ -1357,7 +1325,7 @@ Estas derivadas se **propagan hacia atrás** para calcular gradientes de capas a
 
 ---
 
-## Backpropagation paso a paso
+## Propagación de la señal de error
 
 Definimos la señal de error:
 
@@ -1368,20 +1336,20 @@ $$
 Para la capa de salida:
 
 $$
-\delta^{(3)} = (a^{(3)} - y) \cdot \big(h^{(3)}\big)'(z^{(3)})
+\delta^{(3)} = 2(a^{(3)} - y) \cdot \big(h^{(3)}\big)'(z^{(3)})
 $$
 
- Para la capa oculta:
+Para las capas anteriores:
 
 $$
-\delta^{(2)} = \delta^{(3)} \cdot w^{(3)} \cdot \big(h^{(2)}\big)'(z^{(2)})
+\delta^{(2)} = \delta^{(3)} w^{(3)} \big(h^{(2)}\big)'(z^{(2)}),
+\qquad
+\delta^{(1)} = \delta^{(2)} w^{(2)} \big(h^{(1)}\big)'(z^{(1)})
 $$
 
 ---
 
-## Backpropagation paso a paso
-
-### Paso 3: gradientes finales
+## Gradiente de cada peso
 
 Finalmente:
 
@@ -1389,21 +1357,21 @@ $$
 \frac{\partial J}{\partial w^{(l)}} = \delta^{(l)} \cdot a^{(l-1)}
 $$
 
-donde $a^{(0)} = z^{(1)}$ es la entrada.
+donde $a^{(0)}=x$ es la entrada.
 
 ---
 
-## Resumen del algoritmo
+## Resumen del entrenamiento de la red
 
 | Paso | Operación |
 |------|-----------|
-| 1. Feedforward | Calcular $z^{(l)}, a^{(l)}$ desde entrada hasta salida |
-| 2. Salida | $\delta^{(3)} = (a^{(3)} - y)\, \big(h^{(3)}\big)'(z^{(3)})$ |
-| 3. Retropropagación | $\delta^{(2)} = \delta^{(3)} \cdot w^{(3)} \cdot \big(h^{(2)}\big)'(z^{(2)})$ |
-| 4. Gradientes | $\frac{\partial J}{\partial w^{(l)}} = \delta^{(l)} \cdot a^{(l-1)}$ |
-| 5. Actualización | $w^{(l)} \leftarrow w^{(l)} - \eta\, \frac{\partial J}{\partial w^{(l)}}$ |
+| 1. Propagación | Calcular $z^{(l)}, a^{(l)}$ desde la entrada hasta la salida |
+| 2. Pérdida | $J=(a^{(3)}-y)^2$ |
+| 3. Señal de salida | $\delta^{(3)}=2(a^{(3)}-y)\big(h^{(3)}\big)'(z^{(3)})$ |
+| 4. Retropropagación | $\delta^{(l)}=\delta^{(l+1)}w^{(l+1)}\big(h^{(l)}\big)'(z^{(l)})$ |
+| 5. Gradientes y actualización | $\frac{\partial J}{\partial w^{(l)}}=\delta^{(l)}a^{(l-1)}$, $w^{(l)}\leftarrow w^{(l)}-\eta\frac{\partial J}{\partial w^{(l)}}$ |
 
-El key es que los gradientes de capas posteriores se reutilizan para calcular gradientes de capas anteriores, evitando cálculos redundantes.
+La señal de salida se reutiliza para obtener los gradientes de las capas anteriores.
 
 ---
 
@@ -1445,7 +1413,7 @@ El ciclo es explícito, pero PyTorch tampoco decide por nosotros la arquitectura
 
 ---
 
-## Ejemplo Pytorch
+## Datos para el ejemplo de clasificación
 
 Ejemplo de clasificación binaria con datos artificiales: cuatro características, dos clases y una partición de 80 % para entrenamiento y 20 % para validación.
 
@@ -1464,6 +1432,53 @@ y_tr, y_val = y[:800], y[800:]
 ---
 
 ## Ejemplo Pytorch
+
+<div class="columns code-compare">
+<div>
+
+**Datos y modelo**
+
+```python
+train = DataLoader(TensorDataset(
+    torch.from_numpy(x_tr), torch.from_numpy(y_tr)),
+    batch_size=32, shuffle=True)
+model = nn.Sequential(
+    nn.Linear(4, 16), nn.ReLU(), nn.Linear(16, 2))
+loss_fn = nn.CrossEntropyLoss()
+opt = torch.optim.Adam(model.parameters())
+```
+
+- `TensorDataset` empareja ejemplos y etiquetas. `DataLoader` agrupa 32 ejemplos y los mezcla.
+- `Linear(4, 16)` → ReLU → `Linear(16, 2)` produce dos *logits*. `CrossEntropyLoss` y Adam definen la pérdida y el ajuste.
+
+</div>
+<div>
+
+**Entrenamiento y evaluación**
+
+```python
+for _ in range(3):
+    model.train()
+    for xb, yb in train:
+        opt.zero_grad()
+        loss = loss_fn(model(xb), yb)
+        loss.backward()
+        opt.step()
+model.eval()
+with torch.no_grad():
+    pred = model(torch.from_numpy(x_val)).argmax(1)
+acc = (pred == torch.from_numpy(y_val)).float().mean()
+```
+
+- Por lote, `zero_grad()` limpia los gradientes, `backward()` los calcula y `step()` actualiza los pesos.
+- `eval()` fija el modo de evaluación. `no_grad()` omite gradientes. `argmax()` predice la clase.
+
+</div>
+</div>
+
+---
+
+## Comparación: PyTorch y TensorFlow/Keras
 
 <div class="columns code-compare">
 <div>
@@ -1523,24 +1538,7 @@ print("validación:", model.evaluate(valid, verbose=0)[1])
 </div>
 </div>
 
-Ambos ejemplos usan la misma red y pérdida. PyTorch muestra el cálculo de gradientes y la actualización; Keras los ejecuta dentro de `fit`.
-
----
-
-## ¿El modelo funciona con datos nuevos?
-
-La pérdida de entrenamiento mide el error en ejemplos usados para ajustar los pesos. Por sí sola, no indica cómo responderá el modelo ante ejemplos que no ha visto.
-
-Medimos el error en un conjunto de **validación** separado del ajuste y comparamos:
-
-$$
-\text{brecha} = L_{\mathrm{val}} - L_{\mathrm{train}}
-$$
-
-- **Brecha pequeña y errores bajos:** el modelo también funciona bien en los ejemplos reservados.
-- **Brecha grande:** puede haberse ajustado demasiado a los ejemplos de entrenamiento.
-
-La validación guía la selección del modelo. La prueba se reserva para la evaluación final.
+Ambos usan la misma red y pérdida. PyTorch muestra los pasos de actualización. Keras los reúne en `fit`.
 
 ---
 
@@ -1567,7 +1565,7 @@ La validación guía la selección del modelo. La prueba se reserva para la eval
 </div>
 </div>
 
-El objetivo es generalización: buen desempeño sobre datos no utilizados para ajustar decisiones. Las curvas de aprendizaje permiten observar cómo evolucionan el error de entrenamiento y el de validación al aumentar datos o épocas.
+Generalizar es mantener un error bajo en datos no usados para ajustar los pesos. Las curvas de aprendizaje comparan el error de entrenamiento y validación durante el ajuste.
 
 ---
 
@@ -1600,24 +1598,23 @@ Además de las penalizaciones, el protocolo puede incluir:
 
 $L_1$ puede anular pesos, mientras que $L_2$ reduce su magnitud. Ajustamos $\lambda$ y las demás decisiones con validación.
 
+[Regularización en PyTorch](notebook/04_regularizacion_fashion_mnist_pytorch.ipynb).
+
 ---
 
-## Dropout durante entrenamiento e inferencia
+## Dropout
 
 ![w:520](images/dropout.png)
 
-Para cada activación $a_j$, durante entrenamiento se muestrea una máscara:
+---
 
-$$
-\widetilde a_j=\frac{m_j}{1-p}a_j,
-\qquad m_j\sim\operatorname{Bernoulli}(1-p)
-$$
+## ¿Cómo funciona Dropout?
 
-Así, *dropout* anula activaciones con probabilidad $p$ y reduce la coadaptación. Durante inferencia no se eliminan unidades, la escala ya queda compensada.
+Durante el entrenamiento, Dropout desactiva al azar algunas activaciones. Así, la red no depende siempre de las mismas neuronas y aprende representaciones más robustas. En evaluación se usan todas las neuronas.
 
 ---
 
-## Detención temprana basada en validación
+## Early Stop
 
 La detención temprana monitorea la pérdida de validación y conserva el instante de mejor desempeño:
 
@@ -1647,38 +1644,30 @@ La arquitectura, su capacidad y su costo computacional son hiperparámetros. Se 
 
 ---
 
-## Redes recurrentes para dependencias temporales
+## LSTM: memoria controlada por compuertas
 
-![w:820](images/rnn.png)
+Una celda LSTM recibe la entrada de un instante y actualiza su memoria. Al reutilizarla en cada instante y pasar su estado al siguiente, se forma una red recurrente.
 
-Una RNN comparte los mismos parámetros en cada instante y actualiza un estado oculto:
+- Sus compuertas deciden qué información conservar y cuál olvidar.
+- Otras compuertas regulan qué información nueva guardar y qué parte entregar como salida.
 
-$$
-\mathbf h_t=\phi(W_x\mathbf x_t+W_h\mathbf h_{t-1}+\mathbf b)
-$$
-
-El estado $\mathbf h_t$ resume la información previa que el modelo considera útil en el paso $t$. LSTM y GRU agregan compuertas para controlar qué información se conserva, se olvida o se expone en secuencias largas.
-
-Las RNN simples pueden sufrir desvanecimiento o explosión del gradiente cuando deben transportar información a través de muchos pasos. Las compuertas atenúan este problema, aunque no eliminan la necesidad de validar el horizonte temporal y la arquitectura.
+Así, la unidad puede mantener patrones relevantes durante varios pasos.
 
 ---
 
-## Patrones de mapeo en datos secuenciales
+## Red Recurrente
 
-| Patrón | Entrada y salida | Ejemplo |
-|---|---|---|
-| Uno a muchos | Un vector $\rightarrow$ una secuencia | Generación de una descripción |
-| Muchos a uno | Una secuencia $\rightarrow$ una etiqueta | Clasificación de un texto |
-| Muchos a muchos, alineado | Un valor por instante | Etiquetado de actividad por segundo |
-| Muchos a muchos, no alineado | Una secuencia $\rightarrow$ otra secuencia | Traducción automática |
+![w:820](images/rnn.png)
 
-En series temporales, las particiones deben respetar causalidad. Mezclar aleatoriamente observaciones futuras puede filtrar información y producir una estimación de desempeño optimista.
+Una RNN procesa una secuencia paso a paso. En cada instante combina la entrada actual con información de los pasos anteriores.
+
+La misma unidad se reutiliza a lo largo de la secuencia. Puede ser una unidad simple, una celda LSTM o una GRU.
 
 ---
 
 ## Pronóstico un paso adelante con una LSTM
 
-El notebook usa la serie mensual de manchas solares para ilustrar una predicción un paso hacia adelante:
+El [notebook de LSTM en PyTorch](notebook/04_redes_recurrentes_lstm_sunspots_pytorch.ipynb) pronostica manchas solares un mes hacia adelante:
 
 $$
 (x_{t-w},\ldots,x_{t-1})\xrightarrow{\text{LSTM}}\mathbf h_t
@@ -1694,19 +1683,24 @@ La ventana $w$ define cuánto pasado recibe el modelo. El horizonte de predicci�
 
 ---
 
-## Convoluciones: filtros locales y pesos compartidos
+## Convolución: filtros locales
 
 ![w:670](images/convolution_animation.gif)
 
-Para una convolución discreta 2D:
+Un filtro recorre vecindarios de la imagen. La animación muestra cómo cada posición de entrada contribuye a una región de salida.
 
-$$
-Y_{i,j}=\sum_m\sum_n K_{m,n}X_{i+m,j+n}
-$$
 
-Un filtro $K$ recorre vecindarios locales de la entrada $X$. Sus pesos se comparten en todas las posiciones, por lo que pueden detectar el mismo patrón en distintos lugares con menos parámetros que una capa totalmente conectada.
+---
 
-Cada filtro produce un mapa de características. Capas sucesivas combinan bordes, texturas y patrones simples en representaciones de mayor nivel. El tamaño del filtro, el paso y el relleno son hiperparámetros que determinan la resolución de la salida.
+## Neurona convolucional: suma local y activación
+
+En una CNN, cada neurona analiza una pequeña región de la imagen. Combina sus píxeles con un filtro y produce una activación en el mapa de características.
+
+- El filtro recorre distintas posiciones de la imagen y reutiliza los mismos pesos.
+- Cada filtro puede responder a un patrón, como un borde o una textura.
+- Varios filtros producen mapas distintos que las capas siguientes combinan.
+
+**Región de píxeles → filtro → activación**
 
 ---
 
@@ -1737,7 +1731,7 @@ El tamaño de ventana y el paso determinan cuánto se reduce la representación.
 
 ## Arquitectura CNN para clasificar CIFAR-10
 
-El notebook usa imágenes de $32\times32$ píxeles, tres canales de color y diez clases. La arquitectura alterna extracción de características y reducción de resolución:
+El [notebook CNN de CIFAR-10 en PyTorch](notebook/04_redes_convolucionales_cifar10_pytorch.ipynb) usa imágenes de $32\times32$ píxeles, tres canales y diez clases:
 
 $$
 \text{Conv2D}\rightarrow\text{MaxPooling}\rightarrow\text{Conv2D}
@@ -1798,25 +1792,17 @@ El ejemplo sigue la API de PyTorch y deja explícitas las semillas, la partició
 - El entrenamiento minimiza una pérdida promedio: retropropagación calcula gradientes y el optimizador actualiza parámetros.
 - La separación entre entrenamiento, validación y prueba protege la estimación de generalización.
 - Regularización, capacidad y detención temprana se eligen como parte del protocolo experimental.
-- RNN explotan dependencia temporal. CNN explotan localidad y compartición de pesos.
-
-<div class="bridge">
-Estos principios se retomarán al estudiar arquitecturas especializadas y sus aplicaciones en aprendizaje profundo.
-</div>
+- Las RNN modelan secuencias. Las CNN aprovechan patrones locales.
 
 ---
 
 ## Anexo: TensorFlow y Keras
 
-TensorFlow es un framework para trabajar con tensores, diferenciación automática y modelos de aprendizaje profundo.
+TensorFlow es una biblioteca para trabajar con tensores, diferenciación automática y modelos de aprendizaje profundo.
 
 Su API de alto nivel más conocida es **Keras**, que permite describir modelos secuenciales y delegar el ciclo de entrenamiento en métodos como `fit`.
 
-En este curso lo dejamos como referencia. La implementación principal y los ejemplos de la clase usan PyTorch.
-
-<div class="bridge">
-La idea matemática no cambia: datos → modelo → pérdida → gradientes → actualización → evaluación.
-</div>
+En esta clase, PyTorch es la implementación principal. TensorFlow queda como referencia.
 
 ---
 
@@ -1832,57 +1818,18 @@ La idea matemática no cambia: datos → modelo → pérdida → gradientes → 
 | Lotes de datos | `DataLoader` | `tf.data.Dataset` |
 | Entrenar/evaluar | `model.train()` / `model.eval()` | `training=True` / `training=False` |
 
-Las diferencias principales están en la interfaz y el nivel de automatización, no en el objetivo del aprendizaje.
-
----
-
-## Anexo: ciclos de entrenamiento explícito y encapsulado
-
-<div class="columns">
-<div>
-
-**PyTorch: ciclo explícito**
-
-```python
-model.train()
-for x, y in loader:
-    optimizer.zero_grad()
-    loss = criterion(model(x), y)
-    loss.backward()
-    optimizer.step()
-```
-
-</div>
-<div>
-
-**TensorFlow/Keras: ciclo encapsulado**
-
-```python
-model.compile(
-    optimizer="adam",
-    loss=SparseCategoricalCrossentropy(from_logits=True)
-)
-model.fit(x_train, y_train,
-          validation_data=(x_val, y_val))
-```
-
-</div>
-</div>
-
-Ambos siguen el mismo flujo: paso hacia adelante, pérdida, gradientes y actualización. En PyTorch cada paso queda visible. `fit` empaqueta ese flujo y agrega opciones de entrenamiento.
-
 ---
 
 ## Anexo: notebooks equivalentes para el mismo experimento
 
-Los dos notebooks desarrollan el mismo experimento para comparar implementaciones:
+Los dos notebooks implementan el mismo experimento:
 
 - [`04_clasificacion_fashion_mnist_pytorch.ipynb`](notebook/04_clasificacion_fashion_mnist_pytorch.ipynb): versión principal de la clase.
 - [`04_clasificacion_fashion_mnist_tensorflow.ipynb`](notebook/04_clasificacion_fashion_mnist_tensorflow.ipynb): versión de referencia para este anexo.
 
-Ambos normalizan Fashion MNIST, mantienen la misma partición entrenamiento/validación/prueba y usan una red densa con 128 unidades ReLU, dropout de 0.25 y 10 *logits*. También aplican detención temprana, reporte por clase y matriz de confusión normalizada.
+Ambos normalizan Fashion MNIST y usan las mismas particiones. La red tiene 128 unidades ReLU, *dropout* de 0.25 y 10 *logits*. Los dos aplican detención temprana y reportan métricas por clase.
 
-Los valores exactos pueden variar entre entornos de trabajo y hardware. La comparación justa debe conservar los datos, la arquitectura, las particiones y la métrica.
+Las métricas pueden variar por la inicialización y el hardware, incluso si se conserva el mismo protocolo.
 
 ---
 
