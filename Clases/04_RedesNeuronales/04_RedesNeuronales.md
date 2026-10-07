@@ -1704,6 +1704,40 @@ En una CNN, cada neurona analiza una pequeña región de la imagen. Combina sus 
 
 ---
 
+## ¿Qué calcula un filtro convolucional?
+
+- Un **filtro** o *kernel* es una pequeña matriz de coeficientes que recorre la imagen
+- En cada posición multiplica los coeficientes por los píxeles vecinos y suma los productos
+
+$$y=\sum_{q\in\mathrm{parche}}k_qx_q+b$$
+
+| Símbolo | Significado |
+|---|---|
+| $y$ | Activación en la posición actual |
+| $x_q$ | Píxel de entrada en la posición $q$ |
+| $k_q$ | Peso del filtro en la misma posición |
+| $b$ | Sesgo que se suma al resultado |
+
+El filtro se reutiliza en otras posiciones y produce un **mapa de características**
+
+---
+
+## ¿Cómo aprende la red los filtros?
+
+- Los valores del filtro $K$ y su sesgo $b$ son **parámetros entrenables** de la capa convolucional
+- La red los inicializa al comienzo y no hace falta indicar manualmente "filtro de bordes" o "filtro de textura"
+- Durante el entrenamiento la pérdida mide el error y la retropropagación calcula cómo cambiar cada coeficiente
+- El optimizador aplica la actualización:
+
+$$K\leftarrow K-\eta\frac{\partial\mathcal{L}}{\partial K}$$
+
+**Respuesta:** los valores del filtro son los pesos de la convolución
+
+- No son parámetros adicionales a los pesos de la red
+- La red aprende también los pesos de sus otras capas
+
+---
+
 ## Pooling: reducción de resolución espacial
 
 <div class="columns">
