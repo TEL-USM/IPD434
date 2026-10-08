@@ -79,70 +79,81 @@ style: |
 
 Dr. Patricio Olivares Roncagliolo
 
-Ingeniería Civil Telemática · Universidad Técnica Federico Santa María
-
 ---
 
 ## ¿Qué problema resuelve el aprendizaje por refuerzo?
 
-- Un agente aprende a **tomar decisiones secuenciales** al interactuar con un entorno.
-- Cada acción cambia el estado y puede producir una recompensa inmediata.
-- El objetivo es aprender una estrategia que maximice la **recompensa acumulada**.
-- No existe una única respuesta correcta para todos los pasos: importa la secuencia de decisiones.
+- Un agente aprende a decidir mientras interactúa con un entorno
+- En cada paso observa una situación y elige una acción
+- El entorno cambia y devuelve una recompensa
+- El agente busca una política que aumente la recompensa total
+- El entorno no indica la acción correcta para cada estado
+- El agente aprende a partir de las recompensas que recibe con el tiempo
 
-**Ejemplos:** elegir jugadas en ajedrez o aprender a controlar un robot caminante.
+**Ejemplos de decisiones secuenciales** elegir una jugada en ajedrez o controlar un robot caminante
+
+El [video de DeepMind](https://www.youtube.com/watch?v=V1eYniJ0Rnk) muestra un agente que aprende a jugar
 
 ---
 
 ## El ciclo de interacción
 
-1. El agente observa el **estado** actual.
-2. La política selecciona una **acción**.
-3. El entorno responde con una **recompensa** y un nuevo estado.
-4. El agente usa la experiencia para mejorar sus decisiones.
+- El agente recibe el estado actual $s_t$
+- La política elige la acción $a_t$
+- El entorno devuelve la recompensa $r_{t+1}$ y el estado siguiente $s_{t+1}$
+- Ese nuevo estado inicia el paso siguiente
 
-$$s_t \;\xrightarrow{a_t}\; (r_{t+1},s_{t+1})$$
+$$s_t\xrightarrow{a_t}(r_{t+1},s_{t+1})$$
+
+La política aprende al repetir este ciclo con distintas experiencias
 
 ---
 
 ## Elementos del problema
 
-- **Agente:** toma las decisiones y aprende de la experiencia.
-- **Entorno:** el mundo real o simulado con el que interactúa.
-- **Estado:** información disponible para decidir en un momento dado.
-- **Acción:** alternativa que el agente puede ejecutar en ese estado.
+- **Agente** quien elige acciones y aprende de sus resultados
+- **Entorno** el mundo real o simulado que responde a cada acción
+- **Estado** $s_t$ información disponible para decidir en el paso $t$
+- **Acción** $a_t$ alternativa que el agente puede ejecutar desde $s_t$
+
+Un estado útil contiene la información necesaria para elegir la siguiente acción
 
 ---
 
 ## Recompensa y política
 
-- **Recompensa:** señal inmediata que indica el resultado de una acción.
-- **Política** $\pi$: regla que el agente sigue para elegir acciones según el estado.
-- Las recompensas pueden ser positivas o negativas; su significado depende del objetivo.
-- Una buena política busca un resultado favorable **a lo largo del tiempo**, no solo en el paso actual.
+- **Recompensa** $r_{t+1}$ señal inmediata del resultado de una acción
+- Puede ser positiva o negativa según el objetivo
+- **Política** $\pi(a\mid s)$ regla que indica qué acción elegir desde cada estado
+- Una buena política busca un retorno favorable a lo largo del tiempo y no solo una ganancia inmediata
+
+Para describir las decisiones y sus resultados usamos un proceso de decisión de Markov
 
 ---
 
 ## El proceso de decisión de Markov
 
-Un MDP resume los elementos necesarios para modelar el problema:
+Un MDP organiza los estados las acciones las transiciones y las recompensas del problema
 
 $$\mathcal{M}=(S,A,P,R,\gamma)$$
 
-- $S$: estados · $A$: acciones posibles.
-- $P(s'\mid s,a)$: probabilidad de transición al estado $s'$.
-- $R(s,a)$: recompensa asociada a una decisión.
-- $\gamma\in[0,1)$: cuánto peso asignamos al futuro.
+- $S$ reúne los estados posibles y $A$ las acciones disponibles
+- $P(s'\mid s,a)$ indica la probabilidad de llegar a $s'$ desde $s$ al elegir $a$
+- $R(s,a,s')$ es la recompensa al realizar esa transición
+- $\gamma\in[0,1)$ es el factor que reduce el peso de las recompensas futuras
+
+Con estos elementos podemos describir cada paso del agente
 
 ---
 
 ## De una decisión a la siguiente
 
-- El agente parte de un estado inicial $s_0$ y elige una acción $a_0$.
-- El entorno produce un nuevo estado según $P(s_1\mid s_0,a_0)$.
-- El proceso se repite: $s_0,a_0,r_1,s_1,a_1,r_2,s_2,\ldots$
+- En el paso $t$ el agente está en $s_t$ y elige $a_t$
+- La función $P(s_{t+1}\mid s_t,a_t)$ describe qué estados pueden aparecer después
+- El entorno devuelve $s_{t+1}$ y la recompensa $R(s_t,a_t,s_{t+1})$
+- El proceso continúa desde el estado nuevo
 
-La propiedad de Markov indica que el estado actual resume la información relevante para predecir el siguiente paso.
+La propiedad de Markov indica que el estado actual resume la información necesaria para predecir el próximo estado
 
 ---
 
@@ -150,37 +161,49 @@ La propiedad de Markov indica que el estado actual resume la información releva
 
 $$G_t=R_{t+1}+\gamma R_{t+2}+\gamma^2R_{t+3}+\cdots$$
 
-- Sin descuento, las recompensas lejanas pesan tanto como las inmediatas.
-- Con $\gamma<1$, se priorizan resultados próximos y la suma permanece acotada.
-- El agente busca maximizar el retorno esperado.
+- $R_{t+1}$ es la recompensa recibida después de elegir $a_t$
+- $G_t$ suma las recompensas futuras y las descuenta con $\gamma$
+- Si $\gamma$ se acerca a uno cuentan más los resultados lejanos
+- Si $\gamma$ se acerca a cero cuentan más las recompensas inmediatas
+- El agente busca maximizar el retorno esperado
+
+Este retorno permite comparar las consecuencias de distintas políticas
 
 ---
 
 ## Valor de una política
 
-El valor $V^\pi(s)$ es el retorno esperado al partir del estado $s$ y seguir la política $\pi$:
+El valor $V^\pi(s)$ es el retorno descontado esperado al partir del estado $s$ y seguir la política $\pi$
 
 $$V^\pi(s)=\mathbb{E}\left[\sum_{t=0}^{\infty}\gamma^tR_{t+1}\mid s_0=s,\pi\right]$$
 
-Permite comparar qué tan conveniente es un estado bajo una estrategia determinada.
+- $\mathbb{E}$ representa el promedio sobre las posibles trayectorias
+- Un valor alto indica que seguir $\pi$ desde $s$ suele producir más recompensa futura
+
+La ecuación de Bellman expresa este valor usando el paso inmediato y los estados siguientes
 
 ---
 
 ## Ecuación de Bellman
 
-El valor de un estado se expresa en términos de su recompensa inmediata y los estados siguientes:
+El valor de un estado combina la recompensa del paso actual con el valor esperado del futuro
 
 $$V^\pi(s)=\sum_a\pi(a\mid s)\sum_{s'}P(s'\mid s,a)\left[R(s,a,s')+\gamma V^\pi(s')\right]$$
 
-La ecuación relaciona la decisión actual con las consecuencias futuras.
+- $\pi(a\mid s)$ es la probabilidad de elegir la acción $a$ en el estado $s$
+- $P(s'\mid s,a)$ pondera cada estado siguiente posible
+- El término entre corchetes suma recompensa inmediata y valor futuro descontado
+
+En el mundo grilla cada casilla será un estado y cada movimiento una acción
 
 ---
 
 ## Caso de estudio: mundo grilla
 
-- Cada casilla representa un **estado**.
-- El agente puede moverse arriba, abajo, izquierda o derecha.
-- Las casillas terminales entregan recompensas $+1$ y $-1$.
+- Cada casilla representa un estado y el espacio negro es inaccesible
+- El agente puede moverse arriba abajo izquierda o derecha
+- La casilla terminal positiva entrega $+1$ y la negativa entrega $-1$
+- El objetivo es llegar a la recompensa positiva sin terminar en la negativa
 
 <img src="images/MundoGrilla.drawio.png" alt="Mundo grilla" width="430px"/>
 
@@ -188,7 +211,9 @@ La ecuación relaciona la decisión actual con las consecuencias futuras.
 
 ## Una política asigna acciones a los estados
 
-La política muestra qué movimiento elegir desde cada casilla para acercarse a una salida conveniente.
+- Cada flecha muestra la acción que el agente elige desde esa casilla
+- La política transforma el estado actual en una decisión local
+- Al aplicar la misma regla en cada paso se obtiene una ruta por la grilla
 
 <img src="images/MundoGrilla_politica.drawio.png" alt="Política del mundo grilla" width="500px"/>
 
@@ -196,8 +221,9 @@ La política muestra qué movimiento elegir desde cada casilla para acercarse a 
 
 ## Mundo grilla determinista
 
-- Cada acción produce el movimiento esperado.
-- Una ruta óptima desde el inicio es $\uparrow,\uparrow,\rightarrow,\rightarrow,\rightarrow$.
+- Cada acción produce el movimiento esperado con probabilidad uno
+- Una ruta óptima desde el inicio es $\uparrow,\uparrow,\rightarrow,\rightarrow,\rightarrow$
+- La evaluación considera la recompensa acumulada al completar la ruta
 
 <img src="images/MundoGrilla_determinista.drawio.png" alt="Ruta determinista" width="430px"/>
 
@@ -205,9 +231,9 @@ La política muestra qué movimiento elegir desde cada casilla para acercarse a 
 
 ## El descuento puede cambiar la ruta
 
-- Las recompensas futuras se multiplican por potencias de $\gamma$.
-- Una ruta corta hacia una recompensa puede ser preferible a otra más larga.
-- El valor de una acción depende tanto de la recompensa como de los pasos necesarios para alcanzarla.
+- El factor $\gamma$ reduce el valor de las recompensas que tardan más en llegar
+- Una ruta corta hacia $+1$ puede ser mejor que otra más larga
+- Los valores mostrados en la grilla reflejan la recompensa y la distancia hasta ella
 
 <img src="images/MundoGrilla_determinsta_descuentos.drawio.png" alt="Mundo grilla con descuento" width="380px"/>
 
@@ -215,9 +241,10 @@ La política muestra qué movimiento elegir desde cada casilla para acercarse a 
 
 ## ¿Qué ocurre si las acciones son inciertas?
 
-- La acción puede terminar en una casilla distinta de la esperada.
-- Ejemplo: 80 % de probabilidad de avanzar en la dirección elegida y 10 % hacia cada lado.
-- El agente debe valorar tanto la recompensa como el riesgo de cada movimiento.
+- Al elegir arriba el agente avanza en esa dirección con probabilidad 80 %
+- Con probabilidad 10 % se mueve a cada lado
+- Las probabilidades de los resultados posibles suman 100 %
+- El valor de una acción combina cada recompensa con la probabilidad de su resultado
 
 <div class="columns">
 <div>
@@ -232,43 +259,54 @@ La política muestra qué movimiento elegir desde cada casilla para acercarse a 
 
 ## Value Iteration: actualizar los valores
 
-1. Inicializar $V(s)$ para todos los estados.
-2. Aplicar repetidamente la actualización de Bellman:
+- Inicializar $V_0(s)=0$ para todos los estados
+- Actualizar cada valor usando las transiciones posibles
 
-$$V(s)\leftarrow R(s)+\gamma\max_a\sum_{s'}P(s'\mid s,a)V(s')$$
+$$V_{k+1}(s)=\max_a\sum_{s'}P(s'\mid s,a)\left[R(s,a,s')+\gamma V_k(s')\right]$$
 
-3. Detenerse cuando los valores dejan de cambiar de forma relevante.
+- El máximo conserva la acción con el mayor retorno esperado
+- Repetir hasta que los valores se estabilicen
+
+$V_k(s)$ es la estimación del valor en la iteración $k$
 
 ---
 
 ## De los valores a una política
 
-Una vez estimado $V(s)$, elegimos la acción con mayor retorno esperado:
+La convergencia produce el valor óptimo $V^*(s)$ para cada estado
 
-$$\pi^*(s)=\arg\max_a\sum_{s'}P(s'\mid s,a)\left[R(s,a,s')+\gamma V(s')\right]$$
+La política óptima escoge la acción con mayor retorno esperado:
 
-Value Iteration permite obtener tanto los valores de los estados como una política óptima.
+$$\pi^*(s)=\arg\max_a\sum_{s'}P(s'\mid s,a)\left[R(s,a,s')+\gamma V^*(s')\right]$$
+
+La expresión compara la recompensa inmediata y el valor futuro de cada acción
 
 ---
 
-## Q-Learning: aprender desde la experiencia
+## Q learning: aprender desde la experiencia
 
-- No es necesario conocer por adelantado las probabilidades de transición.
-- El agente actualiza sus estimaciones después de observar transiciones y recompensas.
-- La regla incorpora la recompensa observada y el mejor valor futuro:
+- No es necesario conocer por adelantado $P$ ni $R$
+- $Q(s,a)$ estima el retorno al elegir la acción $a$ desde el estado $s$
+- Después de observar la recompensa $r$ y el estado siguiente $s'$ se actualiza:
 
 $$Q(s,a)\leftarrow Q(s,a)+\alpha\left[r+\gamma\max_{a'}Q(s',a')-Q(s,a)\right]$$
+
+- $\alpha$ controla cuánto cambia la estimación en cada observación
+- $\gamma$ descuenta el valor futuro
+- El máximo selecciona la acción con mayor valor en el estado siguiente
 
 ---
 
 ## ¿Cómo se interpretan los valores $Q$?
 
-- $Q(s,a)$ estima el retorno esperado al tomar la acción $a$ desde el estado $s$.
-- El valor del estado es la mejor acción disponible:
+- $Q(s,a)$ permite comparar las acciones disponibles dentro de un estado
+- El valor $V(s)$ corresponde a la mejor de esas estimaciones:
 
 $$V(s)=\max_a Q(s,a)$$
 
-- La política codiciosa elige $\pi(s)=\arg\max_a Q(s,a)$.
+- La política codiciosa elige $\pi(s)=\arg\max_a Q(s,a)$
+
+Una tabla resulta práctica en espacios pequeños pero crece con el número de estados y acciones
 
 ---
 
@@ -276,57 +314,69 @@ $$V(s)=\max_a Q(s,a)$$
 
 <div class="columns">
 <div>
-<h3>Q-Learning tabular</h3>
+<h3>Q learning en tabla</h3>
 <img src="images/q-learning.png" alt="Tabla Q" width="420px"/>
-<p>Representa cada estado y acción en una tabla.</p>
+<p>Guarda un valor para cada par de estado y acción</p>
 </div>
 <div>
-<h3>Deep Q-Learning</h3>
+<h3>Deep Q Learning</h3>
 <img src="images/deep-q-learning.png" alt="Red que aproxima Q" width="420px"/>
-<p>Una red estima los valores de las acciones a partir del estado.</p>
+<p>Recibe el estado y estima el valor de cada acción posible</p>
 </div>
 </div>
 
 ---
 
-## Deep Q-Network (DQN)
+## Deep Q Network (DQN)
 
-- La red de política estima $Q_\theta(s,a)$ para todas las acciones posibles.
-- Una red objetivo proporciona una estimación más estable del valor futuro.
-- El objetivo de entrenamiento es:
+- La red de política usa parámetros $\theta$ para estimar $Q_\theta(s,a)$ desde un estado
+- La red objetivo usa parámetros $\theta^-$ para estimar el valor futuro
+- Ambas redes estiman valores para las acciones disponibles
 
-$$Q_{\mathrm{target}}=r+\gamma(1-d)\max_{a'}Q_{\theta^-}(s',a')$$
+La red objetivo ayuda a mantener estable el aprendizaje
 
-- La pérdida reduce la diferencia entre $Q_\theta(s,a)$ y el objetivo.
+---
+
+## Objetivo de aprendizaje de DQN
+
+La red aprende un objetivo que combina la recompensa observada con el mejor valor futuro
+
+$$y_t=r_{t+1}+\gamma(1-d_t)\max_{a'}Q_{\theta^-}(s_{t+1},a')$$
+
+- $r_{t+1}$ es la recompensa recibida después de la acción
+- $d_t=1$ cuando el estado siguiente es terminal y evita sumar un valor futuro
+- La red de política ajusta $Q_\theta(s_t,a_t)$ para acercarlo a $y_t$
 
 ---
 
 ## Entrenamiento de un DQN
 
-1. Elegir una acción con una política $\epsilon$-greedy.
-2. Guardar la transición $(s,a,r,s',d)$ en una memoria de repetición.
-3. Aprender con un lote aleatorio de transiciones.
-4. Sincronizar periódicamente la red objetivo.
-
-La exploración disminuye gradualmente para favorecer las acciones aprendidas.
+- Con probabilidad $\epsilon$ explorar una acción al azar y en los demás pasos elegir la de mayor $Q$
+- Guardar cada experiencia de estado acción recompensa y estado siguiente en la memoria
+- Aprender desde lotes aleatorios de esa memoria
+- Ajustar la red de política para reducir el error respecto al objetivo
+- Copiar periódicamente los parámetros a la red objetivo y disminuir $\epsilon$
 
 ---
 
 ## Gymnasium: probar agentes en entornos
 
-- Proporciona una API común para observar estados, ejecutar acciones y recibir recompensas.
-- `reset()` inicia un episodio; `step(action)` devuelve estado, recompensa y señales de término.
-- Incluye entornos clásicos como CartPole.
+- Proporciona una API común para observar estados ejecutar acciones y recibir recompensas
+- `reset()` inicia un episodio y devuelve el estado inicial
+- `step(action)` devuelve el estado siguiente la recompensa y las señales `terminated` y `truncated`
+- `terminated` indica que se alcanzó un estado terminal y `truncated` que terminó el tiempo disponible
+- Incluye entornos clásicos como CartPole
 
-Documentación: [Gymnasium](https://gymnasium.farama.org/).
+Documentación de [Gymnasium](https://gymnasium.farama.org/)
 
 ---
 
 ## Ejemplo práctico: DQN en CartPole
 
-- CartPole tiene cuatro variables de estado y dos acciones posibles.
-- El agente aprende a mantener el péndulo equilibrado y se evalúa con episodios nuevos.
-- El notebook implementa memoria de repetición, red objetivo, entrenamiento y evaluación.
+- El estado contiene la posición y velocidad del carro junto con el ángulo y la velocidad del péndulo
+- Las dos acciones empujan el carro a la izquierda o a la derecha
+- El agente recibe recompensa mientras mantiene el péndulo equilibrado
+- El notebook entrena el DQN y evalúa la política en episodios nuevos
 
 [Abrir notebook PyTorch de DQN para CartPole](notebook/05_1_dqn_cartpole_pytorch.ipynb)
 
@@ -334,16 +384,16 @@ Documentación: [Gymnasium](https://gymnasium.farama.org/).
 
 ## Ideas clave
 
-- El aprendizaje por refuerzo optimiza decisiones secuenciales mediante retorno esperado.
-- Los MDP y las ecuaciones de Bellman describen la relación entre estados, acciones y recompensas.
-- Q-Learning aprende valores desde la experiencia; DQN usa redes para aproximarlos.
-- La simulación permite entrenar y comparar políticas de manera reproducible.
+- El aprendizaje por refuerzo optimiza decisiones secuenciales mediante el retorno esperado
+- Un MDP describe estados acciones transiciones y recompensas
+- Value Iteration usa un modelo conocido y Q learning aprende desde muestras
+- Deep Q Network aproxima los valores cuando una tabla no resulta práctica
 
 ---
 
 ## Lecturas y referencias
 
-- A. Géron, *Hands-on Machine Learning with Scikit-Learn, Keras & TensorFlow*.
-- Stanford, [CS229 Notes](https://cs229.stanford.edu/).
-- [Documentación de Gymnasium](https://gymnasium.farama.org/).
-- Diagrama DQN: [GeeksforGeeks](https://www.geeksforgeeks.org/deep-q-learning/).
+- A Géron · libro sobre aprendizaje automático con Scikit Learn Keras y TensorFlow
+- Stanford · [CS229 Notes](https://cs229.stanford.edu/)
+- [Documentación de Gymnasium](https://gymnasium.farama.org/)
+- Diagrama de Deep Q Network · [GeeksforGeeks](https://www.geeksforgeeks.org/deep-q-learning/)
