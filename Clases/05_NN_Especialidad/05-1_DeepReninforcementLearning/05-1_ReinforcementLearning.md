@@ -1,322 +1,349 @@
 ---
 marp: true
-math: mathjax
+math: katex
 paginate: true
 style: |
-  section { font-size: 27px; line-height: 1.35; }
-  section.lead { text-align: center; }
-  section.lead h1 { font-size: 2.1em; }
-  h2, h3 { color: #12394f; }
-  code { font-size: 0.84em; }
-  table { font-size: 0.77em; }
-  img { max-height: 430px; }
-  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
-  .callout { background: #eef6fb; border-left: 6px solid #2f6f9f; border-radius: 6px; padding: 0.7em 0.9em; }
-  .bridge { background: #f7f8fa; border-left: 6px solid #6b7280; border-radius: 6px; padding: 0.65em 0.9em; }
-  .warn { background: #fff4df; border-left: 6px solid #b7791f; border-radius: 6px; padding: 0.65em 0.9em; }
-  .example-space { background: #eef8f1; border-left: 6px solid #2f855a; border-radius: 6px; padding: 0.65em 0.9em; }
-  .small { font-size: 0.82em; }
+  section { font-size: 27px }
+  section { line-height: 1.35 }
+  section.lead { text-align: center }
+  section.lead h1 { font-size: 2.1em }
+  h2, h3 { color: #12394f }
+  code { font-size: 0.84em }
+  table { font-size: 0.77em }
+  img { max-height: 430px }
+  img { display: block }
+  img { margin: 0 auto }
+  .columns { display: grid }
+  .columns { grid-template-columns: 1fr 1fr }
+  .columns { gap: 32px }
+  .columns { align-items: start }
+  .callout { background: #eef6fb }
+  .callout { border-left: 6px solid #2f6f9f }
+  .callout { border-radius: 6px }
+  .callout { padding: 0.7em 0.9em }
+  .bridge { background: #f7f8fa }
+  .bridge { border-left: 6px solid #6b7280 }
+  .bridge { border-radius: 6px }
+  .bridge { padding: 0.65em 0.9em }
+  .warn { background: #fff4df }
+  .warn { border-left: 6px solid #b7791f }
+  .warn { border-radius: 6px }
+  .warn { padding: 0.65em 0.9em }
+  .example-space { background: #eef8f1 }
+  .example-space { border-left: 6px solid #2f855a }
+  .example-space { border-radius: 6px }
+  .example-space { padding: 0.65em 0.9em }
+  .small { font-size: 0.82em }
+  .diagram-focus { width: 650px }
+  .diagram-focus { height: 520px }
+  .diagram-focus { margin: 0 auto }
+  .diagram-focus { overflow: hidden }
+  .diagram-focus { position: relative }
+  .diagram-focus img { position: absolute }
+  .diagram-focus img { width: auto }
+  .diagram-focus img { height: 580px }
+  .diagram-focus img { max-width: none }
+  .diagram-focus img { max-height: none }
+  .diagram-focus img { left: -106px }
+  .diagram-focus img { top: -16px }
+  .diagram-focus img { margin: 0 }
+  .matrix-focus { text-align: center }
+  .matrix-focus img { display: block }
+  .matrix-focus img { width: 900px }
+  .matrix-focus img { max-width: 100% }
+  .matrix-focus img { height: auto }
+  .matrix-focus img { max-height: none }
+  .matrix-focus img { margin: 28px auto 0 }
+  .activation-grid { display: grid }
+  .activation-grid { grid-template-columns: repeat(3, 1fr) }
+  .activation-grid { gap: 8px 14px }
+  .activation-grid { align-items: start }
+  .activation-grid img { width: 100% }
+  .activation-grid img { max-height: none }
+  .activation-grid img { height: auto }
+  .digit-example { display: inline-block }
+  .digit-example { vertical-align: middle }
+  .digit-example { margin-right: 8px }
+  .code-compare pre { font-size: 0.52em }
+  .code-compare pre { line-height: 1.08 }
+  .shared-code pre { font-size: 0.58em }
+  .shared-code pre { line-height: 1.1 }
 ---
 <!-- _class: lead -->
 
+![w:125](images/utfsm.png)
+
 # IPD434
 ## Aprendizaje por refuerzo
-### Decisiones secuenciales, valor y aprendizaje Q profundo
+### Deep Reinforcement Learning
 
-Dr. Nicolás Gálvez Ramírez<br>
 Dr. Patricio Olivares Roncagliolo
 
+Ingeniería Civil Telemática · Universidad Técnica Federico Santa María
+
 ---
 
-## Conexión con redes neuronales
+## ¿Qué problema resuelve el aprendizaje por refuerzo?
 
-En aprendizaje supervisado cada entrada viene acompañada por una etiqueta.
+- Un agente aprende a **tomar decisiones secuenciales** al interactuar con un entorno.
+- Cada acción cambia el estado y puede producir una recompensa inmediata.
+- El objetivo es aprender una estrategia que maximice la **recompensa acumulada**.
+- No existe una única respuesta correcta para todos los pasos: importa la secuencia de decisiones.
 
-En aprendizaje por refuerzo (RL), un agente actúa, modifica el entorno y recibe una recompensa posiblemente tardía.
+**Ejemplos:** elegir jugadas en ajedrez o aprender a controlar un robot caminante.
 
-$$
-s_t\xrightarrow{a_t}\left(r_{t+1},s_{t+1}\right)
-$$
+---
 
-<div class="bridge">
-La pregunta cambia desde “¿qué etiqueta corresponde?” hacia “¿qué acción maximiza el retorno futuro?”.
+## El ciclo de interacción
+
+1. El agente observa el **estado** actual.
+2. La política selecciona una **acción**.
+3. El entorno responde con una **recompensa** y un nuevo estado.
+4. El agente usa la experiencia para mejorar sus decisiones.
+
+$$s_t \;\xrightarrow{a_t}\; (r_{t+1},s_{t+1})$$
+
+---
+
+## Elementos del problema
+
+- **Agente:** toma las decisiones y aprende de la experiencia.
+- **Entorno:** el mundo real o simulado con el que interactúa.
+- **Estado:** información disponible para decidir en un momento dado.
+- **Acción:** alternativa que el agente puede ejecutar en ese estado.
+
+---
+
+## Recompensa y política
+
+- **Recompensa:** señal inmediata que indica el resultado de una acción.
+- **Política** $\pi$: regla que el agente sigue para elegir acciones según el estado.
+- Las recompensas pueden ser positivas o negativas; su significado depende del objetivo.
+- Una buena política busca un resultado favorable **a lo largo del tiempo**, no solo en el paso actual.
+
+---
+
+## El proceso de decisión de Markov
+
+Un MDP resume los elementos necesarios para modelar el problema:
+
+$$\mathcal{M}=(S,A,P,R,\gamma)$$
+
+- $S$: estados · $A$: acciones posibles.
+- $P(s'\mid s,a)$: probabilidad de transición al estado $s'$.
+- $R(s,a)$: recompensa asociada a una decisión.
+- $\gamma\in[0,1)$: cuánto peso asignamos al futuro.
+
+---
+
+## De una decisión a la siguiente
+
+- El agente parte de un estado inicial $s_0$ y elige una acción $a_0$.
+- El entorno produce un nuevo estado según $P(s_1\mid s_0,a_0)$.
+- El proceso se repite: $s_0,a_0,r_1,s_1,a_1,r_2,s_2,\ldots$
+
+La propiedad de Markov indica que el estado actual resume la información relevante para predecir el siguiente paso.
+
+---
+
+## Retorno: sumar recompensas futuras
+
+$$G_t=R_{t+1}+\gamma R_{t+2}+\gamma^2R_{t+3}+\cdots$$
+
+- Sin descuento, las recompensas lejanas pesan tanto como las inmediatas.
+- Con $\gamma<1$, se priorizan resultados próximos y la suma permanece acotada.
+- El agente busca maximizar el retorno esperado.
+
+---
+
+## Valor de una política
+
+El valor $V^\pi(s)$ es el retorno esperado al partir del estado $s$ y seguir la política $\pi$:
+
+$$V^\pi(s)=\mathbb{E}\left[\sum_{t=0}^{\infty}\gamma^tR_{t+1}\mid s_0=s,\pi\right]$$
+
+Permite comparar qué tan conveniente es un estado bajo una estrategia determinada.
+
+---
+
+## Ecuación de Bellman
+
+El valor de un estado se expresa en términos de su recompensa inmediata y los estados siguientes:
+
+$$V^\pi(s)=\sum_a\pi(a\mid s)\sum_{s'}P(s'\mid s,a)\left[R(s,a,s')+\gamma V^\pi(s')\right]$$
+
+La ecuación relaciona la decisión actual con las consecuencias futuras.
+
+---
+
+## Caso de estudio: mundo grilla
+
+- Cada casilla representa un **estado**.
+- El agente puede moverse arriba, abajo, izquierda o derecha.
+- Las casillas terminales entregan recompensas $+1$ y $-1$.
+
+<img src="images/MundoGrilla.drawio.png" alt="Mundo grilla" width="430px"/>
+
+---
+
+## Una política asigna acciones a los estados
+
+La política muestra qué movimiento elegir desde cada casilla para acercarse a una salida conveniente.
+
+<img src="images/MundoGrilla_politica.drawio.png" alt="Política del mundo grilla" width="500px"/>
+
+---
+
+## Mundo grilla determinista
+
+- Cada acción produce el movimiento esperado.
+- Una ruta óptima desde el inicio es $\uparrow,\uparrow,\rightarrow,\rightarrow,\rightarrow$.
+
+<img src="images/MundoGrilla_determinista.drawio.png" alt="Ruta determinista" width="430px"/>
+
+---
+
+## El descuento puede cambiar la ruta
+
+- Las recompensas futuras se multiplican por potencias de $\gamma$.
+- Una ruta corta hacia una recompensa puede ser preferible a otra más larga.
+- El valor de una acción depende tanto de la recompensa como de los pasos necesarios para alcanzarla.
+
+<img src="images/MundoGrilla_determinsta_descuentos.drawio.png" alt="Mundo grilla con descuento" width="380px"/>
+
+---
+
+## ¿Qué ocurre si las acciones son inciertas?
+
+- La acción puede terminar en una casilla distinta de la esperada.
+- Ejemplo: 80 % de probabilidad de avanzar en la dirección elegida y 10 % hacia cada lado.
+- El agente debe valorar tanto la recompensa como el riesgo de cada movimiento.
+
+<div class="columns">
+<div>
+<img src="images/MDP_estocastico_vs_determinista.png" alt="Comparación de transiciones" width="430px"/>
+</div>
+<div>
+<img src="images/MundoGrilla_probabilistica.drawio.png" alt="Mundo grilla probabilístico" width="430px"/>
+</div>
 </div>
 
 ---
 
-## Objetivos
+## Value Iteration: actualizar los valores
 
-1. **Formalizar** un problema como proceso de decisión de Markov.
-2. **Distinguir** política, recompensa, retorno y funciones de valor.
-3. **Aplicar** ecuaciones de Bellman y value iteration.
-4. **Explicar** exploración frente a explotación.
-5. **Implementar** Q-learning tabular con Gymnasium.
-6. **Relacionar** Q-learning y DQN, incluyendo sus mecanismos de estabilidad.
+1. Inicializar $V(s)$ para todos los estados.
+2. Aplicar repetidamente la actualización de Bellman:
 
----
+$$V(s)\leftarrow R(s)+\gamma\max_a\sum_{s'}P(s'\mid s,a)V(s')$$
 
-## Ruta de la clase
-
-1. Modelamos estados, acciones, transiciones y recompensas mediante un MDP.
-2. Convertimos recompensas futuras en retorno y funciones de valor.
-3. La ecuación de Bellman conecta una decisión actual con decisiones futuras.
-4. *Value iteration* resuelve el problema cuando conocemos el modelo.
-5. Q-learning aprende desde experiencia cuando el modelo no está disponible.
-6. DQN aproxima la tabla Q con una red y requiere mecanismos de estabilización.
+3. Detenerse cuando los valores dejan de cambiar de forma relevante.
 
 ---
 
-## Proceso de decisión de Markov
+## De los valores a una política
 
-Un MDP se define por la tupla:
+Una vez estimado $V(s)$, elegimos la acción con mayor retorno esperado:
 
-$$
-\mathcal M=(\mathcal S,\mathcal A,P,R,\gamma)
-$$
+$$\pi^*(s)=\arg\max_a\sum_{s'}P(s'\mid s,a)\left[R(s,a,s')+\gamma V(s')\right]$$
 
-- $\mathcal S$: estados.
-- $\mathcal A$: acciones.
-- $P(s'\mid s,a)$: dinámica.
-- $R(s,a,s')$: recompensa.
-- $\gamma\in[0,1)$: descuento.
-
-![w:570](images/MDP_diagram.jpg)
-
-El estado contiene la información disponible para decidir. La dinámica describe qué puede ocurrir después de cada acción y la recompensa expresa el objetivo inmediato.
+Value Iteration permite obtener tanto los valores de los estados como una política óptima.
 
 ---
 
-## Propiedad de Markov
+## Q-Learning: aprender desde la experiencia
 
-El estado debe resumir la información relevante para predecir el futuro:
+- No es necesario conocer por adelantado las probabilidades de transición.
+- El agente actualiza sus estimaciones después de observar transiciones y recompensas.
+- La regla incorpora la recompensa observada y el mejor valor futuro:
 
-$$
-P(s_{t+1}\mid s_t,a_t,s_{t-1},a_{t-1},\dots)
-=P(s_{t+1}\mid s_t,a_t)
-$$
-
-Si la observación no contiene esa información, el agente enfrenta observabilidad parcial y el modelo ya no es un MDP completamente observable.
-
-La propiedad no exige que el entorno sea determinista. Exige que, conocido el estado actual y la acción, el historial no aporte información adicional sobre la transición siguiente.
+$$Q(s,a)\leftarrow Q(s,a)+\alpha\left[r+\gamma\max_{a'}Q(s',a')-Q(s,a)\right]$$
 
 ---
 
-## Política y retorno
+## ¿Cómo se interpretan los valores $Q$?
 
-Una política estocástica asigna probabilidades a acciones:
+- $Q(s,a)$ estima el retorno esperado al tomar la acción $a$ desde el estado $s$.
+- El valor del estado es la mejor acción disponible:
 
-$$
-\pi(a\mid s)=P(A_t=a\mid S_t=s)
-$$
+$$V(s)=\max_a Q(s,a)$$
 
-El retorno descontado es:
-
-$$
-G_t=\sum_{k=0}^{\infty}\gamma^kR_{t+k+1}
-$$
-
-$\gamma$ controla cuánto pesan recompensas lejanas y garantiza convergencia de la suma en tareas continuas acotadas.
-
-Con $\gamma=0$ el agente considera solo la recompensa inmediata. Cuando $\gamma$ se acerca a $1$, las consecuencias futuras adquieren mayor importancia.
+- La política codiciosa elige $\pi(s)=\arg\max_a Q(s,a)$.
 
 ---
 
-## Funciones de valor
+## De una tabla $Q$ a una red neuronal
 
-Valor de estado:
-
-$$
-V^\pi(s)=\mathbb E_\pi[G_t\mid S_t=s]
-$$
-
-Valor estado–acción:
-
-$$
-Q^\pi(s,a)=\mathbb E_\pi[G_t\mid S_t=s,A_t=a]
-$$
-
-Una política codiciosa respecto de $Q$ elige:
-
-$$
-\pi(s)=\arg\max_a Q(s,a)
-$$
-
-$V^\pi$ resume la calidad de estar en un estado y seguir $\pi$. $Q^\pi$ permite comparar directamente las acciones disponibles en ese estado.
-
----
-
-## Ecuación de Bellman óptima
-
-$$
-V^*(s)=\max_a\sum_{s'}P(s'\mid s,a)
-\left[R(s,a,s')+\gamma V^*(s')\right]
-$$
-
-Bellman expresa un principio recursivo: una decisión óptima combina recompensa inmediata con el valor óptimo del estado siguiente.
-
-La esperanza pondera todos los estados siguientes posibles mediante $P(s'\mid s,a)$. El máximo selecciona la acción con mayor retorno esperado.
-
----
-
-## Value iteration
-
-Actualización iterativa:
-
-$$
-V_{k+1}(s)=\max_a\sum_{s'}P(s'\mid s,a)
-\left[R(s,a,s')+\gamma V_k(s')\right]
-$$
-
-Termina cuando:
-
-$$
-\max_s|V_{k+1}(s)-V_k(s)|<\varepsilon
-$$
-
-Requiere conocer o estimar la dinámica $P$ y la recompensa.
-
-Se parte de una estimación inicial, por ejemplo $V_0(s)=0$, y se aplican barridos hasta que los valores cambian menos que la tolerancia establecida.
-
----
-
-## Mundo grilla
-
-![w:590](images/MundoGrilla_probabilistica.drawio.png)
-
-La misma política puede cambiar si:
-
-- las acciones son estocásticas.
-- existe descuento.
-- cambia el costo por paso.
-- cambia la recompensa terminal.
-
-El modelado de recompensa define el comportamiento que realmente se optimiza.
-
-Una penalización por paso favorece rutas cortas. Una transición estocástica puede hacer preferible un camino más largo, pero con menor riesgo de caer en un estado terminal negativo.
-
----
-
-## Q-learning
-
-Q-learning aprende sin un modelo explícito de $P$:
-
-$$
-Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha
-\left[r_{t+1}+\gamma\max_aQ(s_{t+1},a)-Q(s_t,a_t)\right]
-$$
-
-El término entre corchetes es el error temporal (TD).
-
-![w:620](images/q-learning.png)
-
-$\alpha$ determina cuánto se corrige la estimación actual y $\gamma$ cuánto valor se atribuye al mejor futuro estimado. La actualización se realiza después de cada transición observada.
-
----
-
-## Exploración y explotación
-
-Política $\varepsilon$-greedy:
-
-$$
-a_t=
-\begin{cases}
-\text{acci\'on aleatoria},&u<\varepsilon\\
-\arg\max_a Q(s_t,a),&u\ge\varepsilon
-\end{cases}
-$$
-
-Reducir $\varepsilon$ gradualmente permite explorar al inicio y explotar después. Evaluación y entrenamiento deben usar políticas separadas.
-
-Durante la evaluación se elimina la exploración aleatoria para medir la política aprendida, no el comportamiento usado para recopilar experiencia.
-
----
-
-## De tabla Q a DQN
-
-Cuando $\mathcal S$ es grande o continuo, una red aproxima:
-
-$$
-Q(s,a;\theta)\approx Q^*(s,a)
-$$
-
-La pérdida TD es:
-
-$$
-L(\theta)=\mathbb E\left[
-\left(y-Q(s,a;\theta)\right)^2
-\right],\qquad
-y=r+\gamma\max_{a'}Q(s',a';\theta^-)
-$$
-
-![w:580](images/deep-q-learning.png)
-
-La red recibe un estado y estima un valor para cada acción. El símbolo $\theta^-$ representa los parámetros de una red objetivo que se actualiza con menor frecuencia.
-
----
-
-## Estabilizar DQN
-
-- **Replay buffer:** rompe correlación temporal y reutiliza experiencias.
-- **Target network:** mantiene un objetivo $\theta^-$ que cambia lentamente.
-- **Recorte o pérdida de Huber:** reduce el impacto de errores extremos.
-- **Double DQN:** reduce la sobreestimación de los valores.
-
-<div class="warn">
-Una curva de recompensa de entrenamiento no basta: se debe evaluar una política congelada en episodios independientes y reportar variabilidad.
+<div class="columns">
+<div>
+<h3>Q-Learning tabular</h3>
+<img src="images/q-learning.png" alt="Tabla Q" width="420px"/>
+<p>Representa cada estado y acción en una tabla.</p>
 </div>
-
-Estos mecanismos reducen inestabilidad, pero no eliminan la sensibilidad a recompensa, arquitectura, semillas ni distribución de experiencias.
-
----
-
-## API actual de Gymnasium
-
-```python
-observation, info = env.reset(seed=seed)
-observation, reward, terminated, truncated, info = env.step(action)
-done = terminated or truncated
-```
-
-- `terminated`: alcanzó un estado terminal del MDP.
-- `truncated`: terminó por un límite externo, como tiempo.
-
-Confundir ambos puede alterar el objetivo TD y la evaluación.
-
-Después de cualquiera de los dos se debe reiniciar el episodio. Sin embargo, al calcular el objetivo de aprendizaje puede ser correcto conservar valor futuro ante una truncación por tiempo.
-
----
-
-## Ejemplo ejecutable
-
-[`notebooks/05_1_q_learning.ipynb`](notebooks/05_1_q_learning.ipynb) entrena Q-learning tabular en `FrozenLake-v1`:
-
-- semillas explícitas.
-- política $\varepsilon$-greedy.
-- separación de entrenamiento y evaluación.
-- curva de éxito móvil.
-- comparación con política aleatoria.
-
-El ejemplo usa la API vigente `reset()`/`step()` de Gymnasium.
-
----
-
-## Síntesis
-
-- Un MDP formaliza decisiones secuenciales bajo incertidumbre.
-- Bellman conecta valor presente y futuro.
-- Q-learning aprende valores desde transiciones sin conocer la dinámica.
-- DQN aproxima $Q$ con una red y requiere mecanismos de estabilidad.
-- Recompensa, estado y protocolo de evaluación determinan qué conducta se aprende.
-
-<div class="bridge">
-La siguiente especialidad estudia atención y transformers para representar dependencias en secuencias y transferir conocimiento preentrenado.
+<div>
+<h3>Deep Q-Learning</h3>
+<img src="images/deep-q-learning.png" alt="Red que aproxima Q" width="420px"/>
+<p>Una red estima los valores de las acciones a partir del estado.</p>
+</div>
 </div>
 
 ---
 
-## Referencias
+## Deep Q-Network (DQN)
 
-- Material original de IPD434: `05-1_ReinforcementLearning.ipynb`.
-- R. S. Sutton y A. G. Barto, *Reinforcement Learning: An Introduction*, 2.ª ed., 2018.
-- V. Mnih et al., “Human-level control through deep reinforcement learning”, 2015.
-- Gymnasium, documentación oficial de uso básico y `CartPole-v1`.
+- La red de política estima $Q_\theta(s,a)$ para todas las acciones posibles.
+- Una red objetivo proporciona una estimación más estable del valor futuro.
+- El objetivo de entrenamiento es:
+
+$$Q_{\mathrm{target}}=r+\gamma(1-d)\max_{a'}Q_{\theta^-}(s',a')$$
+
+- La pérdida reduce la diferencia entre $Q_\theta(s,a)$ y el objetivo.
+
+---
+
+## Entrenamiento de un DQN
+
+1. Elegir una acción con una política $\epsilon$-greedy.
+2. Guardar la transición $(s,a,r,s',d)$ en una memoria de repetición.
+3. Aprender con un lote aleatorio de transiciones.
+4. Sincronizar periódicamente la red objetivo.
+
+La exploración disminuye gradualmente para favorecer las acciones aprendidas.
+
+---
+
+## Gymnasium: probar agentes en entornos
+
+- Proporciona una API común para observar estados, ejecutar acciones y recibir recompensas.
+- `reset()` inicia un episodio; `step(action)` devuelve estado, recompensa y señales de término.
+- Incluye entornos clásicos como CartPole.
+
+Documentación: [Gymnasium](https://gymnasium.farama.org/).
+
+---
+
+## Ejemplo práctico: DQN en CartPole
+
+- CartPole tiene cuatro variables de estado y dos acciones posibles.
+- El agente aprende a mantener el péndulo equilibrado y se evalúa con episodios nuevos.
+- El notebook implementa memoria de repetición, red objetivo, entrenamiento y evaluación.
+
+[Abrir notebook PyTorch de DQN para CartPole](notebook/05_1_dqn_cartpole_pytorch.ipynb)
+
+---
+
+## Ideas clave
+
+- El aprendizaje por refuerzo optimiza decisiones secuenciales mediante retorno esperado.
+- Los MDP y las ecuaciones de Bellman describen la relación entre estados, acciones y recompensas.
+- Q-Learning aprende valores desde la experiencia; DQN usa redes para aproximarlos.
+- La simulación permite entrenar y comparar políticas de manera reproducible.
+
+---
+
+## Lecturas y referencias
+
+- A. Géron, *Hands-on Machine Learning with Scikit-Learn, Keras & TensorFlow*.
+- Stanford, [CS229 Notes](https://cs229.stanford.edu/).
+- [Documentación de Gymnasium](https://gymnasium.farama.org/).
+- Diagrama DQN: [GeeksforGeeks](https://www.geeksforgeeks.org/deep-q-learning/).
