@@ -180,13 +180,29 @@ $$V^\pi(s)=\mathbb{E}\left[\sum_{t=0}^{\infty}\gamma^tR_{t+1}\mid s_0=s,\pi\righ
 - $\mathbb{E}$ representa el promedio sobre las posibles trayectorias
 - Un valor alto indica que seguir $\pi$ desde $s$ suele producir más recompensa futura
 
-La ecuación de Bellman expresa este valor usando el paso inmediato y los estados siguientes
+El retorno cumple una relación recursiva que conduce a la ecuación de Bellman
+
+---
+
+## De retorno a valor esperado
+
+En cada paso el retorno combina la recompensa inmediata con el retorno futuro descontado
+
+$$G_t=R_{t+1}+\gamma G_{t+1}$$
+
+Al partir de $s$ y seguir $\pi$ tomamos la esperanza de esa relación
+
+$$V^\pi(s)=\mathbb{E}_{\pi,P}\left[R(s,a,s')+\gamma V^\pi(s')\right]$$
+
+- $R(s,a,s')$ es la recompensa inmediata
+- $V^\pi(s')$ es el retorno esperado desde el estado siguiente
+- La esperanza promedia las acciones de $\pi$ y los estados que produce $P$
 
 ---
 
 ## Ecuación de Bellman
 
-El valor de un estado combina la recompensa del paso actual con el valor esperado del futuro
+La esperanza anterior se expande usando las probabilidades de cada acción y cada transición
 
 $$V^\pi(s)=\sum_a\pi(a\mid s)\sum_{s'}P(s'\mid s,a)\left[R(s,a,s')+\gamma V^\pi(s')\right]$$
 
