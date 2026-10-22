@@ -285,7 +285,7 @@ $x_t$ es la entrada actual y $h_{t-1}$ el estado anterior. $W_x$ y $W_h$ son mat
 </div>
 </div>
 
-![w:1150](Images_historicas/rnn.png)
+![w:1000](Images_historicas/rnn.png)
 
 <div class="small">
 
@@ -351,16 +351,21 @@ Diagramas de la presentación fuente. Fuente original: [Analytics Vidhya](https:
 
 ## Aprendizaje profundo para PLN: RNN y atención
 
-La atención permite al decodificador utilizar diferentes partes de esa secuencia en cada paso:
-
 <div class="columns">
 <div class="small">
 
-- El decodificador calcula pesos $\alpha_{t,j}$ que indican la importancia de cada estado $h_j$.
-- Los estados se combinan mediante una suma ponderada para obtener un vector de contexto.
-- Este contexto ayuda al decodificador a generar la siguiente palabra $y_t$.
+1. **Codificar.** Una RNN bidireccional procesa la entrada en ambos sentidos. Cada estado $h_j$ combina información de las palabras anteriores y posteriores.
 
-Así, el modelo puede consultar directamente distintas posiciones de la entrada, sin depender exclusivamente de un único vector final.
+2. **Asignar pesos.** En cada paso $t$, el decodificador calcula pesos $\alpha_{t,j}$ que indican la relevancia de cada estado.
+
+3. **Construir contexto.** Los estados se combinan mediante una suma ponderada: 
+
+$c_t = \sum_{j=1}^{T} \alpha_{t,j}h_j$
+
+4. **Generar.** El decodificador utiliza $c_t$ para ayudar a producir la siguiente palabra $y_t$.
+
+Cada paso puede consultar distintas posiciones de la entrada.
+
 </div>
 <div>
 
@@ -371,29 +376,108 @@ Así, el modelo puede consultar directamente distintas posiciones de la entrada,
 
 ---
 
+## Ejemplo de atención y secuencias largas
+
+
+Se compara la calidad de traducción según la longitud de las oraciones, utilizando la métrica [BLEU](https://aclanthology.org/P02-1040/) (Papineni et al., 2002). Un valor mayor indica una mejor traducción.
+
+- **RNNenc:** modelo recurrente sin atención.
+- **RNNsearch:** modelo recurrente con atención.
+
+**Resultado:** ambos modelos pierden precisión en oraciones largas, pero el modelo con atención mantiene una calidad de traducción considerablemente mayor.
+
+La atención permite consultar directamente distintas partes de la oración de entrada, reduciendo la dependencia de un único vector de contexto.
+
+---
+
 ## Atención y secuencias largas
 
-El gráfico muestra BLEU, una métrica para evaluar traducciones, según la longitud de la oración. RNNsearch usa atención y RNNenc es la referencia sin atención. Los sufijos 30 y 50 identifican variantes del modelo. En este experimento, la atención conserva puntuaciones más altas en oraciones largas.
-
 ![w:700](images/researches_intro_bleu_chart.png)
+
+
+---
+
+## De la atención a la autoatención
+
+En el modelo anterior, el decodificador utiliza atención para consultar los estados del codificador.
+
+**La autoatención aplica el mismo principio dentro de una secuencia:**
+
+- Cada palabra compara su representación con las demás palabras, incluida ella misma.
+- Estas comparaciones permiten calcular pesos de atención.
+- Los pesos se utilizan para combinar información y obtener una nueva representación de cada palabra.
+
+Así, cada posición incorpora información de otras posiciones de la misma secuencia.
+
 
 ---
 
 ## Aprendizaje profundo para PLN: autoatención
 
-- Para la posición $i$, el puntaje $x_i^\top x_j$ compara vectores de representación para $j=1,\ldots,T$. $\top$ indica transpuesta y $T$ es la longitud de la secuencia. Los pesos *softmax* $a_{ij}$ forman la salida $A_i$.
-- Este ejemplo compara directamente los vectores de entrada. El Transformer añade proyecciones aprendidas de consulta, clave y valor: $Q,K,V$.
+Una forma sencilla de implementar autoatención consiste en comparar los vectores de las distintas posiciones mediante el producto punto.
 
-![h:300](images/researches_21_self_attention.png)
+Para cada posición $i$:
+
+1. Se calculan puntajes $x_i^\top x_j$ con todas las posiciones $j$.
+2. Softmax transforma los puntajes en pesos $a_{ij}$.
+3. Los pesos permiten combinar los vectores y obtener una nueva representación $A_i$.
+
+---
+
+## Aprendizaje profundo para PLN: autoatención
+
+![h:400](images/researches_21_self_attention.png)
+
+
+---
+
+## Autoatención con parámetros aprendidos
+
+En el ejemplo anterior, la autoatención compara directamente los vectores de entrada.
+
+- Las operaciones son fijas y no contienen parámetros que puedan ajustarse durante el entrenamiento.
+- Para aprender nuevas formas de comparar y combinar información, se introducen tres matrices de pesos.
+
+$$
+q_j = W^q x_j,\qquad k_j = W^k x_j,\qquad v_j = W^v x_j
+$$
+
+Estas matrices se ajustan durante el entrenamiento, permitiendo aprender qué características son relevantes para calcular la atención.
+
 
 ---
 
 ## Aprendizaje profundo para PLN: atención de producto punto escalado
 
-- Cada entrada $x_j$ se proyecta mediante las matrices aprendidas $W^q,W^k,W^v$ para formar $q_j,k_j,v_j$.
-- La consulta $q_2$ se compara con las claves $k_j$ en las $T$ posiciones de la secuencia. Los pesos *softmax* $a_{2j}$ combinan los valores $v_j$ en el vector de contexto $A_2$.
+Cada vector de entrada $x_j$ se transforma en tres representaciones:
+
+
+- **Consulta ($q_j$):** representación de $x_j$ que se utiliza para comparar esta posición con las demás y determinar cuáles son relevantes.
+- **Clave ($k_j$):** representación de $x_j$ con la que se comparan las consultas de otras posiciones para calcular los pesos de atención.
+- **Valor ($v_j$):** representación de $x_j$ que aporta información a la salida, ponderada según los pesos de atención calculados.
+
+Las consultas se comparan con las claves mediante productos punto escalados. Los pesos resultantes se utilizan para combinar los valores.
+
+---
+
+## Aprendizaje profundo para PLN: atención de producto punto escalado
 
 ![h:340](images/researches_22_scaled_dot_product.png)
+
+---
+
+## ¿Es necesaria la recurrencia?
+
+Hasta ahora, hemos utilizado la atención para complementar el procesamiento secuencial de las RNN.
+
+Sin embargo, la autoatención permite relacionar directamente distintas posiciones de una secuencia.
+
+**¿Podemos construir un modelo de lenguaje sin utilizar redes recurrentes?**
+
+En 2017, Vaswani et al. propusieron el **Transformer**, una arquitectura basada en mecanismos de atención que prescinde de la recurrencia.
+
+**[Attention Is All You Need](https://arxiv.org/abs/1706.03762)** (Vaswani et al., 2017).
+
 
 ---
 
