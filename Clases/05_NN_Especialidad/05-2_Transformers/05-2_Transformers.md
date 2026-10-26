@@ -24,7 +24,7 @@ style: |
 ![w:125](../../04_RedesNeuronales/images/utfsm.png)
 
 # IPD434
-## Transformadores y atención
+## Transformers y Atención
 
 Dr. Patricio Olivares Roncagliolo
 
@@ -484,16 +484,148 @@ En 2017, Vaswani et al. propusieron el **Transformer**, una arquitectura basada 
 ## Aprendizaje profundo para PLN: arquitectura Transformer
 
 <div class="columns">
+<div class="small">
+
+- El codificador representa la entrada. El decodificador genera la salida paso a paso.
+- Ambos apilan $N$ capas de atención y redes prealimentadas.
+- La codificación posicional añade el orden de los tokens.
+
+</div>
 <div>
 
-![h:430](images/researches_23_transformer_architecture.png)
+![h:470](images/researches_23_transformer_architecture.png)
+
+</div>
+</div>
+
+---
+
+## Vectores de entrada y posición
+
+<div class="columns">
+<div class="small">
+
+- Cada token se convierte en un vector de entrada.
+- La codificación posicional se suma al vector para indicar el lugar del token en la secuencia.
+- El codificador recibe la entrada. El decodificador recibe los tokens previos de la salida.
+
+</div>
+<div>
+
+![w:560](images/researches_23_zoom_embeddings.png)
+
+</div>
+</div>
+
+---
+
+## Atención del codificador
+
+<div class="columns">
+<div class="small">
+
+- Cada posición compara su consulta con las claves de la secuencia de entrada.
+- Varias cabezas aprenden relaciones distintas entre posiciones.
+- La salida de atención pasa a una conexión residual y normalización.
+
+</div>
+<div>
+
+![h:420](images/researches_23_zoom_encoder_attention.png)
+
+</div>
+</div>
+
+---
+
+## Conexión residual y normalización
+
+<div class="columns">
+<div class="small">
+
+- La conexión residual suma la entrada de la subcapa a su salida.
+- Después, la normalización ajusta el resultado.
+- La ruta directa ayuda a conservar información y a entrenar redes profundas.
+
+</div>
+<div>
+
+![h:340](images/researches_23_zoom_residual_norm.png)
+
+</div>
+</div>
+
+---
+
+## Red prealimentada por posición
+
+<div class="columns">
+<div>
+
+![w:560](images/researches_23_zoom_feed_forward.png)
 
 </div>
 <div class="small">
 
-- $N\times$ indica $N$ capas repetidas. La codificación posicional añade el orden de los tokens a sus vectores de representación.
-- La atención de varias cabezas usa proyecciones aprendidas. La suma residual combina la entrada de cada subcapa con su salida y luego aplica normalización por capa. La red prealimentada transforma cada posición.
-- Durante el entrenamiento, el decodificador recibe los objetivos desplazados. Durante la generación, recibe el prefijo ya producido. La máscara causal oculta los tokens futuros. La atención entre decodificador y codificador usa consultas del primero y claves y valores del segundo. Una proyección lineal y *softmax* producen la distribución del siguiente token.
+- La red transforma cada posición por separado.
+- Usa la misma transformación aprendida en todas las posiciones.
+- A diferencia de la atención, no mezcla información entre tokens.
+
+</div>
+</div>
+
+---
+
+## Atención enmascarada del decodificador
+
+<div class="columns">
+<div class="small">
+
+- Durante la generación, una posición solo puede usar tokens anteriores y el actual.
+- La máscara oculta las posiciones futuras para que el modelo no anticipe la respuesta.
+
+</div>
+<div>
+
+![h:420](images/researches_23_zoom_masked_attention.png)
+
+</div>
+</div>
+
+---
+
+## Atención entre codificador y decodificador
+
+<div class="columns">
+<div class="small">
+
+- Las consultas vienen del decodificador.
+- Las claves y los valores vienen del codificador.
+- Así, cada palabra generada puede recuperar las partes relevantes de la entrada.
+
+</div>
+<div>
+
+![w:560](images/researches_23_zoom_cross_attention.png)
+
+</div>
+</div>
+
+---
+
+## Proyección final y probabilidades
+
+<div class="columns">
+<div class="small">
+
+- La proyección lineal calcula un puntaje para cada token del vocabulario.
+- *Softmax* convierte los puntajes en probabilidades.
+- Estas probabilidades permiten predecir el siguiente token.
+
+</div>
+<div>
+
+![h:430](images/researches_23_zoom_output_softmax.png)
 
 </div>
 </div>
