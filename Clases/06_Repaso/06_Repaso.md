@@ -60,11 +60,11 @@ Cada técnica se explica con las mismas cuatro partes. La interpretación compar
 
 ## Espacio de búsqueda y su crecimiento
 
-Un **estado** es una configuración posible del problema. El **espacio de búsqueda** $S$ reúne todos los estados y su tamaño es $|S| = k^{n}$, donde $k$ es la cantidad de valores por posición y $n$ la cantidad de posiciones. En tres en línea, con $k = 3$ y $n = 9$, se tiene $|S| = 3^{9} = 19683$, que incluye tableros imposibles.
+Un **estado** es una configuración posible del problema. El **espacio de búsqueda** $S$ reúne todos los estados y su tamaño es $|S| = k^{n}$, donde $k$ es la cantidad de valores por posición y $n$ la cantidad de posiciones.
 
 <img class="diagram" src="images/03_crecimiento_espacio.png" alt="Gráfico con eje vertical logarítmico que compara n al cubo, 2 elevado a n y n factorial para tamaños de 1 a 20. La curva del factorial crece mucho más rápido">
 
-Con $n = 20$: $n^3 = 8000$, $2^n = 1048576$ y $n! \approx 2.4 \times 10^{18}$, donde $n! = n \cdot (n-1) \cdots 1$. Revisar todos los casos deja de ser viable.
+Donde $n! = n \cdot (n-1) \cdots 1$ es el factorial. Crece más rápido que $n^3$ o $2^n$, así que revisar todos los casos deja de ser viable.
 
 ---
 
@@ -137,15 +137,6 @@ El **TSP** (*Traveling Salesman Problem*, problema del viajante) pide visitar $n
 </div>
 </div>
 
-<div class="example">
-
-Como recorrer una ruta al revés cuesta lo mismo, cada ruta se cuenta dos veces. El número de rutas distintas es $(n-1)!/2$.
-
-- Con $n = 10$: $9!/2 = 181440$ rutas.
-- Con $n = 20$: hay cerca de $6.1 \times 10^{16}$ rutas.
-
-</div>
-
 ---
 
 ## Justificar una solución aproximada
@@ -207,12 +198,6 @@ Cada elemento tiene un grado de pertenencia entre $0$ y $1$, útil para concepto
 - **Unión ("o"):** máximo, $\mu_{A \cup B} = \max(\mu_A, \mu_B)$.
 - **Complemento ("no"):** $\mu_{\bar{A}} = 1 - \mu_A$.
 
-<div class="example">
-
-Con $28\,^\circ\mathrm{C}$, $\mu_{\mathrm{conf}} = 0.7$ y $\mu_{\mathrm{alta}} = 0.3$. Entonces "confortable y alta" vale $\min(0.7, 0.3) = 0.3$.
-
-</div>
-
 ---
 
 ## Formas de las funciones de pertenencia
@@ -221,27 +206,17 @@ Con $28\,^\circ\mathrm{C}$, $\mu_{\mathrm{conf}} = 0.7$ y $\mu_{\mathrm{alta}} =
 - **Trapezoidal:** igual que la triangular, pero con una meseta de grado $1$ entre $b$ y $c$.
 - **Gaussiana:** tiene forma de campana, centrada en $m$, con un ancho $\sigma$.
 
-<div class="example">
-
-Con una función triangular de $a = 15$, $b = 25$ y $c = 35$, el grado en $x = 28$ está en la parte descendente:
-
-$$
-\mu(28) = \frac{c - x}{c - b} = \frac{35 - 28}{35 - 25} = 0.7
-$$
-
-</div>
-
 ---
 
 ## Variables lingüísticas y reglas
 
 - Una **variable lingüística** es una magnitud, como la temperatura, con términos como baja, confortable o alta. Cada término tiene su propia función de pertenencia.
-- Una **regla** tiene la forma SI … ENTONCES. Por ejemplo: SI la temperatura es alta Y la humedad es alta, ENTONCES la ventilación es alta.
+- Una **regla** tiene la forma SI … ENTONCES: unas condiciones sobre las entradas y una conclusión sobre la salida.
 - La "Y" se evalúa con el mínimo, y la "O" con el máximo.
 
 <div class="bridge">
 
-Con 3 términos de temperatura y 2 de humedad, hay $3 \times 2 = 6$ combinaciones posibles de condiciones.
+Si una variable tiene $p$ términos y otra tiene $q$, hay $p \cdot q$ combinaciones posibles de condiciones.
 
 </div>
 
@@ -259,9 +234,9 @@ Las entradas exactas se convierten en grados de pertenencia. Las reglas se activ
 
 ## Fusificación: de número a grados
 
-<img class="diagram-large" src="images/05_funciones_membresia.png" alt="Dos gráficos de funciones de pertenencia: temperatura con términos baja, confortable y alta, con los valores 0.7 y 0.3 en 28 grados. Humedad con términos baja y alta, con el valor 0.8 en 64 por ciento">
+<img class="diagram-large" src="images/05_funciones_membresia.png" alt="Dos gráficos de funciones de pertenencia: temperatura con términos baja, confortable y alta, y humedad con términos baja y alta">
 
-Fusificar es calcular el grado de pertenencia de cada entrada a cada término. Con $T = 28\,^\circ\mathrm{C}$ (temperatura): confortable $0.7$, alta $0.3$ y baja $0$. Con $H = 64\,\%$ (humedad): alta $0.8$ y baja $0$.
+Fusificar es calcular el grado de pertenencia de cada entrada a cada término. Un mismo valor puede pertenecer en distinto grado a dos términos vecinos, como confortable y alta.
 
 ---
 
@@ -269,16 +244,7 @@ Fusificar es calcular el grado de pertenencia de cada entrada a cada término. C
 
 Cada regla combina sus condiciones con el mínimo. El resultado, $\alpha$, indica qué tanto se cumple la regla. Ese valor recorta el conjunto de salida a esa altura.
 
-<div class="example">
-
-Solo dos reglas tienen $\alpha > 0$:
-
-- SI $T$ es confortable Y $H$ es alta, ENTONCES la ventilación es media: $\alpha = \min(0.7, 0.8) = 0.7$.
-- SI $T$ es alta Y $H$ es alta, ENTONCES la ventilación es alta: $\alpha = \min(0.3, 0.8) = 0.3$.
-
-Las demás reglas tienen una condición con grado $0$, así que su $\alpha$ es $0$.
-
-</div>
+Una regla cuya condición tiene grado $0$ tiene $\alpha = 0$ y no aporta a la salida.
 
 ---
 
@@ -292,9 +258,9 @@ $$
 z^{*} = \frac{\int z\,\mu(z)\,dz}{\int \mu(z)\,dz}
 $$
 
-<img class="diagram" src="images/07_agregacion_centroide.png" alt="Conjuntos de ventilación baja, media y alta, con la media recortada en 0.7 y la alta recortada en 0.3, el área agregada y una línea en el centroide cercano a 59.8">
+<img class="diagram" src="images/07_agregacion_centroide.png" alt="Conjuntos de ventilación baja, media y alta, con dos consecuentes recortados por la altura de dos reglas, el área agregada y una línea en el centroide">
 
-El centroide da una ventilación de $z^{*} \approx 59.8\,\%$.
+El resultado es un único valor numérico, $z^{*}$, que el sistema entrega como salida.
 
 ---
 
@@ -325,7 +291,7 @@ Un sistema difuso se entiende y se defiende solo si sus términos y reglas tiene
 
 ## El TSTP: TSP con dos objetivos
 
-El **TSP** (problema del viajante) pide visitar $n$ ciudades una vez y volver a la de partida con el menor costo. El **TSTP** (*Traveling Salesman Trolley Problem*) es su variante de dos objetivos. Cada arco, es decir, el tramo entre dos ciudades, tiene además un número entero de personas afectadas, entre $1$ y $5$. Su nombre viene del dilema del tranvía, un problema ético sobre decisiones que dañan a personas.
+El **TSP** (problema del viajante) pide visitar $n$ ciudades una vez y volver a la de partida con el menor costo. El **TSTP** (*Traveling Salesman Trolley Problem*) es su variante de dos objetivos. Cada arco, o tramo entre dos ciudades, tiene además un número de personas afectadas.
 
 Se minimizan dos objetivos a la vez:
 
@@ -389,9 +355,9 @@ Un cruce cualquiera podría repetir ciudades, y eso invalidaría la ruta. Para p
 
 El **cruce de orden** (OX) combina dos padres sin repetir ciudades. Copia un tramo de un padre en las mismas posiciones y completa el resto con el orden del otro padre. Así el hijo sigue siendo una ruta válida.
 
-<img class="diagram-small" src="images/09_cruce_ox.png" alt="Tres filas de ocho casillas: Padre 1, Padre 2 e Hijo 1. El tramo central del Padre 2 baja al hijo en las mismas posiciones, y el resto del hijo se llena con el orden del Padre 1">
+<img class="diagram-small" src="images/09_cruce_ox.png" alt="Tres filas de ocho casillas con letras: Padre 1, Padre 2 e Hijo 1. Un tramo central del Padre 2 baja al hijo en las mismas posiciones, y el resto del hijo se llena con el orden del Padre 1">
 
-Las ciudades se numeran desde $0$. El tramo de las posiciones $2$ a $4$ del Padre 2 es $4, 0, 5$. Las demás posiciones se llenan con $6, 7, 1, 2, 3$, en el orden del Padre 1 y desde la posición $5$.
+Las posiciones se numeran desde $0$. El tramo de un padre entre dos posiciones se copia al hijo en esas mismas posiciones. Las demás posiciones se llenan con los elementos del otro padre que aún no están, en su orden y desde la posición siguiente al tramo.
 
 ---
 
@@ -430,15 +396,7 @@ $$
 f_{\alpha} = \alpha \, \frac{L}{L_{ref}} + (1 - \alpha) \, \frac{M}{M_{ref}}
 $$
 
-La elección de $\alpha$ debe justificarse. Por ejemplo, $\mathrm{ABCD}$ tiene $L = 10 + 35 + 30 + 20 = 95$ y $M = 2 + 3 + 2 + 1 = 8$. Con las tres rutas de la tabla, $L_{ref} = 90$ y $M_{ref} = 34/3 \approx 11.33$.
-
-| Ruta | $L$ | $M$ | $f_{0.5}$ | $f_{0.9}$ |
-|---|---|---|---|---|
-| $\mathrm{ABCD}$ | 95 | 8 | 0.8807 | 1.0206 |
-| $\mathrm{ABDC}$ | 80 | 13 | 1.0180 | 0.9147 |
-| $\mathrm{ACBD}$ | 95 | 13 | 1.1013 | 1.0647 |
-
-Con $\alpha = 0.5$ gana $\mathrm{ABCD}$. Con $\alpha = 0.9$, que pesa más la distancia, gana $\mathrm{ABDC}$.
+La elección de $\alpha$ debe justificarse. Los valores de referencia $L_{ref}$ y $M_{ref}$ pueden ser, por ejemplo, los promedios de un conjunto de rutas.
 
 ---
 
@@ -446,11 +404,11 @@ Con $\alpha = 0.5$ gana $\mathrm{ABCD}$. Con $\alpha = 0.9$, que pesa más la di
 
 ## Frente de Pareto
 
-Una solución **domina** a otra si es igual o mejor en todos los objetivos y estrictamente mejor en uno. Las soluciones que nadie domina forman el **frente de Pareto**: cada una es un compromiso distinto entre $L$ y $M$.
+Una solución **domina** a otra si es igual o mejor en todos los objetivos y estrictamente mejor en uno. Las que nadie domina forman el **frente de Pareto**.
 
-<img class="diagram-small" src="images/10_pareto.png" alt="Gráfico de distancia total contra personas afectadas con tres rutas: ABCD en (95, 8) y ABDC en (80, 13), ambas no dominadas, y ACBD en (95, 13), dominada por ABCD">
+<img class="diagram" src="images/10_pareto.png" alt="Gráfico de dos objetivos L y M con tres soluciones A, B y C: A y B no se dominan entre sí, y C es dominada por B">
 
-$\mathrm{ACBD}$ es dominada por $\mathrm{ABCD}$, que tiene la misma distancia y menos personas afectadas. $\mathrm{ABCD}$ y $\mathrm{ABDC}$ no se dominan entre sí.
+$C$ es dominada por $B$, con el mismo $L$ y menor $M$. $A$ y $B$ no se dominan entre sí.
 
 <div class="bridge">
 
@@ -466,15 +424,11 @@ El criterio de término puede ser un número de generaciones, un número de eval
 
 Para comparar dos algoritmos se usan al menos tres criterios: el mejor fitness, el número de evaluaciones, el tiempo, la memoria o la estabilidad entre semillas.
 
-<div class="example">
-
-Con $\mu = 100$ padres y $\lambda = 100$ hijos por generación, la población inicial se evalúa una vez y cada una de las $500$ generaciones evalúa $\lambda$ hijos:
+Si la población inicial tiene $\mu$ individuos y cada una de las $G$ generaciones evalúa $\lambda$ hijos, el número de evaluaciones de fitness es:
 
 $$
-N_{eval} = \mu + 500\,\lambda = 100 + 500 \cdot 100 = 50100
+N_{eval} = \mu + G\,\lambda
 $$
-
-</div>
 
 <div class="bridge">
 
@@ -500,7 +454,7 @@ Un modelo aprende a partir de ejemplos con respuesta conocida. Recibe una entrad
 
 **Clasificación**
 
-- Salida: una categoría, por ejemplo abeja, mosca o escarabajo.
+- Salida: una categoría dentro de un conjunto finito de clases.
 - Pérdida: entropía cruzada.
 - Métricas: exactitud, precisión, recall y $F_1$.
 
@@ -509,7 +463,7 @@ Un modelo aprende a partir de ejemplos con respuesta conocida. Recibe una entrad
 
 **Regresión**
 
-- Salida: una cantidad numérica, por ejemplo un precio.
+- Salida: una cantidad numérica.
 - Pérdida: error cuadrático medio (MSE).
 
 </div>
@@ -527,13 +481,13 @@ Un modelo aprende a partir de ejemplos con respuesta conocida. Recibe una entrad
 - **Validación ($10\,\%$):** compara configuraciones y decide cuándo detener el entrenamiento.
 - **Prueba ($10\,\%$):** se usa una sola vez para reportar el desempeño final.
 
-Hay fuga de información si alguna decisión usa datos de prueba. Por ejemplo, el preprocesamiento se ajusta solo con los datos de entrenamiento.
+Hay fuga de información si alguna decisión usa datos de prueba. El preprocesamiento se ajusta solo con los datos de entrenamiento.
 
 ---
 
 ## Matriz de confusión
 
-<img class="diagram-large" src="images/12_matriz_confusion.png" alt="Matriz de confusión de tres clases A, B y C: filas reales, columnas predichas, diagonal de aciertos, recall por fila, precisión por columna y exactitud de 0.85">
+<img class="diagram-large" src="images/12_matriz_confusion.png" alt="Matriz de confusión de tres clases A, B y C con celdas n de i y j, diagonal de aciertos, recall por fila, precisión por columna y exactitud">
 
 Las filas son la clase real y las columnas la clase predicha. La diagonal reúne los aciertos. Los errores quedan fuera de la diagonal y muestran qué clase se confunde con cuál.
 
@@ -547,14 +501,6 @@ Las filas son la clase real y las columnas la clase predicha. La diagonal reúne
 - **Precisión:** de los casos predichos como una clase, qué proporción era correcta.
 - **Recall** (sensibilidad): de los casos reales de una clase, qué proporción se detectó.
 - **$F_1$:** promedio armónico de $P$ y $R$, con $F_1 = \dfrac{2PR}{P+R}$. Es alto solo si ambos son altos.
-
-<div class="example">
-
-- Exactitud, con $N = 60$ casos: $(18 + 15 + 18)/60 = 0.85$.
-- Clase $B$: $P = 15/18 = 0.8333$ y $R = 15/20 = 0.75$.
-- $F_1 = \dfrac{2 \cdot 0.8333 \cdot 0.75}{0.8333 + 0.75} = 0.7895$.
-
-</div>
 
 <div class="warn">
 
@@ -602,17 +548,6 @@ $$
 
 La entropía cruzada mide la pérdida como $L = -\ln p_y$, donde $p_y$ es la probabilidad que el modelo asigna a la clase correcta. Cuanto mayor sea esa probabilidad, menor es la pérdida.
 
-<div class="example">
-
-Con puntajes $z = (2.0, 1.0, 0.1)$:
-
-- Exponenciales: $e^{z} = (7.3891, 2.7183, 1.1052)$, con suma $11.2125$.
-- Probabilidades: $p = (0.6590, 0.2424, 0.0986)$.
-- Si la clase correcta es la 1: $L = -\ln 0.6590 = 0.417$.
-- Si la clase correcta es la 2: $L = -\ln 0.2424 = 1.417$.
-
-</div>
-
 ---
 
 <!-- _class: compact -->
@@ -631,23 +566,17 @@ $$
 - **Minilote:** grupo pequeño de ejemplos para cada paso. **Época:** una pasada completa por todos los datos.
 - **SGD** (descenso por gradiente estocástico) usa el gradiente directo. **Adam** ajusta el tamaño del paso para cada parámetro.
 
-<div class="example">
-
-Con $n = 4000$ ejemplos y minilotes de $32$, hay $4000 / 32 = 125$ pasos por época. En $10$ épocas son $10 \cdot 125 = 1250$ pasos.
-
-</div>
-
 ---
 
 <!-- _class: compact -->
 
 ## Subajuste y sobreajuste
 
-<img class="diagram" src="images/14_curvas_aprendizaje.png" alt="Dos gráficos por época. A la izquierda, la pérdida de entrenamiento baja, la de validación sube después de la época 10 y la de validación con Dropout queda más baja. A la derecha, la exactitud de entrenamiento sube cerca de 1 y la de validación se estanca cerca de 0.83">
+<img class="diagram" src="images/14_curvas_aprendizaje.png" alt="Dos gráficos por época. A la izquierda, la pérdida de entrenamiento baja, la de validación sube después de un punto y la de validación con Dropout queda más baja. A la derecha, la exactitud de entrenamiento sube y la de validación se estanca">
 
 Si el modelo memoriza el entrenamiento, su pérdida de validación sube. Eso es **sobreajuste**. Si ni siquiera aprende bien el entrenamiento, es **subajuste**.
 
-Ejemplo: red con dos capas ocultas de $512$ neuronas, $2000$ ejemplos de entrenamiento y Fashion-MNIST (imágenes de prendas en $10$ clases). La pérdida de validación es mínima en la época $t^* = 10$, con $0.534$, y termina en $0.998$.
+Cuando la pérdida de validación deja de bajar y empieza a subir, el modelo ya se está sobreajustando.
 
 ---
 
@@ -657,19 +586,13 @@ Ejemplo: red con dos capas ocultas de $512$ neuronas, $2000$ ejemplos de entrena
 - **Dropout:** apaga neuronas al azar durante el entrenamiento, con probabilidad $p$. Así la red no depende de pocas neuronas.
 - **Parada temprana:** detiene el entrenamiento en la época $t^*$, donde la pérdida de validación es mínima.
 
-<div class="example">
-
-Con Dropout de $0.5$ en la misma red, la pérdida de validación termina en $0.642$, frente a $0.998$ sin regularización.
-
-</div>
-
 ---
 
 ## Red convolucional (CNN)
 
 Una red convolucional (CNN, *convolutional neural network*) recorre la imagen con filtros pequeños para detectar patrones locales, como bordes. La **agrupación máxima** reduce el tamaño de la imagen y deja el valor más alto de cada bloque. Al final, las capas **densas** clasifican.
 
-<img class="diagram" src="images/15_cnn_formas.png" alt="Diagrama de la red: entrada de 32 por 32 por 3, convolución con 448 parámetros, agrupación, convolución con 4640 parámetros, agrupación, convolución con 18496 parámetros, aplanado, dos capas densas y un total de 89834 parámetros">
+<img class="diagram" src="images/15_cnn_formas.png" alt="Diagrama de una red convolucional: entrada, convolución, agrupación máxima, convolución, agrupación máxima, convolución, aplanado y dos capas densas">
 
 Cada filtro se reutiliza en toda la imagen, por eso la CNN tiene menos parámetros que una red totalmente conectada.
 
